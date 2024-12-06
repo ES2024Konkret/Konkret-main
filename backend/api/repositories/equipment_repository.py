@@ -12,3 +12,9 @@ class EquipmentRepository:
         self.db.commit()
         self.db.refresh(new_equipment)
         return new_equipment
+    def delete_equipment(self, id: str):
+        equipment = self.db.query(Equipment).filter(Equipment.id == id).first()
+        if equipment:
+            self.db.delete(equipment)
+            self.db.commit()
+        return equipment

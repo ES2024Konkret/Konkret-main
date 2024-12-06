@@ -10,3 +10,7 @@ class EquipmentService:
             self, brand: str | None, description: str | None, quantity: int, type: str
             ):
         return self.equipment_repository.create_equipment(brand, description, quantity, type)
+    def delete_equipment(
+            self, id: str
+    ):
+        return  self.equipment_repository.delete_equipment(id)
