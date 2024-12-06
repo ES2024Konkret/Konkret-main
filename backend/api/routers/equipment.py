@@ -17,3 +17,13 @@ def getall_equipments(
         return equipment_service.all() 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+
+@router.post("", response_model=EquipmentPublic)
+def add_equipment(
+    equipment: EquipmentSchema,
+    equipment_service: Annotated[EquipmentService, Depends(get_equipment_service)]
+):
+    try:
+        return equipment_service.create_equipment(equipment.brand, equipment.description, equipment.quantity, equipment.type) 
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

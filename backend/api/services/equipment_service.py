@@ -6,3 +6,7 @@ class EquipmentService:
         self.equipment_repository = EquipmentRepository(db)
     def all(self):
         return self.equipment_repository.all()
+    def create_equipment(
+            self, brand: str | None, description: str | None, quantity: int, type: str
+            ):
+        return self.equipment_repository.create_equipment(brand, description, quantity, type)

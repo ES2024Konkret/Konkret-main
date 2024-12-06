@@ -90,14 +90,14 @@ class EquipmentSchema(BaseModel):
     brand: Annotated[str, Query()] | None
     type: Annotated[str, Query()]
     description: Annotated[str, Query()] | None
-    quantity: Annotated[str, Query()]
+    quantity: Annotated[int, Query()]
 
 class EquipmentPublic(BaseModel):
     id: Annotated[str, Query()]
     brand: Annotated[str, Query()] | None
     type: Annotated[str, Query()]
     description: Annotated[str, Query()] | None
-    quantity: Annotated[str, Query()]
+    quantity: Annotated[int, Query()]
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
 
