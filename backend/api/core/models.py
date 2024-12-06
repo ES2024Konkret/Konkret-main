@@ -69,5 +69,29 @@ class Work(Base):
     proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=False)
     proprietary = relationship("Proprietary", back_populates="works")
     workers = relationship("Employee", back_populates="work")
+    rentequipment = relationship("RentEquipment", back_populates="work")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class RentEquipment(Base):
+    __tablename__ = 'rents-equipments'
+    id: Mapped[String] = mapped_column(String, primary_key=True, index= True, default=lambda: str(uuid4()))
+    equipment_id = mapped_column(ForeignKey("equipments.id"), nullable=False)
+    work_id = mapped_column(ForeignKey("works.id"), nullable=False)
+    start_time = mapped_column(DateTime(timezone=True), default=func.now(), nullable=False) 
+    end_time = mapped_column(DateTime(timezone=True), nullable=False) 
+    comments = mapped_column(String, nullable= True)
+    equipments = relationship("Equipment", back_populates="rentequipment")
+    work = relationship("Work", back_populates="rentequipment")
+
+
+class Equipment(Base):
+    __tablename__ = 'equipments'
+    id: Mapped[String] = mapped_column(String, primary_key=True, index= True, default=lambda: str(uuid4()))
+    brand = mapped_column(String, nullable=True)
+    type = mapped_column(String, nullable=True)
+    description = mapped_column(String, nullable=True)
+    quantity = mapped_column(Integer, nullable=True)
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    rentequipment = relationship("RentEquipment", back_populates="equipments")
