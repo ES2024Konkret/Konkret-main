@@ -1,5 +1,5 @@
-from backend.api.core.models import Work
-from sqlalchemy.orm import Session
+from backend.api.core.models import Work, RentEquipment
+from sqlalchemy.orm import Session, joinedload
 from fastapi import HTTPException
 
 class WorkRepository:
@@ -14,7 +14,7 @@ class WorkRepository:
         return new_work
     
     def all(self):
-        work = self.db.query(Work).all()
+        work = self.db.query(Work).options(joinedload(Work.rentequipment).joinedload(RentEquipment.equipments)).all()
         return work
     
     def get(self, id: str):

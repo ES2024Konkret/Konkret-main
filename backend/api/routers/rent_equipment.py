@@ -15,6 +15,7 @@ def create_rent_equipment(
     rent_equipment_service: Annotated[RentEquipmentService, Depends(get_rent_equipment_service)]
 ):
     # tratar excessoes caso não exista o work ou equipamento status 404 
+    
     try:
         return rent_equipment_service.create_rent_equipment(work_id=rent_equipment.work_id, equipment_id= rent_equipment.equipment_id, comments= rent_equipment.comments,
     start_time = rent_equipment.start_time,

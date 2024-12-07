@@ -23,7 +23,7 @@ def add_work(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.get("", response_model=List[WorkPublic])
+@router.get("")#,response_model=List[WorkPublic])
 def getall_works(
     work_service: Annotated[WorkService, Depends(get_work_service)],
     user_logged: User = Depends(get_current_user)

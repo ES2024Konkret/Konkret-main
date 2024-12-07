@@ -72,7 +72,18 @@ class ReportPublic(BaseModel):
     updated_at: Annotated[datetime,Query()]
     class Config:
         orm_mode = True
-
+class RentEquipmentSchemaPublic(BaseModel):
+    id: Annotated[str, Query()]
+    work_id: Annotated[str, Query()]
+    equipment_id: Annotated[str, Query()]
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+    class Config:
+        orm_mode = True
+        
 class WorkSchema(BaseModel):
     proprietary_id: Annotated[str, Query()]
     address: Annotated[str, Query()]
@@ -81,7 +92,7 @@ class WorkPublic(BaseModel):
     id: Annotated[str, Query()]
     address: Annotated[str, Query()]
     proprietary_id: Annotated[str, Query()]
-    rentequipment: Annotated[Optional[list], Query()]
+    rentequipment: Optional[List[RentEquipmentSchemaPublic]] = None
     created_at: Annotated[datetime,Query()]
     updated_at: Annotated[datetime,Query()]
     class Config:
@@ -109,15 +120,7 @@ class RentEquipmentSchema(BaseModel):
     start_time: Annotated[datetime, Query()] | None
     end_time: Annotated[datetime, Query()]
 
-class RentEquipmentSchemaPublic(BaseModel):
-    id: Annotated[str, Query()]
-    work_id: Annotated[str, Query()]
-    equipment_id: Annotated[str, Query()]
-    comments: Annotated[str, Query()]
-    start_time: Annotated[datetime, Query()] | None
-    end_time: Annotated[datetime, Query()]
-    created_at: Annotated[datetime, Query()]
-    updated_at: Annotated[datetime, Query()]
+
     
 
 
