@@ -36,3 +36,17 @@ def delete_equipment(
         return equipment_service.delete_equipment(id) 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
+@router.put("/{id}", response_model=EquipmentPublic)
+def update_equipment(
+    id: str,
+    equipment: EquipmentSchema,
+    equipment_service: Annotated[EquipmentService, Depends(get_equipment_service)]
+    ):
+    try:
+        updated = equipment_service.update_equipment(id, equipment.brand, equipment.description, equipment.quantity, equipment.type)
+        if isinstance(updated, str):
+            raise HTTPException(status_code=404)
+        return updated
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
