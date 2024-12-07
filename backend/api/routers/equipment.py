@@ -50,3 +50,13 @@ def update_equipment(
         return updated
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}", response_model=EquipmentPublic)
+def getEquipment(
+    id: str,
+    equipment_service: Annotated[EquipmentService, Depends(get_equipment_service)]
+):
+    try:
+        return equipment_service.get_byID(id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

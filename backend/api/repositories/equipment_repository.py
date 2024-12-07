@@ -33,3 +33,8 @@ class EquipmentRepository:
             self.db.refresh(equipment)
             return equipment
         return None
+    def get_byID(self, id: str):
+        equipment = self.db.query(Equipment).filter(Equipment.id == id).first()
+        if equipment:
+            return equipment
+        return None
