@@ -83,6 +83,8 @@ class RentEquipment(Base):
     comments = mapped_column(String, nullable= True)
     equipments = relationship("Equipment", back_populates="rentequipment")
     work = relationship("Work", back_populates="rentequipment")
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
 class Equipment(Base):

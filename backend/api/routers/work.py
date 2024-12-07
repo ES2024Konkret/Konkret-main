@@ -59,7 +59,7 @@ def delete_work(
     try:
         return work_service.delete(id)
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=e.status_code,detail=f"Deu erro: {e.detail}")
     
 @router.put("/{id}/addreport", response_model=WorkPublic)
 def add_report(

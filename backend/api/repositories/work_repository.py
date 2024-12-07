@@ -1,5 +1,6 @@
 from backend.api.core.models import Work
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 class WorkRepository:
     def __init__(self, db: Session):
@@ -27,8 +28,9 @@ class WorkRepository:
         if work:
             self.db.delete(work)
             self.db.commit()
-            return True
-        return False
+            return work
+        else:
+            raise HTTPException(status_code=404,detail="Não da pra deletar o que não existe bonzão")
     
     def reports(self, id: str):
         work = self.db.query(Work).filter(Work.id == id).first()

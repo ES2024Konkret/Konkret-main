@@ -1,6 +1,6 @@
 from fastapi import Query
 from pydantic import BaseModel, ConfigDict
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 from datetime import datetime
 from enum import Enum
 
@@ -81,6 +81,7 @@ class WorkPublic(BaseModel):
     id: Annotated[str, Query()]
     address: Annotated[str, Query()]
     proprietary_id: Annotated[str, Query()]
+    rentequipment: Annotated[Optional[list], Query()]
     created_at: Annotated[datetime,Query()]
     updated_at: Annotated[datetime,Query()]
     class Config:
@@ -100,6 +101,27 @@ class EquipmentPublic(BaseModel):
     quantity: Annotated[int, Query()]
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
+
+class RentEquipmentSchema(BaseModel):
+    work_id: Annotated[str, Query()]
+    equipment_id: Annotated[str, Query()]
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+
+class RentEquipmentSchemaPublic(BaseModel):
+    id: Annotated[str, Query()]
+    work: Annotated[Optional[list], Query()]
+    work_id: Annotated[str, Query()]
+    equipments: Annotated[Optional[list], Query()]
+    equipment_id: Annotated[str, Query()]
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+    
+
 
 class PhotoSchema(BaseModel):
     report_id: Annotated[str, Query()]

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Annotated, List
-from backend.api.core.models import Equipment
+from backend.api.core.models import User
 from backend.api.core.schemas import EquipmentPublic, EquipmentSchema
 from backend.api.services.equipment_service import EquipmentService
 from backend.api.dependencies import get_equipment_service
