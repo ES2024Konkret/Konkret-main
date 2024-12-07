@@ -111,9 +111,7 @@ class RentEquipmentSchema(BaseModel):
 
 class RentEquipmentSchemaPublic(BaseModel):
     id: Annotated[str, Query()]
-    work: Annotated[Optional[list], Query()]
     work_id: Annotated[str, Query()]
-    equipments: Annotated[Optional[list], Query()]
     equipment_id: Annotated[str, Query()]
     comments: Annotated[str, Query()]
     start_time: Annotated[datetime, Query()] | None
