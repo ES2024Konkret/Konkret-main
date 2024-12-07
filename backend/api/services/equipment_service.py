@@ -14,3 +14,9 @@ class EquipmentService:
             self, id: str
     ):
         return  self.equipment_repository.delete_equipment(id)
+    def update_equipment(
+            self, id: str, brand: str | None, description: str | None, quantity: int, type: str   
+    ):
+        return self.equipment_repository.update_equipment(id, brand, description, quantity, type)
+    def get_byID(self, id: str):
+        return self.equipment_repository.get_byID(id)
