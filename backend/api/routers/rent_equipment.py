@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import Annotated
+from typing import Annotated, List
 from backend.api.core.models import User, Work, Equipment
 from backend.api.core.schemas import RentEquipmentSchema, RentEquipmentSchemaPublic
 from backend.api.dependencies import get_rent_equipment_service
@@ -8,7 +8,11 @@ router = APIRouter(
     prefix="/rentequipment",
     tags=["rentequipment"]
 )
-#@router.get("", response_model=List[RentEquipmentSchemaPublic])
+@router.get("", response_model=List[RentEquipmentSchemaPublic])
+def getall_rent_equipments(
+    rent_equipment_service: Annotated[RentEquipmentService, Depends(get_rent_equipment_service)]
+):
+    return rent_equipment_service.getall_rent_equipments()
 @router.post("", response_model=RentEquipmentSchemaPublic)
 def create_rent_equipment(
     rent_equipment: RentEquipmentSchema,

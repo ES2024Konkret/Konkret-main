@@ -9,6 +9,8 @@ class RentEquipmentService:
     start_time: datetime | None,
     end_time: datetime):
         return self.rent_equipment_repository.create(work_id, equipment_id, comments, start_time, end_time)
+    def getall_rent_equipments(self):
+        return self.rent_equipment_repository.get_all()
 
     # def all(self):
     #     return self.work_repository.all()

@@ -15,3 +15,5 @@ class RentEquipmentRepository:
         self.db.commit()
         self.db.refresh(new_rentequipment)
         return new_rentequipment
+    def get_all(self):
+        return self.db.query(RentEquipment).all()
