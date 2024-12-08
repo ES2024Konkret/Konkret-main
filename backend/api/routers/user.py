@@ -3,7 +3,7 @@ from typing import Annotated, List
 from backend.api.services.user_service import UserService
 from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema
 from backend.api.dependencies import get_user_service, get_current_user
-from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verify_password, create_token, encode
+from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verify_password, create_token, encode, validate_phone_number
 from backend.api.core.models import User
 
 router = APIRouter(
@@ -17,6 +17,11 @@ def add_user(
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
     password_error = is_valid_password(user.password)
+    phone_error = validate_phone_number(user.phone)
+
+    if not phone_error:
+        raise HTTPException(status_code=400, detail="Telefone inválido")
+    
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
     
@@ -27,7 +32,7 @@ def add_user(
         raise HTTPException(status_code=400, detail="CNPJ inválido.")
 
     try:
-        return user_service.create_user(user.name, user.email, user.password, user.user_type, user.cpf, user.cnpj)        
+        return user_service.create_user(user.name, user.email, user.phone, user.password, user.user_type, user.cpf, user.cnpj)        
 
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
@@ -42,6 +47,11 @@ def update_user(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     password_error = is_valid_password(user.password)
+    phone_error = validate_phone_number(user.phone)
+
+    if phone_error:
+        raise HTTPException(status_code=400, detail="Telefone inválido")
+    
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
     
@@ -52,7 +62,7 @@ def update_user(
         raise HTTPException(status_code=400, detail="CNPJ inválido.")
     
     try: 
-        updated_user = user_service.update(id, user.name, user.email, user.password, user.user_type, user.cpf, user.cnpj)
+        updated_user = user_service.update(id, user.name, user.email, user.phone, user.password, user.user_type, user.cpf, user.cnpj)
         if isinstance(updated_user, str):
             raise HTTPException(status_code=404)
         return updated_user
