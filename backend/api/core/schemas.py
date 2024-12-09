@@ -39,6 +39,7 @@ class UserType(Enum):
 class UserSchema(BaseModel):
     name: Annotated[str, Query()]
     email: Annotated[str, Query()]
+    phone: Annotated[str, Query()]
     password: Annotated[str, Query()]
     user_type: Annotated[UserType, Query()]
     cpf: Annotated[Optional[str], Query()] | None
@@ -51,6 +52,8 @@ class UserPublic(BaseModel):
     cpf: Annotated[str, Query()] | None
     cnpj: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
+    phone: Annotated[str, Query()]
+
 
 class LoginSchema(BaseModel):
     email: str

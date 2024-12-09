@@ -19,6 +19,7 @@ class User(Base):
     cpf = mapped_column(String, nullable=True, unique=True)
     cnpj = mapped_column(String, nullable=True, unique=True)
     email = mapped_column(String, nullable=False, unique=True)
+    phone = mapped_column(String, nullable=False, unique=True)
     password = mapped_column(String, nullable=False)
     user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())

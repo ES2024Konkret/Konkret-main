@@ -10,13 +10,14 @@ class UserRepository:
     def __init__(self, db: Session):
         self.db = db
     
-    def create(self, name: str, email: str, password: str, user_type: str, cpf: Optional[str], cnpj: Optional[str]):
+    def create(self, name: str, email: str, phone: str, password: str, user_type: str, cpf: Optional[str], cnpj: Optional[str]):
         cpf = re.sub(r'[^0-9]', '', cpf)
         cnpj = re.sub(r'[^0-9]', '', cnpj)
         hashed_password = pwd_context.hash(password)
         new_user = User(   
     name=name,
     email=email,
+    phone=phone,
     password=hashed_password,
     user_type=user_type.value,
     cpf=cpf if user_type.value == "PF" else None,
@@ -27,7 +28,7 @@ class UserRepository:
         self.db.refresh(new_user)
         return new_user 
     
-    def update(self, id: str, name: str, email: str = None, password: str = None,user_type: str = None,cpf: str = None, cnpj: str = None):
+    def update(self, id: str, name: str, email: str = None, phone: str = None, password: str = None,user_type: str = None,cpf: str = None, cnpj: str = None):
         user = self.db.query(User).filter(User.id == id).first()
         if user:
             if user_type is not None:
@@ -47,6 +48,9 @@ class UserRepository:
 
             if email is not None:
                 user.email = email
+
+            if phone is not None:
+                user.phone = phone
 
             if name is not None:
                 user.name = name

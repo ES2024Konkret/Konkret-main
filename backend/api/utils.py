@@ -82,6 +82,15 @@ def verify_password(senha: str, hash_senha: str) -> bool:
 def cpf_normalize(cpf: str) -> str:
     return re.sub(r'[^0-9]', '', cpf)
 
+def validate_phone_number(phone: str) -> bool:
+    """
+    Valida o número no formato +55 12 12345-6789
+    """
+    # Regex atualizado e restritivo
+    pattern = r"^\+55\s\d{2}\s\d{5}-\d{4}$"
+    
+    return bool(re.fullmatch(pattern, phone))
+
 def create_token(subject: Union[str, Any]) ->  str:
     expire = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
     to_encode = {"exp": expire, "sub": str(subject)}
