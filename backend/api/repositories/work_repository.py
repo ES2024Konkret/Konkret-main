@@ -50,3 +50,10 @@ class WorkRepository:
             return work.workers
         return None
 
+    def get_equipments(self, id: str):
+        equipment_list = []
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            for rent in work.rentequipment:
+                equipment_list.append(rent.equipments)
+        return equipment_list

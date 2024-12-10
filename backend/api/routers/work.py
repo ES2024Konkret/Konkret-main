@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated, List
 from backend.api.core.models import User
 from backend.api.services.work_service import WorkService
-from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic
+from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic, EquipmentPublic
 from backend.api.dependencies import get_work_service, get_current_user
 
 router = APIRouter(
@@ -127,3 +127,14 @@ def get_workers(
         return work_service.workers(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/equipments", response_model=List[EquipmentPublic])
+def get_equipments(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_equipments(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    

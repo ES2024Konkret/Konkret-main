@@ -15,6 +15,8 @@ class EquipmentRepository:
     def delete_equipment(self, id: str):
         equipment = self.db.query(Equipment).filter(Equipment.id == id).first()
         if equipment:
+            for rent in equipment.rentequipment:
+                self.db.delete(rent)
             self.db.delete(equipment)
             self.db.commit()
         return equipment

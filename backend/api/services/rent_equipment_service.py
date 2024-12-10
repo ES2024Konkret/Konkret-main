@@ -18,9 +18,6 @@ class RentEquipmentService:
     # def get(self, id: str):
     #     return self.work_repository.get(id)
     
-    # def delete(self, id: str):
-    #     return self.work_repository.delete(id)
-    
     # def proprietary(self, id: str):
     #     return self.work_repository.proprietary(id)
     

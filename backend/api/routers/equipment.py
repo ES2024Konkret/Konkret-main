@@ -3,7 +3,8 @@ from typing import Annotated, List
 from backend.api.core.models import User
 from backend.api.core.schemas import EquipmentPublic, EquipmentSchema
 from backend.api.services.equipment_service import EquipmentService
-from backend.api.dependencies import get_equipment_service
+from backend.api.services.rent_equipment_service import RentEquipmentService
+from backend.api.dependencies import get_equipment_service, get_rent_equipment_service
 router = APIRouter(
     prefix="/equipment",
     tags=["equipment"]
@@ -30,7 +31,8 @@ def add_equipment(
 @router.delete("/{id}", response_model=EquipmentPublic)
 def delete_equipment(
     id: str,
-    equipment_service: Annotated[EquipmentService, Depends(get_equipment_service)]
+    equipment_service: Annotated[EquipmentService, Depends(get_equipment_service)],
+    rent_equipment_service:  Annotated[RentEquipmentService, Depends(get_rent_equipment_service)]
     ):
     try:
         return equipment_service.delete_equipment(id) 
