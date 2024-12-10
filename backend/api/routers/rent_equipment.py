@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Annotated, List
 from backend.api.core.models import User, Work, Equipment
-from backend.api.core.schemas import RentEquipmentSchema, RentEquipmentSchemaPublic
+from backend.api.core.schemas import RentEquipmentSchema, RentEquipmentSchemaPublic, RentEquipmentUpdateSchema
 from backend.api.dependencies import get_rent_equipment_service
 from backend.api.services.rent_equipment_service import  RentEquipmentService
 router = APIRouter(
@@ -31,3 +31,17 @@ def create_rent_equipment(
     end_time = rent_equipment.end_time)
     except Exception as e:
         raise HTTPException(status_code=e.status, detail=e.description)
+
+@router.put("/{id}/update", response_model=RentEquipmentSchemaPublic)
+def update_rentequipment(
+    id: str,
+    rent_equipment: RentEquipmentUpdateSchema,
+    rent_equipment_service: Annotated[RentEquipmentService, Depends(get_rent_equipment_service)],
+):
+    try: 
+        updated_rent_equipment = rent_equipment_service.update(id, rent_equipment.comments, rent_equipment.start_time, rent_equipment.end_time)
+        if isinstance(updated_rent_equipment, str):
+            raise HTTPException(status_code=404)
+        return updated_rent_equipment
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

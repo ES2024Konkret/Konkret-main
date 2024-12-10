@@ -120,7 +120,12 @@ class RentEquipmentSchema(BaseModel):
     start_time: Annotated[datetime, Query()] | None
     end_time: Annotated[datetime, Query()]
 
-
+class RentEquipmentUpdateSchema(BaseModel):
+    work_id: Annotated[str, Query()] | None
+    equipment_id: Annotated[str, Query()] | None
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
     
 
 

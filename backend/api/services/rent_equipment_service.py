@@ -12,6 +12,10 @@ class RentEquipmentService:
     def getall_rent_equipments(self):
         return self.rent_equipment_repository.get_all()
 
+    def update(
+            self, id: str, comments: str = None, start_time: datetime = None, end_time: datetime = None
+    ):
+        return self.rent_equipment_repository.update(id, comments, start_time, end_time)
     # def all(self):
     #     return self.work_repository.all()
 
