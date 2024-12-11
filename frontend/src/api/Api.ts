@@ -23,6 +23,14 @@ export interface ActivitySchema {
   activity: string;
 }
 
+/** Body_login_user_login_post */
+export interface BodyLoginUserLoginPost {
+  /** Username */
+  username: string;
+  /** Password */
+  password: string;
+}
+
 /** EmployeePublic */
 export interface EmployeePublic {
   /** Name */
@@ -57,14 +65,6 @@ export interface EmployeeSchema {
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
-}
-
-/** LoginSchema */
-export interface LoginSchema {
-  /** Email */
-  email: string;
-  /** Password */
-  password: string;
 }
 
 /** ObservationPublic */
@@ -159,6 +159,8 @@ export interface ReportSchema {
 
 /** UserPublic */
 export interface UserPublic {
+  /** Id */
+  id: string;
   /** Name */
   name: string;
   /** Cpf */
@@ -375,11 +377,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallUsersUserGet
      * @summary Getall Users
      * @request GET:/user
+     * @secure
      */
     getallUsersUserGet: (params: RequestParams = {}) =>
       this.request<UserPublic[], any>({
         path: `/user`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -409,12 +413,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name UpdateUserUserIdUpdatePut
      * @summary Update User
      * @request PUT:/user/{id}/update
+     * @secure
      */
     updateUserUserIdUpdatePut: (id: string, data: UserSchema, params: RequestParams = {}) =>
       this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}/update`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -427,11 +433,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetUserUserIdGet
      * @summary Get User
      * @request GET:/user/{id}
+     * @secure
      */
     getUserUserIdGet: (id: string, params: RequestParams = {}) =>
       this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -443,11 +451,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteUserUserIdDelete
      * @summary Delete User
      * @request DELETE:/user/{id}
+     * @secure
      */
     deleteUserUserIdDelete: (id: string, params: RequestParams = {}) =>
       this.request<UserPublic, HTTPValidationError>({
         path: `/user/${id}`,
         method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -460,12 +470,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @summary Login
      * @request POST:/user/login
      */
-    loginUserLoginPost: (data: LoginSchema, params: RequestParams = {}) =>
-      this.request<any, HTTPValidationError>({
+    loginUserLoginPost: (data: BodyLoginUserLoginPost, params: RequestParams = {}) =>
+      this.request<object, HTTPValidationError>({
         path: `/user/login`,
         method: "POST",
         body: data,
-        type: ContentType.Json,
+        type: ContentType.UrlEncoded,
         format: "json",
         ...params,
       }),
@@ -478,11 +488,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallEmployeesEmployeeGet
      * @summary Getall Employees
      * @request GET:/employee
+     * @secure
      */
     getallEmployeesEmployeeGet: (params: RequestParams = {}) =>
       this.request<EmployeePublic[], any>({
         path: `/employee`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -494,12 +506,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddEmployeeEmployeePost
      * @summary Add Employee
      * @request POST:/employee
+     * @secure
      */
     addEmployeeEmployeePost: (data: EmployeeSchema, params: RequestParams = {}) =>
       this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -512,12 +526,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name UpdateEmployeeEmployeeIdUpdatePut
      * @summary Update Employee
      * @request PUT:/employee/{id}/update
+     * @secure
      */
     updateEmployeeEmployeeIdUpdatePut: (id: string, data: EmployeeSchema, params: RequestParams = {}) =>
       this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}/update`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -530,11 +546,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetEmployeeEmployeeIdGet
      * @summary Get Employee
      * @request GET:/employee/{id}
+     * @secure
      */
     getEmployeeEmployeeIdGet: (id: string, params: RequestParams = {}) =>
       this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -546,11 +564,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteEmployeeEmployeeIdDelete
      * @summary Delete Employee
      * @request DELETE:/employee/{id}
+     * @secure
      */
     deleteEmployeeEmployeeIdDelete: (id: string, params: RequestParams = {}) =>
       this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}`,
         method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -563,11 +583,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallReportsReportGet
      * @summary Getall Reports
      * @request GET:/report
+     * @secure
      */
     getallReportsReportGet: (params: RequestParams = {}) =>
       this.request<ReportPublic[], any>({
         path: `/report`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -579,12 +601,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddReportReportPost
      * @summary Add Report
      * @request POST:/report
+     * @secure
      */
     addReportReportPost: (data: ReportSchema, params: RequestParams = {}) =>
       this.request<ReportPublic, HTTPValidationError>({
         path: `/report`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -597,11 +621,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteReportReportIdDelete
      * @summary Delete Report
      * @request DELETE:/report/{id}
+     * @secure
      */
     deleteReportReportIdDelete: (id: string, params: RequestParams = {}) =>
       this.request<ReportPublic, HTTPValidationError>({
         path: `/report/${id}`,
         method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -613,11 +639,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetReportReportIdGet
      * @summary Get Report
      * @request GET:/report/{id}
+     * @secure
      */
     getReportReportIdGet: (id: string, params: RequestParams = {}) =>
       this.request<ReportPublic, HTTPValidationError>({
         path: `/report/${id}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -629,12 +657,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddPhotoReportIdAddphotoPut
      * @summary Add Photo
      * @request PUT:/report/{id}/addphoto
+     * @secure
      */
     addPhotoReportIdAddphotoPut: (id: string, data: PhotoSchema, params: RequestParams = {}) =>
       this.request<PhotoPublic, HTTPValidationError>({
         path: `/report/${id}/addphoto`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -647,12 +677,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name RemovePhotoReportIdRemovephotoPut
      * @summary Remove Photo
      * @request PUT:/report/{id}/removephoto
+     * @secure
      */
     removePhotoReportIdRemovephotoPut: (id: string, data: PhotoSchema, params: RequestParams = {}) =>
       this.request<PhotoPublic, HTTPValidationError>({
         path: `/report/${id}/removephoto`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -665,12 +697,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddObservationReportIdAddobservationPut
      * @summary Add Observation
      * @request PUT:/report/{id}/addobservation
+     * @secure
      */
     addObservationReportIdAddobservationPut: (id: string, data: ObservationSchema, params: RequestParams = {}) =>
       this.request<ObservationPublic, HTTPValidationError>({
         path: `/report/${id}/addobservation`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -683,12 +717,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name RemoveObservationReportIdRemoveobservationPut
      * @summary Remove Observation
      * @request PUT:/report/{id}/removeobservation
+     * @secure
      */
     removeObservationReportIdRemoveobservationPut: (id: string, data: ObservationSchema, params: RequestParams = {}) =>
       this.request<ObservationPublic, HTTPValidationError>({
         path: `/report/${id}/removeobservation`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -701,12 +737,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddActivityReportIdAddactivityPut
      * @summary Add Activity
      * @request PUT:/report/{id}/addactivity
+     * @secure
      */
     addActivityReportIdAddactivityPut: (id: string, data: ActivitySchema, params: RequestParams = {}) =>
       this.request<ActivityPublic, HTTPValidationError>({
         path: `/report/${id}/addactivity`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -719,12 +757,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name RemoveActivityReportIdRemoveactivityPut
      * @summary Remove Activity
      * @request PUT:/report/{id}/removeactivity
+     * @secure
      */
     removeActivityReportIdRemoveactivityPut: (id: string, data: ActivitySchema, params: RequestParams = {}) =>
       this.request<ActivityPublic, HTTPValidationError>({
         path: `/report/${id}/removeactivity`,
         method: "PUT",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -737,11 +777,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetClimateReportIdClimateGet
      * @summary Get Climate
      * @request GET:/report/{id}/climate
+     * @secure
      */
     getClimateReportIdClimateGet: (id: string, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/report/${id}/climate`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -753,11 +795,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallCsvReportCsvGet
      * @summary Getall Csv
      * @request GET:/report/csv/
+     * @secure
      */
     getallCsvReportCsvGet: (params: RequestParams = {}) =>
       this.request<any, any>({
         path: `/report/csv/`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -769,11 +813,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetCsvReportIdCsvGet
      * @summary Get Csv
      * @request GET:/report/{id}/csv
+     * @secure
      */
     getCsvReportIdCsvGet: (id: string, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/report/${id}/csv`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -785,11 +831,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetPdfReportIdPdfGet
      * @summary Get Pdf
      * @request GET:/report/{id}/pdf
+     * @secure
      */
     getPdfReportIdPdfGet: (id: string, params: RequestParams = {}) =>
       this.request<any, HTTPValidationError>({
         path: `/report/${id}/pdf`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -802,11 +850,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallProprietariesProprietaryGet
      * @summary Getall Proprietaries
      * @request GET:/proprietary
+     * @secure
      */
     getallProprietariesProprietaryGet: (params: RequestParams = {}) =>
       this.request<ProprietaryPublic[], any>({
         path: `/proprietary`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -818,12 +868,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddProprietaryProprietaryPost
      * @summary Add Proprietary
      * @request POST:/proprietary
+     * @secure
      */
     addProprietaryProprietaryPost: (data: ProprietarySchema, params: RequestParams = {}) =>
       this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -836,11 +888,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetProprietaryProprietaryIdGet
      * @summary Get Proprietary
      * @request GET:/proprietary/{id}
+     * @secure
      */
     getProprietaryProprietaryIdGet: (id: string, params: RequestParams = {}) =>
       this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary/${id}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -852,11 +906,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteProprietaryProprietaryIdDelete
      * @summary Delete Proprietary
      * @request DELETE:/proprietary/{id}
+     * @secure
      */
     deleteProprietaryProprietaryIdDelete: (id: string, params: RequestParams = {}) =>
       this.request<ProprietaryPublic, HTTPValidationError>({
         path: `/proprietary/${id}`,
         method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -868,11 +924,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetWorksProprietaryIdWorksGet
      * @summary Get Works
      * @request GET:/proprietary/{id}/works
+     * @secure
      */
     getWorksProprietaryIdWorksGet: (id: string, params: RequestParams = {}) =>
       this.request<WorkPublic[], HTTPValidationError>({
         path: `/proprietary/${id}/works`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -885,11 +943,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetallWorksWorkGet
      * @summary Getall Works
      * @request GET:/work
+     * @secure
      */
     getallWorksWorkGet: (params: RequestParams = {}) =>
       this.request<WorkPublic[], any>({
         path: `/work`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -901,12 +961,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddWorkWorkPost
      * @summary Add Work
      * @request POST:/work
+     * @secure
      */
     addWorkWorkPost: (data: WorkSchema, params: RequestParams = {}) =>
       this.request<WorkPublic, HTTPValidationError>({
         path: `/work`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -919,11 +981,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetWorkWorkIdGet
      * @summary Get Work
      * @request GET:/work/{id}
+     * @secure
      */
     getWorkWorkIdGet: (id: string, params: RequestParams = {}) =>
       this.request<WorkPublic, HTTPValidationError>({
         path: `/work/${id}`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -935,11 +999,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name DeleteWorkWorkIdDelete
      * @summary Delete Work
      * @request DELETE:/work/{id}
+     * @secure
      */
     deleteWorkWorkIdDelete: (id: string, params: RequestParams = {}) =>
       this.request<WorkPublic, HTTPValidationError>({
         path: `/work/${id}`,
         method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -951,6 +1017,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddReportWorkIdAddreportPut
      * @summary Add Report
      * @request PUT:/work/{id}/addreport
+     * @secure
      */
     addReportWorkIdAddreportPut: (
       id: string,
@@ -964,6 +1031,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/work/${id}/addreport`,
         method: "PUT",
         query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -975,6 +1043,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name RemoveReportWorkIdRemovereportPut
      * @summary Remove Report
      * @request PUT:/work/{id}/removereport
+     * @secure
      */
     removeReportWorkIdRemovereportPut: (
       id: string,
@@ -988,6 +1057,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/work/${id}/removereport`,
         method: "PUT",
         query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -999,11 +1069,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetProprietaryWorkIdProprietaryGet
      * @summary Get Proprietary
      * @request GET:/work/{id}/proprietary
+     * @secure
      */
     getProprietaryWorkIdProprietaryGet: (id: string, params: RequestParams = {}) =>
       this.request<WorkPublic, HTTPValidationError>({
         path: `/work/${id}/proprietary`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -1015,11 +1087,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetReportsWorkIdReportsGet
      * @summary Get Reports
      * @request GET:/work/{id}/reports
+     * @secure
      */
     getReportsWorkIdReportsGet: (id: string, params: RequestParams = {}) =>
       this.request<ReportPublic[], HTTPValidationError>({
         path: `/work/${id}/reports`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -1031,11 +1105,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name GetWorkersWorkIdWorkersGet
      * @summary Get Workers
      * @request GET:/work/{id}/workers
+     * @secure
      */
     getWorkersWorkIdWorkersGet: (id: string, params: RequestParams = {}) =>
       this.request<EmployeePublic[], HTTPValidationError>({
         path: `/work/${id}/workers`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

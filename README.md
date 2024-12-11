@@ -36,27 +36,29 @@ uv run alembic upgrade head
 
 ## Uso
 
-Após a execução do container, acesse o postgres com o seguinte comando
+1. rode a api com o seguinte comando
+```bash
+uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload
+```
+
+2. Para acessar o frontend, acesse a pasta frontend
+```bash
+cd frontend
+```
+
+3. Instale o expo
+```bash
+npm install
+```
+
+4. Inicie o expo com o seguinte comando
+```bash
+npm start
+```
+
+## Extras
+
+1. Após a execução do container, acesse o postgres com o seguinte comando
 ```bash
 docker exec -it konkret-main-db-1 psql -U postgres -d postgres_db
-```
-
-Então use o uvicorn para rodar um server local
-```bash
-uv run uvicorn backend.api.main:app
-```
-
-Para abrir a página, primeiro entre na pasta do Frontend
-```bash
-cd frontend/
-```
-
-Instale npm
-```bash
-cd npm i
-```
-
-Inicie o Frontend
-```bash
-npm run dev
 ```
