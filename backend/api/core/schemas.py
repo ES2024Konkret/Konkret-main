@@ -75,14 +75,28 @@ class ReportPublic(BaseModel):
 
 class WorkSchema(BaseModel):
     proprietary_id: Annotated[str, Query()]
-    address: Annotated[str, Query()]
+    name: Annotated[str, Query()]
+    zip_code: Annotated[str, Query()]
+    state: Annotated[str, Query()]
+    neighborhood: Annotated[Optional[str], Query()] = None
+    public_place: Annotated[str, Query()]
+    number_addres: Annotated[Optional[str], Query()] = None
+    start_date: Annotated[Optional[datetime], Query()] = None
+    end_date: Annotated[Optional[datetime], Query()] = None
 
 class WorkPublic(BaseModel):
     id: Annotated[str, Query()]
-    address: Annotated[str, Query()]
+    name: Annotated[str, Query()]
+    zip_code: Annotated[str, Query()]
+    state: Annotated[str, Query()]
+    neighborhood: Annotated[Optional[str], Query()] = None
+    public_place: Annotated[str, Query()]
+    number_addres: Annotated[Optional[str], Query()] = None
+    start_date: Annotated[Optional[datetime], Query()] = None
+    end_date: Annotated[Optional[datetime], Query()] = None
     proprietary_id: Annotated[str, Query()]
-    created_at: Annotated[datetime,Query()]
-    updated_at: Annotated[datetime,Query()]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
     class Config:
         orm_mode = True
 

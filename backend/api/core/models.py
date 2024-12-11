@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, String, Float, Integer, Text, ForeignKey, DateTime, Enum,func, JSON
+from sqlalchemy import Table, Column, String, Float, Integer, Text, ForeignKey, DateTime, Enum,func, JSON, Date
 from sqlalchemy.orm import relationship, declarative_base, mapped_column, Mapped
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -64,7 +64,14 @@ class Work(Base):
     __tablename__ = 'works'
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
-    address = mapped_column(String, nullable=False)
+    name = mapped_column(String, nullable=False)
+    zip_code = mapped_column(String, nullable=False)
+    state = mapped_column(String, nullable=False)
+    neighborhood = mapped_column(String, nullable=True)
+    public_place = mapped_column(String, nullable=False)  
+    number_addres = mapped_column(Integer, nullable=True)
+    start_date = mapped_column(Date, nullable=True)
+    end_date = mapped_column(Date, nullable=True)
     reports = relationship("Report", back_populates="work")
     proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=False)
     proprietary = relationship("Proprietary", back_populates="works")
