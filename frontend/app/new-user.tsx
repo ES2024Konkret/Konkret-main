@@ -12,21 +12,24 @@ export default function NewUser() {
   const [password, setPassword] = React.useState("");
   const [cpf, setCpf] = React.useState("");
 
-  function createUser(name: string, email: string, password: string, cpf: string) {
+  function createUser(
+    name: string,
+    email: string,
+    cpf: string,
+    password: string
+  ) {
     apiClient.user.addUserUserPost({
-      name,
-      email,
-      password,
-      cpf,
+      name: name,
+      email: email,
+      password: password,
       user_type: UserType.PF,
-      cnpj: ""
+      cpf: cpf,
+      cnpj: "",
     }).then((response) => {
-      console.log(response);
-    }).catch((error) => {
-      console.error(error);
-    });
-  }
-
+        console.log(response);
+        }).catch((error) => {
+        console.log(error);
+  })};
   return (
     <View style={styles.container}>
       <View style={styles.loginBox}>
@@ -62,7 +65,10 @@ export default function NewUser() {
           autoCapitalize="none"
           secureTextEntry
         />
-        <Pressable style={styles.formButton} onPress={() => createUser(name, email, password, cpf)}>
+        <Pressable
+          style={styles.formButton}
+          onPress={() => createUser(name, email, cpf, password)}
+        >
           <Text style={styles.textButton}>Criar conta</Text>
         </Pressable>
         <Link href="/" style={styles.subButton}>
