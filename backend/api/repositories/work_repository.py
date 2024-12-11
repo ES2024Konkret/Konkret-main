@@ -1,12 +1,23 @@
 from backend.api.core.models import Work
 from sqlalchemy.orm import Session
+from sqlalchemy import Date
 
 class WorkRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, proprietary_id: str, address: str, ):
-        new_work = Work(proprietary_id=proprietary_id, address=address)
+    def create(self, proprietary_id: str, name: str, zip_code: str, state: str, public_place: str, neighborhood: str = None, number_addres: int = None, start_date: Date = None, end_date: Date = None ):
+        new_work = Work(
+        proprietary_id=proprietary_id,
+        name=name,
+        zip_code=zip_code,
+        state=state,
+        public_place=public_place,
+        neighborhood=neighborhood,
+        number_addres=number_addres,
+        start_date=start_date,
+        end_date=end_date
+        )
         self.db.add(new_work)
         self.db.commit()
         self.db.refresh(new_work)
