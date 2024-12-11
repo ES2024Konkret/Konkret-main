@@ -1,6 +1,6 @@
 from fastapi import Query
 from pydantic import BaseModel, ConfigDict
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List
 from datetime import datetime
 from enum import Enum
 
@@ -75,7 +75,18 @@ class ReportPublic(BaseModel):
     updated_at: Annotated[datetime,Query()]
     class Config:
         orm_mode = True
-
+class RentEquipmentSchemaPublic(BaseModel):
+    id: Annotated[str, Query()]
+    work_id: Annotated[str, Query()]
+    equipment_id: Annotated[str, Query()]
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+    class Config:
+        orm_mode = True
+        
 class WorkSchema(BaseModel):
     proprietary_id: Annotated[str, Query()]
     name: Annotated[str, Query()]
@@ -83,7 +94,7 @@ class WorkSchema(BaseModel):
     state: Annotated[str, Query()]
     neighborhood: Annotated[Optional[str], Query()] = None
     public_place: Annotated[str, Query()]
-    number_addres: Annotated[Optional[str], Query()] = None
+    number_addres: Annotated[Optional[int], Query()] = None
     start_date: Annotated[Optional[datetime], Query()] = None
     end_date: Annotated[Optional[datetime], Query()] = None
 
@@ -94,14 +105,46 @@ class WorkPublic(BaseModel):
     state: Annotated[str, Query()]
     neighborhood: Annotated[Optional[str], Query()] = None
     public_place: Annotated[str, Query()]
-    number_addres: Annotated[Optional[str], Query()] = None
+    number_addres: Annotated[Optional[int], Query()] = None
     start_date: Annotated[Optional[datetime], Query()] = None
     end_date: Annotated[Optional[datetime], Query()] = None
     proprietary_id: Annotated[str, Query()]
+    rentequipment: Optional[List[RentEquipmentSchemaPublic]] = None
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
     class Config:
         orm_mode = True
+
+class EquipmentSchema(BaseModel):
+    brand: Annotated[str, Query()] | None
+    type: Annotated[str, Query()]
+    description: Annotated[str, Query()] | None
+    quantity: Annotated[int, Query()]
+
+class EquipmentPublic(BaseModel):
+    id: Annotated[str, Query()]
+    brand: Annotated[str, Query()] | None
+    type: Annotated[str, Query()]
+    description: Annotated[str, Query()] | None
+    quantity: Annotated[int, Query()]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+
+class RentEquipmentSchema(BaseModel):
+    work_id: Annotated[str, Query()]
+    equipment_id: Annotated[str, Query()]
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+
+class RentEquipmentUpdateSchema(BaseModel):
+    work_id: Annotated[str, Query()] | None
+    equipment_id: Annotated[str, Query()] | None
+    comments: Annotated[str, Query()]
+    start_time: Annotated[datetime, Query()] | None
+    end_time: Annotated[datetime, Query()]
+    
+
 
 class PhotoSchema(BaseModel):
     report_id: Annotated[str, Query()]

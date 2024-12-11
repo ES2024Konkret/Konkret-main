@@ -1,6 +1,7 @@
-from backend.api.core.models import Work
-from sqlalchemy.orm import Session
+from backend.api.core.models import Work, RentEquipment
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import Date
+from fastapi import HTTPException
 
 class WorkRepository:
     def __init__(self, db: Session):
@@ -24,7 +25,7 @@ class WorkRepository:
         return new_work
     
     def all(self):
-        work = self.db.query(Work).all()
+        work = self.db.query(Work).options(joinedload(Work.rentequipment).joinedload(RentEquipment.equipments)).all()
         return work
     
     def get(self, id: str):
@@ -38,8 +39,9 @@ class WorkRepository:
         if work:
             self.db.delete(work)
             self.db.commit()
-            return True
-        return False
+            return work
+        else:
+            raise HTTPException(status_code=404,detail="Não da pra deletar o que não existe bonzão")
     
     def reports(self, id: str):
         work = self.db.query(Work).filter(Work.id == id).first()
@@ -59,3 +61,10 @@ class WorkRepository:
             return work.workers
         return None
 
+    def get_equipments(self, id: str):
+        equipment_list = []
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            for rent in work.rentequipment:
+                equipment_list.append(rent.equipments)
+        return equipment_list
