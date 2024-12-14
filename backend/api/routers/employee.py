@@ -19,7 +19,7 @@ def add_employee(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return employee_service.create_employee(employee.name, employee.rg, employee.cpf, employee.role, employee.salary, employee.work_id)
+        return employee_service.create_employee(employee.name, employee.rg, employee.cpf, employee.role, employee.contract_start, employee.contract_end)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
@@ -33,7 +33,7 @@ def update_employee(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try: 
-        updated_employee = employee_service.update(id, employee.salary, employee.role, employee.work_id)
+        updated_employee = employee_service.update(id, employee.contract_end, employee.role, employee.work_id)
         if isinstance(updated_employee, str):
             raise HTTPException(status_code=404)
         return updated_employee

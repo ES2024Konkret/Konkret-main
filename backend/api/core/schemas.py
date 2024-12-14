@@ -22,15 +22,15 @@ class EmployeeSchema(BaseModel):
     rg: Annotated[int, Query()]
     cpf: Annotated[int, Query()]
     role: Annotated[Optional[str], Query()]
-    salary: Annotated[float, Query()]
-    work_id: Annotated[Optional[str], Query(default=None)]
+    contract_start: Annotated[datetime, Query()]
+    contract_end: Annotated[datetime, Query()]
 
 class EmployeePublic(BaseModel):
     name: Annotated[Optional[str], Query()]
     id: Annotated[str, Query()]
     role: Annotated[Optional[str], Query()]
-    salary: Annotated[Optional[float], Query()]
-    work_id: Annotated[Optional[str], Query(default=None)]
+    contract_start: Annotated[datetime, Query()]
+    contract_end: Annotated[datetime, Query()]
 
 class UserType(Enum):
     PF = "PF"
@@ -75,6 +75,7 @@ class ReportPublic(BaseModel):
     updated_at: Annotated[datetime,Query()]
     class Config:
         orm_mode = True
+        
 class RentEquipmentSchemaPublic(BaseModel):
     id: Annotated[str, Query()]
     work_id: Annotated[str, Query()]
@@ -87,6 +88,20 @@ class RentEquipmentSchemaPublic(BaseModel):
     class Config:
         orm_mode = True
         
+class JobSchema(BaseModel):
+    id: Annotated[str, Query()]
+    work_id: Annotated[Optional[str], Query(default=None)]
+    employee_id: Annotated[Optional[str], Query(default=None)]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+
+class JobSchemaPublic(BaseModel):
+    work_id: Annotated[Optional[str], Query(default=None)]
+    employee_id: Annotated[Optional[str], Query(default=None)]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+    
+
 class WorkSchema(BaseModel):
     proprietary_id: Annotated[str, Query()]
     name: Annotated[str, Query()]
