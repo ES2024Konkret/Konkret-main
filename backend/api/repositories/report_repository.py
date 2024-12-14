@@ -114,7 +114,7 @@ class ReportRepository:
         report = self.db.query(Report).filter(Report.id == id).first()
         work = WorkService(self.db).get(report.work_id)
         if report:
-            loc = work.address
+            loc = f"{work.public_place}, {work.state}"
             coordinates = get_coordinates(loc)
             if coordinates:
                 weather = get_weather(coordinates[0], coordinates[1])

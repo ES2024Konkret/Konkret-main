@@ -125,6 +125,7 @@ class WorkPublic(BaseModel):
     end_date: Annotated[Optional[datetime], Query()] = None
     proprietary_id: Annotated[str, Query()]
     rentequipment: Optional[List[RentEquipmentSchemaPublic]] = None
+    jobs: Optional[List[JobSchemaPublic]] = None
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
     class Config:

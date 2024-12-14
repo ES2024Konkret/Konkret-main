@@ -1,4 +1,4 @@
-from backend.api.core.models import Work, RentEquipment
+from backend.api.core.models import Work, RentEquipment, Job
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import Date
 from fastapi import HTTPException
@@ -68,3 +68,11 @@ class WorkRepository:
             for rent in work.rentequipment:
                 equipment_list.append(rent.equipments)
         return equipment_list
+    
+    def get_employees(self, id: str):
+        employees_list = []
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            for job in work.jobs:
+                employees_list.append(job.employees)
+        return employees_list
