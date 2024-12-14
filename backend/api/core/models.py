@@ -35,6 +35,7 @@ class Proprietary(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+
 class Employee(Base):
     __tablename__ = "employees"
 
@@ -43,12 +44,25 @@ class Employee(Base):
     rg = mapped_column(Integer, nullable=True, unique=True)
     cpf = mapped_column(Integer, nullable=False, unique=True)
     role = mapped_column(String, nullable=True)
-    salary = mapped_column(Float, nullable=False)
-    work_id = mapped_column(ForeignKey("works.id"), nullable=True)
-    work = relationship("Work", back_populates="workers")
+    contract_start = mapped_column(DateTime(timezone=True), nullable=False) 
+    contract_end = mapped_column(DateTime(timezone=True), nullable=False)
+    jobs = relationship("Job", back_populates="employees")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
+    
+    
+class Job(Base):
+    __tablename__ = "jobs"
+    
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    work_id = mapped_column(ForeignKey("works.id"), nullable=True)
+    works = relationship("Work", back_populates="jobs")
+    employee_id = mapped_column(ForeignKey("employees.id"), nullable=True)
+    employees = relationship("Employee", back_populates="jobs")
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    
 class Report(Base):
     __tablename__ = 'reports'
 
@@ -76,8 +90,8 @@ class Work(Base):
     reports = relationship("Report", back_populates="work")
     proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=False)
     proprietary = relationship("Proprietary", back_populates="works")
-    workers = relationship("Employee", back_populates="work")
     rentequipment = relationship("RentEquipment", back_populates="work")
+    jobs = relationship("Job", back_populates="works")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
