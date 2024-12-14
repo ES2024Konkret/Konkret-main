@@ -29,3 +29,6 @@ class WorkService:
     
     def get_equipments(self, id: str):
         return self.work_repository.get_equipments(id)
+    
+    def get_employees(self, id:str):
+        return self.work_repository.get_employees(id)

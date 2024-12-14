@@ -138,3 +138,12 @@ def get_equipments(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
+@router.get("/{id}/employees", response_model=List[EmployeePublic])
+def get_employees(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)]
+):
+    try:
+        return work_service.get_employees(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
