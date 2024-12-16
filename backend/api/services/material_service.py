@@ -7,9 +7,9 @@ class MaterialService:
     def all(self):
         return self.material_repository.all()
     def create_material(
-            self, cust: float, quantity: int, type: str
+            self, cust: float, quantity: int, type: str, report_id: str
             ):
-        return self.material_repository.create_material(cust, quantity, type)
+        return self.material_repository.create_material(cust, quantity, type, report_id)
     def delete_material(
             self, id: str
     ):

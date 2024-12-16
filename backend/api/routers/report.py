@@ -257,3 +257,13 @@ def get_pdf(
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Erro ao gerar o PDF: {str(e)}")
+
+@router.get("/{id}/materials")
+def get_materials(
+    id: str,
+    report_service: Annotated[ReportService, Depends(get_report_service)],
+):
+    try:
+        return report_service.get_materials(id)
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")

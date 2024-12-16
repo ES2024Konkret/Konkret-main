@@ -72,6 +72,7 @@ class Report(Base):
     activities = mapped_column(ARRAY(String), nullable=True)
     work_id = mapped_column(ForeignKey("works.id"), nullable=True)
     work = relationship("Work", back_populates="reports")
+    materials = relationship("Material", back_populates="report")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -128,3 +129,5 @@ class Material(Base):
     quantity = mapped_column(Integer, nullable=True)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    report_id = mapped_column(ForeignKey("reports.id"), nullable=True)
+    report = relationship("Report", back_populates="materials")

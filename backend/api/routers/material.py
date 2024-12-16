@@ -10,23 +10,14 @@ router = APIRouter(
     tags=["material"]
 )
 
- 
-@router.get("", response_model=List[MaterialPublic])
-def getall_materials(
-    material_service: Annotated[MaterialService, Depends(get_material_service)]
-    ):
-    try:
-        return material_service.all() 
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
-
 @router.post("", response_model=MaterialPublic)
 def add_material(
     material: MaterialSchema,
+    report_id: str,
     material_service: Annotated[MaterialService, Depends(get_material_service)]
 ):
     try:
-        return material_service.create_material(material.cust, material.quantity, material.type) 
+        return material_service.create_material(material.cust, material.quantity, material.type, report_id) 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 

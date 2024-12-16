@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
 from backend.api.utils import get_coordinates
 from backend.api.utils import get_weather
+from fastapi import HTTPException
 
 class ReportRepository:
     def __init__(self, db: Session):
@@ -25,6 +26,12 @@ class ReportRepository:
         if report:
             return report
         return None
+    
+    def get_materials(self, id:str):
+        report = self.db.query(Report).filter(Report.id == id).first()
+        if report:
+            return report.materials
+        raise HTTPException(status_code = 404, detail = "Diario nao encontrado")
     
     def add_photo(self, id: str, photo: str):
         report = self.db.query(Report).filter(Report.id == id).first()

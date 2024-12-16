@@ -37,3 +37,6 @@ class ReportService:
     
     def get_climate(self, id: str):
         return self.report_repository.climate(id)
+    
+    def get_materials(self, id:str):
+        return self.report_repository.get_materials(id)
