@@ -1,6 +1,6 @@
 import { Link, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, TextInput, View, Text } from "react-native";
+import { Pressable, TextInput, View, Text, ImageBackground } from "react-native";
 import { styles } from '@/src/styles';
 import React from "react";
 import apiClient from "@/src/api/ApiClient";
@@ -11,17 +11,22 @@ export default function RootLayout() {
   const [password, setPassword] = React.useState("");
 
   function login(email: string, password: string) {
-    apiClient.user.loginUserLoginPost({username: email, password }).then((response) => {
+    apiClient.user.loginUserLoginPost({ username: email, password }).then((response) => {
       console.log(response);
     }).catch((error) => {
       console.error(error);
-    }); 
+    });
   }
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        source={require('@/assets/images/indexBackground.png')}
+        style={styles.background}
+        resizeMode="cover" />
+      <Text style={[styles.formTitle, {color: '#2E2E2E', fontSize: 44, fontWeight: 900}]}>Bem<br></br>Vindo</Text>
       <View style={styles.loginBox}>
-        <Text style={styles.formTitle}>Login no Sistema</Text>
+        <Text style={styles.formSubTitle}>Login</Text>
         <TextInput
           style={styles.formInput}
           value={email}
@@ -40,7 +45,7 @@ export default function RootLayout() {
           secureTextEntry
         />
         <Pressable style={styles.formButton} onPress={() => login(email, password)}>
-          <Text style={styles.textButton}>Logar</Text>
+          <Text style={styles.textButton}>Login</Text>
         </Pressable>
         <View style={styles.subContainer}>
           <Pressable style={styles.subButton}>
@@ -48,7 +53,7 @@ export default function RootLayout() {
           </Pressable>
           <Link href="/user_register/register_options" style={styles.subButton}>
             <Text style={styles.subTextButton}>Novo usuário</Text>
-            
+
           </Link>
         </View>
       </View>

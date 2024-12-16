@@ -1,6 +1,12 @@
 import { StyleSheet } from "react-native";
 
+
 export const styles = StyleSheet.create({
+    background: {
+        flex: 1 ,
+        alignContent: 'center',
+        justifyContent: 'center',
+    },  
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -8,23 +14,45 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     loginBox: {
-        width: '90%',
-        maxWidth: 400,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 10,
+        width: 343,
+        height: 482,
+        backgroundColor: 'white',
+        borderRadius: 20,
         padding: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
-        elevation: 5, // Para sombra no Android
+        elevation: 5, 
+        alignItems: 'center',
+    },
+    formBox: {
+        maxWidth: 400,
+        backgroundColor: 'black',
         alignItems: 'center',
     },
     formTitle: {
+        fontFamily: 'Inter',
         fontSize: 36,
-        fontWeight: 'bold',
-        color: 'blueviolet',
+        fontWeight: 800,
+        color: '#001bcc',
         margin: 10,
+        letterSpacing: 3.24,
+    },
+    formSubTitle: {
+        fontFamily: 'Inter', 
+        fontSize: 20,
+        fontWeight: 600,
+        color: '#001bcc',
+        margin: 10,
+        letterSpacing: 1.8,
+    },
+    formText: {
+        fontFamily: 'Inter',
+        fontSize: 28,
+        fontWeight: 400,
+        letterSpacing: 2.52,
+        color: '#001bcc'
     },
     formInput: {
         borderColor: 'black',
@@ -36,20 +64,24 @@ export const styles = StyleSheet.create({
         margin: 10,
     },
     formButton: {
-        backgroundColor: 'blueviolet',
-        width: '80%',
-        margin: 10,
+        width: 285,
         padding: 10,
-        borderRadius: 10,
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        backgroundColor: "#001BCC",
+        shadowColor: "rgba(0, 0, 0, 0.1)", 
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 4, 
+        elevation: 4,
     },
     textButton: {
         color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },    
+        fontSize: 16,
+        fontWeight: 500,
+        letterSpacing: 1.44,
+    },
     subContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -60,11 +92,6 @@ export const styles = StyleSheet.create({
     },
     subTextButton: {
         color: 'blueviolet',
-    },
-    errorText: {
-        color: "red",
-        fontSize: 14,
-        marginTop: 10,
-        textAlign: "center",
     }
+
 })

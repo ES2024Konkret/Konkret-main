@@ -6,9 +6,6 @@ import React from "react";
 import apiClient from "@/src/api/ApiClient";
 import { UserType } from "@/src/api/Api";
 
-
-
-
 export default function NewUser() {
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
