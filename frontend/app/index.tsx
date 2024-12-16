@@ -1,7 +1,7 @@
-import { Link, Stack } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Pressable, TextInput, View, Text, ImageBackground } from "react-native";
-import { styles } from '@/src/styles';
+import { styles } from '@/src/styles/login_styles';
 import React from "react";
 import apiClient from "@/src/api/ApiClient";
 
@@ -9,10 +9,15 @@ export default function RootLayout() {
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const router = useRouter();
 
   function login(email: string, password: string) {
     apiClient.user.loginUserLoginPost({ username: email, password }).then((response) => {
       console.log(response);
+      if (response && response.status === 200) {
+        router.push("/dashboard/projects")
+      }
+      
     }).catch((error) => {
       console.error(error);
     });

@@ -1,5 +1,5 @@
-import { styles } from "../../src/styles";
-import { Link } from "expo-router";
+import { styles } from "../../src/styles/login_styles";
+import { Link, useRouter } from "expo-router";
 import { Pressable, TextInput } from "react-native-gesture-handler";
 import { Text, View } from "react-native";
 import React from "react";
@@ -14,6 +14,7 @@ export default function NewUser() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [cnpj, setCnpj] = React.useState("");
+    const router = useRouter();
 
     function createUser(name: string, email: string, password: string, cnpj: string) {
         apiClient.user.addUserUserPost({
@@ -24,9 +25,12 @@ export default function NewUser() {
         user_type: UserType.PJ,
         cnpj
         }).then((response) => {
-        console.log(response);
+            console.log(response);
+            if (response && response.status === 200){
+                router.push("/")
+            }
         }).catch((error) => {
-        console.error(error);
+            console.error(error);
         });
     }
     return (

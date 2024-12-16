@@ -1,4 +1,4 @@
-import { styles } from "../../src/styles";
+import { styles } from "../../src/styles/login_styles";
 import { Link } from "expo-router";
 import { Text, View, Image, ImageBackground, Pressable} from "react-native";
 
