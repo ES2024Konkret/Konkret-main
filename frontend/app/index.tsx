@@ -23,41 +23,42 @@ export default function RootLayout() {
       <ImageBackground
         source={require('@/assets/images/indexBackground.png')}
         style={styles.background}
-        resizeMode="cover" />
-      <Text style={[styles.formTitle, {color: '#2E2E2E', fontSize: 44, fontWeight: 900}]}>Bem<br></br>Vindo</Text>
-      <View style={styles.loginBox}>
-        <Text style={styles.formSubTitle}>Login</Text>
-        <TextInput
-          style={styles.formInput}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          placeholder="E-Mail"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-        />
-        <TextInput
-          style={styles.formInput}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          placeholder="Informe a Senha"
-          autoCapitalize="none"
-          secureTextEntry
-        />
-        <Pressable style={styles.formButton} onPress={() => login(email, password)}>
-          <Text style={styles.textButton}>Login</Text>
-        </Pressable>
-        <View style={styles.subContainer}>
-          <Pressable style={styles.subButton}>
-            <Text style={styles.subTextButton}>Esqueci a senha</Text>
-          </Pressable>
-          <Link href="/user_register/register_options" style={styles.subButton}>
-            <Text style={styles.subTextButton}>Novo usuário</Text>
-
-          </Link>
+        resizeMode="cover">
+        <View style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+          <Text style={[styles.formTitle, { color: '#2E2E2E', fontSize: 44, fontWeight: 900 }]}>Bem<br></br>Vindo</Text>
         </View>
-      </View>
-      <StatusBar style="auto" />
+        <View style={styles.loginBox}>
+          <Text style={styles.formSubTitle}>Login</Text>
+          <TextInput
+            style={styles.formInput}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            placeholder="E-Mail"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+          />
+          <TextInput
+            style={styles.formInput}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            placeholder="Senha"
+            autoCapitalize="none"
+            secureTextEntry
+          />
+          <Pressable style={styles.subButton}>
+            <Text style={styles.compText}>Esqueceu a senha?</Text>
+          </Pressable>
+          <Pressable style={styles.formButton} onPress={() => login(email, password)}>
+            <Text style={styles.textButton}>Login</Text>
+          </Pressable>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.compText}>Não tem uma conta? </Text>
+            <Text href='/user_register/register_options' style={[styles.compText, { color: '#001BCC' }]}>Criar conta</Text>
+          </View>
+        </View>
+        <StatusBar style="auto" />
+      </ImageBackground>
     </View>
   );
 }

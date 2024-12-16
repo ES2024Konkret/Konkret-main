@@ -8,8 +8,8 @@ export default function NewUser(){
             <ImageBackground
                 source={require('@/assets/images/defaultBackground.png')}
                 style={styles.background}
-                resizeMode="cover"/>
-            <View style={{alignItems: "center"}}>
+                resizeMode="cover">
+            <View style={[styles.loginBox, {backgroundColor: '#11ffaa00', shadowOpacity: 0, marginTop: 100}]}>
                 <Text style={styles.formSubTitle}>Criar conta como:</Text>
                 <Image 
                     source={require('@/assets/images/management-amico.png')} 
@@ -22,6 +22,7 @@ export default function NewUser(){
                     <Text style={styles.textButton}>Pessoa Jurídica</Text>
                 </Pressable>
             </View>
+            </ImageBackground>
         </View>
     )
 }
