@@ -119,3 +119,12 @@ class Equipment(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     rentequipment = relationship("RentEquipment", back_populates="equipments")
+
+class Material(Base):
+    __tablename__ = 'materials'
+    id: Mapped[String] = mapped_column(String, primary_key=True, index= True, default=lambda: str(uuid4()))
+    type = mapped_column(String, nullable=True)
+    cust = mapped_column(Float, nullable=True)
+    quantity = mapped_column(Integer, nullable=True)
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

@@ -161,6 +161,23 @@ class RentEquipmentUpdateSchema(BaseModel):
     end_time: Annotated[datetime, Query()]
     
 
+class MaterialPublic(BaseModel):
+    id: Annotated[str, Query()]
+    type: Annotated[str, Query()] | None
+    cust: Annotated[float, Query()] | None
+    quantity: Annotated[int, Query()] | None
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+
+class MaterialSchema(BaseModel):
+    type: Annotated[str, Query()] 
+    cust: Annotated[float, Query()]
+    quantity: Annotated[int, Query()]
+
+class MaterialUpdateSchema(BaseModel):
+    type: Annotated[str, Query()] | None
+    cust: Annotated[float, Query()] | None
+    quantity: Annotated[int, Query()] | None
 
 class PhotoSchema(BaseModel):
     report_id: Annotated[str, Query()]
