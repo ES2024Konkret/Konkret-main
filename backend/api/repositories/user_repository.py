@@ -90,3 +90,11 @@ class UserRepository:
         if user:
             return user
         return None
+    
+    def get_works(self, id: str):
+        works_list = []
+        user = self.db.query(User).filter(User.id == id).first()
+        if user:
+            for work in user.works:
+                works_list.append(work.works)
+        return works_list

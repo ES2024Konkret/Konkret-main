@@ -22,3 +22,6 @@ class UserService:
 
     def find_by_email(self, email_or_cpf: str):
         return self.user_repository.find_by_email(email_or_cpf)
+    
+    def get_works(self, id:str):
+        return self.user_repository.get_works(id)

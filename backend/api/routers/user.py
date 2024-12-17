@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Query, Depends, HTTPException, Form
 from typing import Annotated, List
 from backend.api.services.user_service import UserService
-from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema
+from backend.api.core.schemas import UserSchema, UserPublic, LoginSchema, WorkPublic
 from backend.api.dependencies import get_user_service, get_current_user
 from backend.api.utils import is_valid_password, is_valid_cpf, is_valid_cnpj, verify_password, create_token, encode, validate_phone_number
 from backend.api.core.models import User
@@ -108,6 +108,16 @@ def delete_user(
         if deleted_user is None:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
         return deleted_user
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/works", response_model=List[WorkPublic])
+def get_works(
+    id: str,
+    user_service: Annotated[UserService, Depends(get_user_service)]
+):
+    try:
+        return user_service.get_works(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

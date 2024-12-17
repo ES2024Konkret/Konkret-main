@@ -21,9 +21,22 @@ class User(Base):
     email = mapped_column(String, nullable=False, unique=True)
     phone = mapped_column(String, nullable=False, unique=True)
     password = mapped_column(String, nullable=False)
+    works = relationship("User_association", back_populates="usersworks")
     user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class User_association(Base):
+    __tablename__ = "usersassociation"
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
+    work_id = mapped_column(ForeignKey("works.id"), nullable=True)
+    worksusers = relationship("Work", back_populates="users")
+    user_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    usersworks = relationship("User", back_populates="works")
+
+    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 
 class Proprietary(Base):
     __tablename__ = "proprietaries"
@@ -93,6 +106,7 @@ class Work(Base):
     proprietary = relationship("Proprietary", back_populates="works")
     rentequipment = relationship("RentEquipment", back_populates="work")
     jobs = relationship("Job", back_populates="works")
+    users = relationship("User_association", back_populates="worksusers")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
