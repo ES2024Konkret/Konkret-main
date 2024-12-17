@@ -10,8 +10,8 @@ class ReportRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, work_id: str, photos: list, observations: list, activities: list):
-        new_report = Report(work_id=work_id, photos=photos, observations=observations, activities=activities)
+    def create(self, work_id: str, photos: list, observations: list):
+        new_report = Report(work_id=work_id, photos=photos, observations=observations)
         self.db.add(new_report)
         self.db.commit()
         self.db.refresh(new_report)
@@ -87,34 +87,6 @@ class ReportRepository:
                 return result
             except ValueError:
                 return ValueError(f"Observação {observation} não encontrada!")
-        return None
-    
-    def add_activity(self, id: str, activity: str):
-        report = self.db.query(Report).filter(Report.id == id).first()
-        if report:
-            if report.activities == None:
-                report.activities = []
-            report.activities.append(activity)
-            flag_modified(report, "activities")
-            self.db.commit()
-            self.db.refresh(report)
-            return report.activities[len(report.activities) - 1]
-        return None
-    
-    def remove_activity(self, id: str, activity: str):
-        report = self.db.query(Report).filter(Report.id == id).first()
-        if report:
-            try:
-                result = None
-                if activity in report.activities:
-                    result = activity
-                report.activities.remove(activity)
-                flag_modified(report, "activities")
-                self.db.commit()
-                self.db.refresh(report)
-                return result
-            except ValueError:
-                return ValueError(f"Atividade {activity} não encontrada!")
         return None
     
     def climate(self, id: str):

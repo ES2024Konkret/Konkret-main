@@ -5,8 +5,8 @@ class ReportService:
     def __init__(self, db: Session):
         self.report_repository = ReportRepository(db)
 
-    def create_report(self, work_id: str, photos: list, observations: list, activities: list):
-        return self.report_repository.create(work_id, photos, observations, activities)
+    def create_report(self, work_id: str, photos: list, observations: list):
+        return self.report_repository.create(work_id, photos, observations)
 
     def all(self):
         return self.report_repository.all()
@@ -28,12 +28,6 @@ class ReportService:
     
     def remove_observation(self, id: str, observation: str):
         return self.report_repository.remove_observation(id, observation)
-    
-    def add_activity(self, id: str, activity: str):
-        return self.report_repository.add_activity(id, activity)
-    
-    def remove_activity(self, id: str, activity: str):
-        return self.report_repository.remove_activity(id, activity)
     
     def get_climate(self, id: str):
         return self.report_repository.climate(id)
