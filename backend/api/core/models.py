@@ -47,7 +47,6 @@ class Employee(Base):
     contract_start = mapped_column(DateTime(timezone=True), nullable=False) 
     contract_end = mapped_column(DateTime(timezone=True), nullable=False)
     jobs = relationship("Job", back_populates="employees")
-    activities = relationship("Activity", back_populates="employee")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
@@ -63,25 +62,14 @@ class Job(Base):
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-class Activity(Base):
-    __tablename__ = 'activities'
-
-    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
-    employee_id = mapped_column(ForeignKey("employees.id"), nullable=True)
-    employee = relationship("Employee", back_populates="activities")
-    report_id = mapped_column(ForeignKey("reports.id"), nullable=True)
-    report = relationship("Report", back_populates="activities")
-    description = mapped_column(String, nullable=True)
-    created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
-    updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
+    
 class Report(Base):
     __tablename__ = 'reports'
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     photos = mapped_column(ARRAY(String), nullable=True)
     observations = mapped_column(ARRAY(String), nullable=True)
-    activities = relationship("Activity", back_populates="report")
+    activities = mapped_column(ARRAY(String), nullable=True)
     work_id = mapped_column(ForeignKey("works.id"), nullable=True)
     work = relationship("Work", back_populates="reports")
     materials = relationship("Material", back_populates="report")
