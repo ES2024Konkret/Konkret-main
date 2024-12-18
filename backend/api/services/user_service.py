@@ -25,3 +25,9 @@ class UserService:
     
     def get_works(self, id:str):
         return self.user_repository.get_works(id)
+    
+    def get_user_summary(self, user_id: str):
+        user_data = self.user_repository.get_user_with_counts(user_id)
+        if not user_data:
+            return None
+        return user_data

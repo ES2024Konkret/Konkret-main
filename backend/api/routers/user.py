@@ -121,6 +121,25 @@ def get_works(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
+@router.get("/{id}/summary", response_model=dict)
+def get_user_summary(
+    id: str,
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_logged: User = Depends(get_current_user)  # Usuário autenticado
+):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+
+    try:
+        user_summary = user_service.get_user_summary(id)
+        
+        if not user_summary:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        return user_summary  
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+    
 @router.post("/login", response_model=dict)
 def login(
     user_service: Annotated[UserService, Depends(get_user_service)],
