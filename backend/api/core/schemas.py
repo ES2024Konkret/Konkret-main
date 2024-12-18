@@ -54,30 +54,23 @@ class UserPublic(BaseModel):
     email: Annotated[str, Query()]
     phone: Annotated[str, Query()]
 
+
 class LoginSchema(BaseModel):
     email: str
     password: str
-
-class ActivitySchema(BaseModel):
-    report_id: Annotated[str, Query()]
-    employee_id: Annotated[str, Query()]
-    description: Annotated[str, Query()]
-
-class ActivityPublic(BaseModel):
-    employee: Annotated[EmployeePublic, Query()]
-    description: Annotated[str, Query()]
 
 class ReportSchema(BaseModel):
     work_id: Annotated[str, Query()]
     photos: Annotated[Optional[list], Query()]
     observations: Annotated[Optional[list], Query()]
+    activities: Annotated[Optional[list], Query()]
 
 class ReportPublic(BaseModel):
     id: Annotated[str, Query()]
     work_id: Annotated[str, Query()]
     photos: Annotated[Optional[list], Query()]
     observations: Annotated[Optional[list], Query()]
-    activities: Annotated[Optional[list[ActivityPublic]], Query()]
+    activities: Annotated[Optional[list], Query()]
     created_at: Annotated[datetime,Query()]
     updated_at: Annotated[datetime,Query()]
     class Config:
@@ -108,6 +101,7 @@ class JobSchemaPublic(BaseModel):
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
     
+
 class WorkSchema(BaseModel):
     proprietary_id: Annotated[str, Query()]
     name: Annotated[str, Query()]
@@ -165,6 +159,7 @@ class RentEquipmentUpdateSchema(BaseModel):
     comments: Annotated[str, Query()]
     start_time: Annotated[datetime, Query()] | None
     end_time: Annotated[datetime, Query()]
+    
 
 class MaterialPublic(BaseModel):
     id: Annotated[str, Query()]
@@ -197,6 +192,13 @@ class ObservationSchema(BaseModel):
 
 class ObservationPublic(BaseModel):
     observation: Annotated[str, Query()]
+
+class ActivitySchema(BaseModel):
+    report_id: Annotated[str, Query()]
+    activity: Annotated[str, Query()]
+
+class ActivityPublic(BaseModel):
+    activity: Annotated[str, Query()]
 
 class ClimateSchema(BaseModel):
     work_id: Annotated[str, Query()]

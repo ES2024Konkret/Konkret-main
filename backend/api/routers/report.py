@@ -23,7 +23,7 @@ def add_report(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return report_service.create_report(report.work_id, report.photos, report.observations)
+        return report_service.create_report(report.work_id, report.photos, report.observations, report.activities)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}") 
 
@@ -105,6 +105,32 @@ def remove_observation(
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         return ObservationPublic(observation= report_service.remove_observation(observation.report_id, observation.observation))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+
+@router.put("/{id}/addactivity", response_model=ActivityPublic)
+def add_activity(
+    activity: ActivitySchema,
+    report_service: Annotated[ReportService, Depends(get_report_service)],
+    user_logged: User = Depends(get_current_user)
+):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+    try:
+        return ActivityPublic(activity= report_service.add_activity(activity.report_id, activity.activity))
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+
+@router.put("/{id}/removeactivity", response_model=ActivityPublic)
+def remove_activity(
+    activity: ActivitySchema,
+    report_service: Annotated[ReportService, Depends(get_report_service)],
+    user_logged: User = Depends(get_current_user)
+):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+    try:
+        return ActivityPublic(activity= report_service.remove_activity(activity.report_id, activity.activity))
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
 
