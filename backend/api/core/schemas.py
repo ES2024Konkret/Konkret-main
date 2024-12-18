@@ -100,6 +100,19 @@ class JobSchemaPublic(BaseModel):
     employee_id: Annotated[Optional[str], Query(default=None)]
     created_at: Annotated[datetime, Query()]
     updated_at: Annotated[datetime, Query()]
+
+class UserWorkAssociationSchema(BaseModel):
+    id: Annotated[str, Query()]
+    work_id: Annotated[Optional[str], Query(default=None)]
+    user_id: Annotated[Optional[str], Query(default=None)]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
+
+class UserWorkAssociationSchemaPublic(BaseModel):
+    work_id: Annotated[Optional[str], Query(default=None)]
+    user_id: Annotated[Optional[str], Query(default=None)]
+    created_at: Annotated[datetime, Query()]
+    updated_at: Annotated[datetime, Query()]
     
 
 class WorkSchema(BaseModel):

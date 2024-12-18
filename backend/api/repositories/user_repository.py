@@ -90,3 +90,32 @@ class UserRepository:
         if user:
             return user
         return None
+    
+    def get_works(self, id: str):
+        user = self.db.query(User).filter(User.id == id).first()
+        if user:
+            return [user_association.work for user_association in user.works]
+        return []
+    
+    def get_user_with_counts(self, user_id: str):
+        user = self.db.query(User).filter(User.id == user_id).first()
+        
+        if user:
+           
+            works_count = len(user.works)
+            
+            reports_count = sum(
+                len(userworkassociation.work.reports) 
+                for userworkassociation in user.works
+                if userworkassociation.work  
+            )
+            return {
+                "name": user.name,
+                "phone": user.phone,
+                "email": user.email,
+                "works_count": works_count,
+                "reports_count": reports_count
+            }
+        return None
+    
+    
