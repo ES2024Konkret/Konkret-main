@@ -3,18 +3,19 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     background: {
-        flex: 1  ,
-        alignContent: 'center',
-        justifyContent: 'center',
-    },  
+        flex: 1,
+        width: '100%',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+    },
+    contentContainer: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
     },
     loginBox: {
-        width: 343,
         height: 482,
         backgroundColor: 'white',
         borderRadius: 20,
@@ -24,6 +25,9 @@ export const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5, 
         alignItems: 'center',
+        width: '90%',
+        maxWidth: 400,
+        padding: 20,
     },
     formBox: {
         maxWidth: 400,
@@ -59,13 +63,13 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 12,
         fontSize: 12,
-        width: '90%',
+        width: '100%',
         padding: 12,
         margin: 10,
         fontWeight: 400,
     },
     formButton: {
-        width: '90%',
+        width: '100%',
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
