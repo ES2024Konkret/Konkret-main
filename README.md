@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Konkret
 
 Konkret é um aplicativo que serve como um diário de pedreiro, auxiliando o eng. civil no seu trabalho cotidiano.
@@ -62,3 +63,6 @@ npm start
 ```bash
 docker exec -it konkret-main-db-1 psql -U postgres -d postgres_db
 ```
+=======
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/GFtc7LEz)
+>>>>>>> 08874b17d1374d7486d9ca26dcb76a6a969b557c
