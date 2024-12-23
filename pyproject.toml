@@ -35,4 +35,6 @@ dependencies = [
     "biblioteca>=0.0.1a2",
     "python-jose>=3.3.0",
     "python-multipart>=0.0.19",
+    "transformers>=4.47.1",
+    "torch>=2.5.1",
 ]

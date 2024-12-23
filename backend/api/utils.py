@@ -8,6 +8,7 @@ import requests
 import bcrypt
 import datetime as dt
 from dateutil import tz
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 SECRET_KEY = os.getenv("SECRET_KEY" , 'b1c7ce8cfdef7802eafd6a2189e8edfb')
 ALGORITHM = os.getenv("JWT_ALGORITHM", 'HS512')
@@ -114,3 +115,6 @@ def get_weather(lat: float, lon: float):
 #ID Work: 430ece33-53f5-423a-a0aa-e774b432db5f
 #ID Report: 19934ad1-8974-430e-b9d4-a1260b3c9655
 #ID Material: 48053997-720d-434c-846b-dc28a3218cef
+
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+model = AutoModelForCausalLM.from_pretrained("gpt2")
