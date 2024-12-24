@@ -1,27 +1,30 @@
 from fastapi import FastAPI, HTTPException, APIRouter
 from transformers import AutoTokenizer, AutoModelForCausalLM
-
-# Carregar modelo e tokenizer
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = AutoModelForCausalLM.from_pretrained("gpt2")
+from pydantic import BaseModel
 
 router = APIRouter(
     prefix="/generate",
     tags=["generate"]
 )
 
-@router.post("/generate/")
-async def generate_text(prompt: str, max_length: int = 50):
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", device_map="auto")
+
+class InputData(BaseModel):
+    prompt: str
+    max_length: int = 128
+
+@router.post("/generate")
+async def generate_text(data: InputData):
     try:
-        # Tokenizar entrada
-        inputs = tokenizer.encode(prompt, return_tensors="pt")
+        # Tokenizar a entrada
+        inputs = tokenizer(data.prompt, return_tensors="pt", truncation=True)
         
         # Gerar texto
-        outputs = model.generate(inputs, max_length=max_length, num_return_sequences=1)
-        result = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        outputs = model.generate(inputs["input_ids"], max_length=data.max_length)
         
-        return {"generated_text": result}
+        # Decodificar a saída
+        result = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return {"prompt": data.prompt, "response": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# Roda o servidor com: uvicorn main:app --reload
