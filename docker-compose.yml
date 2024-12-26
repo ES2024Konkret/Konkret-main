@@ -1,16 +1,24 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:latest
+    container_name: my_postgres_db  # Nome opcional para o container
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres_db
+      POSTGRES_USER: postgres_573d_user
+      POSTGRES_PASSWORD: 0cjNa4GhUZwuHMcmiMp6HJ9JTNGuzvWU
+      POSTGRES_DB: postgres_573d
     ports:
-      - "5434:5432"
+      - "5434:5432"  # Expondo a porta 5434 na máquina local para a porta 5432 no container
     volumes:
-      - db:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db:/var/lib/postgresql/data  # Volume persistente para dados do banco
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Executando script de inicialização ao criar o banco
+    networks:
+      - my_network  # Configuração de rede personalizada, se necessário
 
 volumes:
-  db:
-    driver: local
+  db:  # Volume para armazenar dados persistentes
+
+networks:
+  my_network:  # Configuração de rede personalizada, caso precise
+    driver: bridge  # O driver bridge cria uma rede isolada para os containers
