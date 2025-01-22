@@ -21,7 +21,8 @@ export default function NewUser() {
             password,
             cpf: "",
             user_type: UserType.PJ,
-            cnpj
+            cnpj,
+            phone: ""
         }).then((response) => {
             console.log(response);
             if (response && response.status === 200) {
