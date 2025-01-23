@@ -26,7 +26,6 @@ export const styles = StyleSheet.create({
         elevation: 5, 
         alignItems: 'center',
         width: '90%',
-        maxWidth: 400,
         padding: 20,
     },
     formBox: {

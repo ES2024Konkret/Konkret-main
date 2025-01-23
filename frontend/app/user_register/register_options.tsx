@@ -12,7 +12,7 @@ export default function NewUser() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}>
-                <Link href=".." style={styles.subButton}>
+                <Link href="/" style={styles.subButton}>
                     <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
                 </Link>
                 <View style={styles.contentContainer}>
