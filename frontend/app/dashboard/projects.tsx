@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { projects_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 interface ProjectData {
   name: string;
@@ -15,6 +16,7 @@ interface ProjectData {
 
 export default function Projects() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const router = useRouter(); // Hook usado aqui no nível do componente
 
   // Função para buscar os projetos
   async function getProjects() {
@@ -46,16 +48,21 @@ export default function Projects() {
   }, []);
 
   // Renderizar cada projeto em um quadrado
-  const renderProject = ({ item }: { item: ProjectData }) => (
-    <View style={styles.projectBox}>
-      <Text style={styles.projectName}>Nome: {item.name}</Text>
-      <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
-      <Text style={styles.projectInfo}>CEP: {item.zip_code}</Text>
-      <Text style={styles.projectInfo}>Estado: {item.state}</Text>
-      <Text style={styles.projectInfo}>Bairro: {item.neighborhood}</Text>
-      <Text style={styles.projectInfo}>Logradouro: {item.public_place}</Text>
-    </View>
-  );
+  const renderProject = ({ item }: { item: ProjectData }) => {
+    return (
+      <Pressable
+        style={styles.projectBox}
+        onPress={() => router.push("/dashboard/project/relatorio")} // Navegação com o router
+      >
+        <Text style={styles.projectName}>Nome: {item.name}</Text>
+        <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
+        <Text style={styles.projectInfo}>CEP: {item.zip_code}</Text>
+        <Text style={styles.projectInfo}>Estado: {item.state}</Text>
+        <Text style={styles.projectInfo}>Bairro: {item.neighborhood}</Text>
+        <Text style={styles.projectInfo}>Logradouro: {item.public_place}</Text>
+      </Pressable>
+    );
+  };
 
   return (
     <View style={projects_styles.container}>
@@ -70,7 +77,6 @@ export default function Projects() {
     </View>
   );
 }
-
 // Estilos adicionais
 const styles = StyleSheet.create({
   listContainer: {
