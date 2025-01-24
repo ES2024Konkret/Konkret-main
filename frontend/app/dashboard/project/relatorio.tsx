@@ -1,5 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, FlatList } from "react-native";
+import { projects_styles } from "@/src/styles/dashboard_styles";
+import { useRouter } from "expo-router";
 
 export default function Relatorio() {
   // Exemplo de dados fictícios para exibir no relatório
@@ -18,17 +20,51 @@ export default function Relatorio() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Relatório do Projeto</Text>
+      <View style={projects_styles.container}>
+            <Text style={[projects_styles.header, { color: '#001bcc' }]}>Janeiro</Text>
+            <Text style={[projects_styles.subHeader, { color: '#001bcc' }]}>2025</Text>
+          </View>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Nome do Projeto:</Text>
-        <Text style={styles.value}>{projectDetails.name}</Text>
+      <Text style={styles.header}>Lugar do Calendário </Text>
+
+      <View style={[styles.detailBox, {backgroundColor: '#001bcc', 
+        width: 350, 
+        height: 55,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.2, 
+        shadowRadius: 4,
+        elevation: 4, }]}>
+        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Funcionário</Text>
       </View>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Data de Início:</Text>
-        <Text style={styles.value}>{projectDetails.startDate}</Text>
+      <View style={[styles.detailBox, {backgroundColor: '#fdb834', 
+        width: 350, 
+        height: 55, 
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.2, 
+        shadowRadius: 4,
+        elevation: 4, }]}>
+        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Materiais</Text>
       </View>
+
+      <View style={[styles.detailBox,  {
+        width: 350, 
+        height: 55,
+        backgroundColor: '#00A8FF',
+        shadowColor: '#000', 
+        shadowOffset: { width: 0, height: 2 }, 
+        shadowOpacity: 0.2, 
+        shadowRadius: 4,
+        elevation: 4, 
+      }]}>
+        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Equipamento</Text>
+      </View>
+
+      <View style={projects_styles.container}>
+            <Text style={[projects_styles.header, { color: '#001bcc' }]}>Fotos</Text>
+          </View>
 
       <View style={styles.detailBox}>
         <Text style={styles.label}>Data de Término:</Text>

@@ -7,7 +7,7 @@ from backend.api.core.models import Base
 
 # Pega a URL do banco de dados do arquivo .env
 #DATABASE_URL = os.getenv("DATABASE_URL")
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/postgres"
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/postgres_db"
 
 # Configurando o engine com parâmetros otimizados para evitar erros de conexão
 engine = create_engine(
