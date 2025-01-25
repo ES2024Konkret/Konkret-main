@@ -27,8 +27,6 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 4,
         alignItems: 'center',
-        // padding: 20,
-        marginTop: '20%'
     },
     textTitle: {
         fontFamily: 'Inter',
@@ -72,6 +70,9 @@ export const styles = StyleSheet.create({
         letterSpacing: 1.08,
         borderWidth: 0
     },
+    subButton: {
+        padding: 10,
+    },
 })
 
 export const employee_styles = StyleSheet.create({
@@ -106,5 +107,7 @@ export const employee_styles = StyleSheet.create({
         height: 63,
         borderRadius: 50, 
         overflow: 'hidden',
+        alignItems: "center",
+        justifyContent: "center"
     },
 })

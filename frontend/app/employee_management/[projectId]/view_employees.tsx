@@ -8,6 +8,8 @@ import { employee_styles } from "@/src/styles/employee_styles";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/src/api/ApiClient";
+import { Link, useLocalSearchParams } from "expo-router";
+import ArrowSVG from "@/assets/svg/chevron-left.svg"
 
 interface EmployeeData {
     id: string;
@@ -16,14 +18,18 @@ interface EmployeeData {
 }
 
 export default function ViewEmployees() {
+    const { projectId } = useLocalSearchParams();
+
     const [employees, setEmployees] = useState<EmployeeData[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     async function getEmployees() {
         const token = await AsyncStorage.getItem("authToken");
         if (token) {
-            apiClient.employee
-                .getallEmployeesEmployeeGet({ headers: { Authorization: `Bearer ${token}` } })
+            apiClient.work
+                .getEmployeesWorkIdEmployeesGet(String(projectId), {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
                 .then((response) => {
                     if (response && response.status === 200) {
                         const fetchedEmployee = response.data;
@@ -52,13 +58,18 @@ export default function ViewEmployees() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}></ImageBackground>
+            <Link href="/dashboard/projects" style={styles.subButton}>
+                <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
+            </Link>
             <View style={[styles.employeeContainer]}>
                 <View style={styles.textIconContainer}>
                     <View>
                         <Text style={styles.textTitle}>Funcionários</Text>
-                        <Text style={styles.textSubtitle}>dd/mm/aaaa</Text>
+                        <Text style={styles.textSubtitle}>{new Date().toLocaleDateString("pt-BR")}</Text>
                     </View>
-                    <UserSVG />
+                    <Link style={styles.subButton} href={`/employee_management/${projectId}/add_employees`}>
+                        <UserSVG/>
+                    </Link>
                 </View>
                 <View style={styles.inputContainer}>
                     <SearchSVG />
@@ -93,6 +104,6 @@ export default function ViewEmployees() {
                     </View>
                 </ScrollView>
             </View>
-        </View>
+        </View >
     );
 }
