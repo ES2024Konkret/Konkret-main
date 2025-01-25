@@ -1,172 +1,143 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable, FlatList, Image, TextInput, TouchableOpacity } from "react-native";
 import { projects_styles } from "@/src/styles/dashboard_styles";
-import { useRouter } from "expo-router";
+import { router, useRouter } from "expo-router";
+import apiClient from "@/src/api/ApiClient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { new_project_styles } from "@/src/styles/dashboard_styles";
+import { useState } from "react";
+import { launchImageLibrary } from "react-native-image-picker";
+import { report } from "@/src/styles/dashboard_styles";
+
 
 export default function Relatorio() {
-  // Exemplo de dados fictícios para exibir no relatório
-  const projectDetails = {
-    name: "Construção Residencial",
-    startDate: "2025-01-15",
-    endDate: "2025-06-30",
-    status: "Em andamento",
-    zipCode: "12345-678",
-    state: "São Paulo",
-    neighborhood: "Centro",
-    publicPlace: "Rua Exemplo, 123",
-    description:
-      "Este projeto envolve a construção de um condomínio residencial de alto padrão, com infraestrutura completa, incluindo piscina, academia e salão de festas.",
+  const [manhã, setManhã] = useState("");
+  const [tarde, setTarde] = useState("");
+  const [noite, setNoite] = useState("");
+  const [anotações, setAnotações] = useState("");
+  const [photos, setPhotos] = useState([]);
+
+  const handleAddPhoto = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        includeBase64: false,
+      });
+
+      if (!result.didCancel) {
+        setPhotos([...photos, { uri: result.assets[0].uri }]);
+      }
+    } catch (error) {
+      console.error('Error adding photo:', error);
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={projects_styles.container}>
-            <Text style={[projects_styles.header, { color: '#001bcc' }]}>Janeiro</Text>
-            <Text style={[projects_styles.subHeader, { color: '#001bcc' }]}>2025</Text>
+    <ScrollView contentContainerStyle={report.container}>
+      <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>Janeiro</Text>
+          <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>2025</Text>
+        </View>
+
+        <Text style={report.header}>Lugar do Calendário </Text>
+
+        <View style={{ flex: 3, justifyContent: "center" }}>
+
+          <View style={[report.button, {
+            backgroundColor: '#001bcc',
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Funcionário</Text>
           </View>
 
-      <Text style={styles.header}>Lugar do Calendário </Text>
-
-      <View style={[styles.detailBox, {backgroundColor: '#001bcc', 
-        width: 350, 
-        height: 55,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 4,
-        elevation: 4, }]}>
-        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Funcionário</Text>
-      </View>
-
-      <View style={[styles.detailBox, {backgroundColor: '#fdb834', 
-        width: 350, 
-        height: 55, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 4,
-        elevation: 4, }]}>
-        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Materiais</Text>
-      </View>
-
-      <View style={[styles.detailBox,  {
-        width: 350, 
-        height: 55,
-        backgroundColor: '#00A8FF',
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 4,
-        elevation: 4, 
-      }]}>
-        <Text style={[styles.label, {color: '#FFFFFF', textAlign: 'center', fontSize: 18}]}>+ Equipamento</Text>
-      </View>
-
-      <View style={projects_styles.container}>
-            <Text style={[projects_styles.header, { color: '#001bcc' }]}>Fotos</Text>
+          <View style={[report.button, {
+            backgroundColor: '#fdb834',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
           </View>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Data de Término:</Text>
-        <Text style={styles.value}>{projectDetails.endDate}</Text>
+          <View style={[report.button, {
+            backgroundColor: '#009ccc',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Equipamento</Text>
+          </View>
+
+        </View>
+
       </View>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Status:</Text>
-        <Text style={[styles.value, styles.status]}>{projectDetails.status}</Text>
+      <View style={[report.section, report.whiteBackground]}>
+        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Fotos</Text>
+
+        <ScrollView
+          contentContainerStyle={[report.photoList, { marginTop: 15 }]}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          <TouchableOpacity style={report.addButton} onPress={handleAddPhoto}>
+            <Text style={report.addText}>+</Text>
+          </TouchableOpacity>
+          {photos.map((photo, index) => (
+            <View key={index} style={report.photoContainer}>
+              <Image source={{ uri: photo.uri }} style={report.photo} />
+            </View>
+          ))}
+        </ScrollView>
+        <TextInput
+          style={[new_project_styles.input, { height: 200 }, { textAlignVertical: 'top', textAlign: 'left' }, { marginTop: 40 }]}
+          placeholder="Anotações gerais:"
+          multiline={true}
+          value={anotações}
+          onChangeText={setAnotações}
+        />
+        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Tempo</Text>
+        <TextInput
+          style={[new_project_styles.input, { marginTop: 30 }]}
+          placeholder="Manhã:"
+          value={manhã}
+          onChangeText={setManhã}
+        />
+        <TextInput
+          style={new_project_styles.input}
+          placeholder="Tarde:"
+          value={tarde}
+          onChangeText={setTarde}
+        />
+        <TextInput
+          style={new_project_styles.input}
+          placeholder="Noite:"
+          value={noite}
+          onChangeText={setNoite}
+        />
       </View>
 
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>CEP:</Text>
-        <Text style={styles.value}>{projectDetails.zipCode}</Text>
-      </View>
-
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Estado:</Text>
-        <Text style={styles.value}>{projectDetails.state}</Text>
-      </View>
-
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Bairro:</Text>
-        <Text style={styles.value}>{projectDetails.neighborhood}</Text>
-      </View>
-
-      <View style={styles.detailBox}>
-        <Text style={styles.label}>Logradouro:</Text>
-        <Text style={styles.value}>{projectDetails.publicPlace}</Text>
-      </View>
-
-      <View style={styles.descriptionBox}>
-        <Text style={styles.label}>Descrição do Projeto:</Text>
-        <Text style={styles.value}>{projectDetails.description}</Text>
-      </View>
-
-      <Pressable style={styles.button} onPress={() => alert("Voltando ao dashboard...")}>
-        <Text style={styles.buttonText}>Voltar ao Dashboard</Text>
+      <Pressable onPress={() => router.push("/dashboard/projects")}>
+        <View style={[report.button, {
+          backgroundColor: '#fdb834',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          elevation: 4,
+        }]}>
+          <Text style={[report.label, { color: '#000000', textAlign: 'center', fontSize: 18 }]}>Gerar Relatório</Text>
+        </View>
       </Pressable>
     </ScrollView>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f9f9f9",
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#333",
-  },
-  detailBox: {
-    marginBottom: 15,
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#555",
-    marginBottom: 5,
-  },
-  value: {
-    fontSize: 16,
-    color: "#333",
-  },
-  status: {
-    color: "#007bff",
-    fontWeight: "bold",
-  },
-  descriptionBox: {
-    marginTop: 10,
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  button: {
-    marginTop: 30,
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
+};
