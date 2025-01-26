@@ -42,8 +42,8 @@ class Employee(Base):
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     name = mapped_column(String, nullable=True)
-    rg = mapped_column(Integer, nullable=True, unique=True)
-    cpf = mapped_column(Integer, nullable=False, unique=True)
+    rg = mapped_column(String, nullable=True, unique=True)
+    cpf = mapped_column(String, nullable=False, unique=True)
     role = mapped_column(String, nullable=True)
     contract_start = mapped_column(DateTime(timezone=True), nullable=False) 
     contract_end = mapped_column(DateTime(timezone=True), nullable=False)
