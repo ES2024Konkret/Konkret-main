@@ -1,12 +1,12 @@
 import { styles } from "@/src/styles/employee_styles";
-import { View, ImageBackground, Text } from "react-native";
+import { View, ImageBackground, Text, Pressable } from "react-native";
 import SearchSVG from "@/assets/svg/search.svg";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { employee_styles } from "@/src/styles/employee_styles";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/src/api/ApiClient";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
 import PlusSVG from "@/assets/svg/plus.svg"
 import { Checkbox } from "react-native-paper";
@@ -21,32 +21,51 @@ interface EmployeeData {
 }
 
 export default function ViewEmployees() {
+    const router = useRouter();
     const { projectId } = useLocalSearchParams();
 
     const [employees, setEmployees] = useState<EmployeeData[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
+    apiClient.jobs.deleteJobJobsIdDelete
+
     async function getEmployees() {
         const token = await AsyncStorage.getItem("authToken");
-        if (token) {
-            apiClient.employee
-                .getallEmployeesEmployeeGet({
-                    headers: { Authorization: `Bearer ${token}` },
-                })
-                .then((response) => {
-                    if (response && response.status === 200) {
-                        const fetchedEmployee = response.data;
-                        setEmployees(fetchedEmployee.map((employee: any) => ({
-                            id: employee.id,
-                            name: employee.name,
-                            role: employee.role,
-                            contract_start: new Date(employee.contract_start),
-                            contract_end: new Date(employee.contract_end),
-                            checked: false, // Adiciona um estado 'checked' inicial para cada funcionário
-                        })));
-                    }
-                })
-                .catch((error) => console.error("Erro ao buscar funcionários:", error));
+        if (!token || !projectId) return;
+    
+        try {
+            const response = await apiClient.employee.getallEmployeesEmployeeGet({
+                headers: { Authorization: `Bearer ${token}` },
+            });
+    
+            if (response.status !== 200) return;
+    
+            const fetchedEmployees = response.data;
+    
+            const jobsResponse = await apiClient.jobs.getallJobsJobsGet({
+                headers: { Authorization: `Bearer ${token}` },
+            });
+    
+            if (jobsResponse.status !== 200) return;
+    
+            const jobs = jobsResponse.data;
+    
+            const projectJobs = jobs.filter((job: any) => job.work_id === projectId);
+    
+            const employeesWithJob = new Set(projectJobs.map((job: any) => job.employee_id));
+    
+            setEmployees(
+                fetchedEmployees.map((employee: any) => ({
+                    id: employee.id,
+                    name: employee.name,
+                    role: employee.role,
+                    contract_start: new Date(employee.contract_start),
+                    contract_end: new Date(employee.contract_end),
+                    checked: employeesWithJob.has(employee.id), // Apenas se o funcionário estiver no Set do projectId
+                }))
+            );
+        } catch (error) {
+            console.error("Erro ao buscar funcionários ou jobs:", error);
         }
     }
 
@@ -54,13 +73,52 @@ export default function ViewEmployees() {
         getEmployees();
     }, []);
 
-    const handleCheckboxToggle = (id: string) => {
+    const handleCheckboxToggle = async (id: string) => {
         setEmployees((prevEmployees) =>
             prevEmployees.map((employee) =>
                 employee.id === id ? { ...employee, checked: !employee.checked } : employee
             )
         );
+    
+        const token = await AsyncStorage.getItem("authToken");
+    
+        try {
+            const employee = employees.find(emp => emp.id === id);
+            if (!employee) return;
+    
+            if (!employee.checked) { // Se não estava marcado, significa que agora será adicionado
+                await apiClient.jobs.addJobJobsPost({
+                    work_id: String(projectId),
+                    employee_id: id,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                }, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            } else { // Se estava marcado antes, precisamos encontrar o ID do job antes de deletar
+                const jobsResponse = await apiClient.jobs.getallJobsJobsGet({
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+    
+                if (jobsResponse.status !== 200) return;
+    
+                const jobs = jobsResponse.data;
+                const jobToDelete = jobs.find((job: any) => job.work_id === projectId && job.employee_id === id);
+    
+                if (!jobToDelete) {
+                    console.error("Job não encontrado para o funcionário:", id);
+                    return;
+                }
+    
+                await apiClient.jobs.deleteJobJobsIdDelete(jobToDelete.id, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao adicionar funcionário:", error);
+        }
     };
+    
 
     const filteredEmployees = employees.filter((employee) =>
         employee.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -72,9 +130,9 @@ export default function ViewEmployees() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}></ImageBackground>
-            <Link style={styles.subButton} href={`/employee_management/${projectId}/view_employees`}>
+            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employees`)}>
                 <ArrowSVG width={51} height={51} fill="#fff" />
-            </Link>
+            </Pressable>
             <View style={[styles.employeeContainer]}>
                 <View style={styles.textIconContainer}>
                     <View>
@@ -95,12 +153,12 @@ export default function ViewEmployees() {
                         width: '100%',
                         alignItems: "center"
                     }}>
-                        <Link href={`/employee_management/new_employee?projectId=${projectId}`} style={[employee_styles.employeeBox, {
+                        <Pressable style={[employee_styles.employeeBox, {
                             paddingLeft: 15,
                             paddingRight: 15,
                             paddingTop: 5,
                             paddingBottom: 5
-                        }]}>
+                        }]} onPress={() => {router.push(`/project/${projectId}/new_employee`)}}>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: "center",
@@ -111,7 +169,7 @@ export default function ViewEmployees() {
                                 </View>
                                 <Text style={[employee_styles.employeeName, { color: 'black' }]}>CADASTRAR NOVO</Text>
                             </View>
-                        </Link>
+                        </Pressable>
                         {filteredEmployees.map((employee) => (
                             <View key={employee.id} style={employee_styles.employeeBox}>
                                 <View style={{

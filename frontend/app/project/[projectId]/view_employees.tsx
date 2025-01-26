@@ -1,5 +1,5 @@
 import { styles } from "@/src/styles/employee_styles";
-import { View, ImageBackground, Text } from "react-native";
+import { View, ImageBackground, Text, Pressable } from "react-native";
 import UserSVG from "@/assets/svg/user-plus.svg";
 import SearchSVG from "@/assets/svg/search.svg";
 import EditSVG from "@/assets/svg/resume-edit.svg";
@@ -8,7 +8,7 @@ import { employee_styles } from "@/src/styles/employee_styles";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/src/api/ApiClient";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
 
 interface EmployeeData {
@@ -18,6 +18,7 @@ interface EmployeeData {
 }
 
 export default function ViewEmployees() {
+    const router = useRouter();
     const { projectId } = useLocalSearchParams();
 
     const [employees, setEmployees] = useState<EmployeeData[]>([]);
@@ -58,7 +59,7 @@ export default function ViewEmployees() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}></ImageBackground>
-            <Link href="/dashboard/projects" style={styles.subButton}>
+            <Link href={`/project/${projectId}/resume`} style={styles.subButton}>
                 <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
             </Link>
             <View style={[styles.employeeContainer]}>
@@ -67,9 +68,11 @@ export default function ViewEmployees() {
                         <Text style={styles.textTitle}>Funcionários</Text>
                         <Text style={styles.textSubtitle}>{new Date().toLocaleDateString("pt-BR")}</Text>
                     </View>
-                    <Link style={styles.subButton} href={`/employee_management/${projectId}/add_employees`}>
-                        <UserSVG/>
-                    </Link>
+                    <Pressable style={styles.subButton} onPress={() => {
+                        router.push(`/project/${projectId}/add_employees`)
+                    }}>
+                        <UserSVG />
+                    </Pressable>
                 </View>
                 <View style={styles.inputContainer}>
                     <SearchSVG />
@@ -83,7 +86,8 @@ export default function ViewEmployees() {
                 <ScrollView style={{ width: '100%' }}>
                     <View style={{
                         width: '100%',
-                        alignItems: "center"
+                        alignItems: "center",
+                        minHeight: '100%'
                     }}>
                         {filteredEmployees.map((employee) => (
                             <View key={employee.id} style={employee_styles.employeeBox}>

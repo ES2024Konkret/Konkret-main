@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, ScrollView } from "react-native";
 import apiClient from "@/src/api/ApiClient";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NewEmployee() {
+    const router = useRouter();
     const { projectId } = useLocalSearchParams();
 
     // Estados para armazenar os valores dos inputs
@@ -41,7 +42,7 @@ export default function NewEmployee() {
                 })
             .then((response) => {
                 if (response && response.status === 200) {
-                    router.push(`/employee_management/${projectId}/add_employees`);
+                    router.push(`/project/${projectId}/add_employees`);
                 }
             })
             .catch((error) => {

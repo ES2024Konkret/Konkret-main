@@ -51,7 +51,7 @@ export default function Projects() {
 
   // Função para navegar para a página de gerenciamento de funcionários com o id do projeto
   const handleProjectPress = (projectId: string) => {
-    router.push(`/employee_management/${projectId}/view_employees`);  
+    router.push(`/project/${projectId}/resume`);  
   };
 
   // Renderizar cada projeto
