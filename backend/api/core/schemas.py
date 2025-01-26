@@ -19,8 +19,8 @@ class ProprietaryPublic(BaseModel):
 
 class EmployeeSchema(BaseModel):
     name: Annotated[Optional[str], Query()]
-    rg: Annotated[int, Query()]
-    cpf: Annotated[int, Query()]
+    rg: Annotated[str, Query()]
+    cpf: Annotated[str, Query()]
     role: Annotated[Optional[str], Query()]
     contract_start: Annotated[datetime, Query()]
     contract_end: Annotated[datetime, Query()]
