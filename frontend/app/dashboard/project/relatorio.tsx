@@ -156,7 +156,10 @@ export default function Relatorio() {
           onChangeText={setNoite}
         />
       </View>
-      <Pressable onPress={() => newReport(work_id, photos, observations, manhã, tarde, noite)}>
+      <Pressable onPress={() => {
+        newReport(work_id, photos, observations, manhã, tarde, noite);
+        router.push("/dashboars/relatorio");
+      }}>
         <View style={[report.button, {
           backgroundColor: '#fdb834',
           shadowColor: '#000',
