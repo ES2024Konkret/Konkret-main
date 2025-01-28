@@ -56,9 +56,9 @@ export interface EmployeeSchema {
   /** Name */
   name: string | null;
   /** Rg */
-  rg: number;
+  rg: string;
   /** Cpf */
-  cpf: number;
+  cpf: string;
   /** Role */
   role: string | null;
   /**
