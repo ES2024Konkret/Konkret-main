@@ -11,7 +11,7 @@ import { report } from "@/src/styles/dashboard_styles";
 
 export default function Relatorio() {
   const item = useLocalSearchParams();
-  const work_id = item.id;
+  const work_id = item.id[0];
   const [manhã, setManhã] = useState("");
   const [tarde, setTarde] = useState("");
   const [noite, setNoite] = useState("");
