@@ -21,7 +21,7 @@ def add_employee(
     try:
         return employee_service.create_employee(employee.name, employee.rg, employee.cpf, employee.role, employee.contract_start, employee.contract_end)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Deu erro aaa: {str(e)}")
     
 @router.put("/{id}/update", response_model=EmployeePublic)
 def update_employee(

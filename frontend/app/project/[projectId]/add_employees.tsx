@@ -158,7 +158,7 @@ export default function ViewEmployees() {
                             paddingRight: 15,
                             paddingTop: 5,
                             paddingBottom: 5
-                        }]} onPress={() => {router.push(`/project/${projectId}/new_employee`)}}>
+                        }]} onPress={() => {router.push(`/emploey/adicionar`)}}>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: "center",

@@ -6,7 +6,7 @@ class EmployeeRepository:
     def __init__(self,db: Session):
         self.db = db
 
-    def create_employee(self,name: str, rg: int,cpf: int, role: str, contract_start: Date, contract_end: Date):
+    def create_employee(self,name: str, rg: str,cpf: str, role: str, contract_start: Date, contract_end: Date):
         new_employee = Employee(name=name,rg=rg, cpf=cpf, role=role, contract_start=contract_start, contract_end=contract_end)
         self.db.add(new_employee)
         self.db.commit()
