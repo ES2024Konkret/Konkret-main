@@ -1,6 +1,6 @@
 import React from "react";
 import { styles } from "../../src/styles/login_styles";
-import { Link, useRouter } from "expo-router";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { Pressable, TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, ImageBackground } from "react-native";
@@ -15,6 +15,7 @@ export default function NewEmployee() {
     const [contract_start, setStart] = React.useState(""); //Periodo inicio
     const [contract_end, setEnd] = React.useState(""); //Periodo FIm
     const router = useRouter();
+    const { projectId } = useLocalSearchParams();
 
     async function createEmployee(
         name: string,
@@ -48,7 +49,7 @@ export default function NewEmployee() {
             // Verificar se a resposta foi bem-sucedida
             if (response && response.status === 200) {
                 console.log("Funcionário criado com sucesso:", response.data);
-                router.push("/"); // Redirecionar para a página inicial
+                router.push(`/project/${projectId}/add_employees`); // Redirecionar para a página inicial
             } else {
                 console.error("Erro ao criar o funcionário:", response);
             }
@@ -63,7 +64,7 @@ export default function NewEmployee() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}>
-                <Link href="/user_register/register_options" style={styles.subButton}>
+                <Link href="/dashboard/new_project" style={styles.subButton}>
                     <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
                 </Link>
                 <View style={[styles.loginBox, {width: '100%', height: '100%'}]}>
@@ -129,7 +130,8 @@ export default function NewEmployee() {
                                     placeholder="Fim do Contrato"
                                     autoCapitalize="none"
                                 />
-                                <Pressable style={[styles.formButton, {marginTop: 50}]} onPress={() => createEmployee(name, rg, cpf, role, contract_start, contract_start)}>
+                                <Pressable style={[styles.formButton, {marginTop: 50}]} onPress={() => createEmployee(name, rg, cpf, role, contract_start, contract_start) }>
+                                    
                                     <Text style={styles.textButton}>Criar Funcionário</Text>
                                 </Pressable>
 
