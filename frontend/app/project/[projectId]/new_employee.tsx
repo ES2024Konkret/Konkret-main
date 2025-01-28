@@ -24,7 +24,7 @@ export default function NewEmployee() {
     };
 
     // Função para criar um novo funcionário
-    async function createEmployee(name: string, rg: number, cpf: number, role: string, contract_start: string, contract_end: string) {
+    async function createEmployee(name: string, rg: string, cpf: string, role: string, contract_start: string, contract_end: string) {
         const token = await AsyncStorage.getItem("authToken");
         apiClient.employee
             .addEmployeeEmployeePost({
@@ -57,15 +57,11 @@ export default function NewEmployee() {
             return;
         }
 
-        // Converter rg e cpf para números
-        const rgNumber = parseInt(rg);
-        const cpfNumber = parseInt(cpf);
-
         // Converter as datas para strings no formato correto
         const start_date = stringToDateString(contractStart);
         const end_date = stringToDateString(contractEnd);
 
-        createEmployee(name, rgNumber, cpfNumber, role, start_date, end_date);
+        createEmployee(name, rg, cpf, role, start_date, end_date);
     };
 
     return (
