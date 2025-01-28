@@ -62,14 +62,14 @@ class LoginSchema(BaseModel):
 class ReportSchema(BaseModel):
     work_id: Annotated[str, Query()]
     photos: Annotated[Optional[list], Query()]
-    observations: Annotated[Optional[list], Query()]
+    observations: Annotated[str, Query()]
     activities: Annotated[Optional[list], Query()]
 
 class ReportPublic(BaseModel):
     id: Annotated[str, Query()]
     work_id: Annotated[str, Query()]
     photos: Annotated[Optional[list], Query()]
-    observations: Annotated[Optional[list], Query()]
+    observations: Annotated[str, Query()]
     activities: Annotated[Optional[list], Query()]
     created_at: Annotated[datetime,Query()]
     updated_at: Annotated[datetime,Query()]

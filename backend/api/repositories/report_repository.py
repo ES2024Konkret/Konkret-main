@@ -10,7 +10,7 @@ class ReportRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, work_id: str, photos: list, observations: list, activities: list):
+    def create(self, work_id: str, photos: list, observations: str, activities: list):
         new_report = Report(work_id=work_id, photos=photos, observations=observations, activities=activities)
         self.db.add(new_report)
         self.db.commit()

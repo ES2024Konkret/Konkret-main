@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { projects_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 
 interface ProjectData {
   name: string;
@@ -12,6 +12,7 @@ interface ProjectData {
   state?: string;
   neighborhood?: string;
   public_place?: string;
+  id: string;
 }
 
 export default function Projects() {
@@ -35,6 +36,7 @@ export default function Projects() {
               state: project.state || "Não informado",
               neighborhood: project.neighborhood || "Não informado",
               public_place: project.public_place || "Não informado",
+              id: project.id,
             }))
           );
         }
@@ -52,7 +54,7 @@ export default function Projects() {
     return (
       <Pressable
         style={styles.projectBox}
-        onPress={() => router.push("/dashboard/project/relatorio")} // Navegação com o router
+        onPress={() => router.push({pathname:"/dashboard/project/relatorio", params: {id: item.id}})} // Navegação com o router
       >
         <Text style={styles.projectName}>Nome: {item.name}</Text>
         <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>

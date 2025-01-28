@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, ScrollView, Pressable, FlatList, Image, TextInput, TouchableOpacity } from "react-native";
 import { projects_styles } from "@/src/styles/dashboard_styles";
-import { router, useRouter } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { new_project_styles } from "@/src/styles/dashboard_styles";
@@ -9,12 +9,13 @@ import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
 
-
 export default function Relatorio() {
+  const item = useLocalSearchParams();
+  const work_id = item.id;
   const [manhã, setManhã] = useState("");
   const [tarde, setTarde] = useState("");
   const [noite, setNoite] = useState("");
-  const [anotações, setAnotações] = useState("");
+  const [observations, setObservations] = useState("");
   const [photos, setPhotos] = useState([]);
 
   const handleAddPhoto = async () => {
@@ -31,6 +32,36 @@ export default function Relatorio() {
       console.error('Error adding photo:', error);
     }
   };
+
+  async function newReport(work_id:string, photos:Array<string>, observations:string, manhã:string, tarde:string, noite:string) {
+    const activities = [
+      manhã,
+      tarde,
+      noite
+    ];
+    const token = await AsyncStorage.getItem("authToken");
+    apiClient.report
+      .addReportReportPost({
+        work_id,
+        photos,
+        observations,
+        activities
+        
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        console.log(response);
+        if (response && response.status === 200) {
+          router.push("/dashboard/projects");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   return (
     <ScrollView contentContainerStyle={report.container}>
@@ -102,8 +133,8 @@ export default function Relatorio() {
           style={[new_project_styles.input, { height: 200 }, { textAlignVertical: 'top', textAlign: 'left' }, { marginTop: 40 }]}
           placeholder="Anotações gerais:"
           multiline={true}
-          value={anotações}
-          onChangeText={setAnotações}
+          value={observations}
+          onChangeText={setObservations}
         />
         <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Tempo</Text>
         <TextInput
@@ -125,8 +156,7 @@ export default function Relatorio() {
           onChangeText={setNoite}
         />
       </View>
-
-      <Pressable onPress={() => router.push("/dashboard/projects")}>
+      <Pressable onPress={() => newReport(work_id, photos, observations, manhã, tarde, noite)}>
         <View style={[report.button, {
           backgroundColor: '#fdb834',
           shadowColor: '#000',
