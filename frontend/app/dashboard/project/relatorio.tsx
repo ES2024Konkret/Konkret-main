@@ -136,7 +136,7 @@ export default function Relatorio() {
           value={observations}
           onChangeText={setObservations}
         />
-        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Tempo</Text>
+        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Atividades</Text>
         <TextInput
           style={[new_project_styles.input, { marginTop: 30 }]}
           placeholder="Manhã:"
