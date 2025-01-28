@@ -8,6 +8,7 @@ import { new_project_styles } from "@/src/styles/dashboard_styles";
 import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
+import {Calendar} from "react-native-calendars"
 
 
 export default function Relatorio() {
@@ -43,8 +44,7 @@ export default function Relatorio() {
           <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>Janeiro</Text>
           <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>2025</Text>
         </View>
-
-        <Text style={report.header}>Lugar do Calendário </Text>
+        <Calendar style={report.calendarioHeader}/>
 
         <View style={{ flex: 3, justifyContent: "center" }}>
         <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
