@@ -361,10 +361,19 @@ export const report = StyleSheet.create({
     color: "blue",
     fontWeight: "bold",
   },
+  calendario:{
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.11,
+    shadowRadius: 4,
+  },
   calendarioHeader:{
-
+    borderBottomWidth: 0.5,
+    paddingBottom: 0, 
+    marginBottom: 14,
   },
   calendarioBody:{
-    
+
   },
 });

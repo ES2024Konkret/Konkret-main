@@ -44,7 +44,10 @@ export default function Relatorio() {
           <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>Janeiro</Text>
           <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>2025</Text>
         </View>
-        <Calendar style={report.calendarioHeader}/>
+        
+        <Calendar style={report.calendario} headerStyle={report.calendarioHeader} onDayPress={day => {
+    console.log('selected day', day);
+  }}/>
 
         <View style={{ flex: 3, justifyContent: "center" }}>
         <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
