@@ -8,10 +8,11 @@ import { new_project_styles } from "@/src/styles/dashboard_styles";
 import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
-import {Calendar} from "react-native-calendars"
+import {LocaleConfig, Calendar} from "react-native-calendars"
 
 
 export default function Relatorio() {
+  const today = new Date();
   const [manhã, setManhã] = useState("");
   const [tarde, setTarde] = useState("");
   const [noite, setNoite] = useState("");
@@ -20,9 +21,43 @@ export default function Relatorio() {
   const router = useRouter();
   const { projectId } = useLocalSearchParams();
 
-
-
-  const handleAddPhoto = async () => {
+  LocaleConfig.locales['br'] = {
+  monthNames: [
+    'Janeiro','Fevereiro','Março',
+    'Abril','Maio','Junho',
+    'Julho','Agosto','Setembro',
+    'Outubro','Novembro','Dezembro',
+  ],
+  monthNamesShort: [
+    'Jan','Fev','Mar',
+    'Abr','Mai','Jun',
+    'Jul','Ago','Set',
+    'Out','Nov','Dez',
+  ],
+  dayNames: [
+    'Domingo','Segunda','Terça',
+    'Quarta','Quinta','Sexta',
+    'Sábado',
+  ],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+  today: 'Hoje',
+};
+    LocaleConfig.defaultLocale = 'br';
+    months = [
+    'Janeiro','Fevereiro','Março',
+    'Abril','Maio','Junho',
+    'Julho','Agosto','Setembro',
+    'Outubro','Novembro','Dezembro',
+  ],
+    month_index = today.getMonth();
+    const [currentMonth, setCurrentMonth] = useState(months[month_index]);
+    const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    
+    //const today = new Date();
+    //setCurrentMonth(today.getMonth()+1);
+    //setCurrentYear(today.getFullYear());
+  
+ const handleAddPhoto = async () => {
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
@@ -41,13 +76,33 @@ export default function Relatorio() {
     <ScrollView contentContainerStyle={report.container}>
       <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
         <View style={{ flex: 1 }}>
-          <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>Janeiro</Text>
-          <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>2025</Text>
+          <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>{currentMonth}</Text>
+          <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>{currentYear}</Text>
         </View>
         
-        <Calendar style={report.calendario} headerStyle={report.calendarioHeader} onDayPress={day => {
-    console.log('selected day', day);
-  }}/>
+        <Calendar 
+            locale={'br'}
+            style={report.calendario} 
+            theme={{
+                textMonthFontSize: 18,
+                dayTextColor: "009ccc",
+            }
+            }
+            onMonthChange={(month) => {
+                const {month: monthNumber, year} = month;
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                setCurrentMonth(`${monthNames[monthNumber-1]}`);
+                setCurrentYear(`${year}`);
+            }
+            }
+            onDayPress={day => {
+                console.log('selected day', day);
+            }}
+
+            />
 
         <View style={{ flex: 3, justifyContent: "center" }}>
         <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
