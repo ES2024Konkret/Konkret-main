@@ -69,7 +69,7 @@ class Report(Base):
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     photos = mapped_column(ARRAY(String), nullable=True)
-    observations = mapped_column(ARRAY(String), nullable=True)
+    observations = mapped_column(String, nullable=True)
     activities = mapped_column(ARRAY(String), nullable=True)
     work_id = mapped_column(ForeignKey("works.id"), nullable=True)
     work = relationship("Work", back_populates="reports")

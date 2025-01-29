@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, Pressable , TouchableOpacity} from "r
 import { projects_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 
 interface ProjectData {
   id: string;
@@ -13,6 +13,7 @@ interface ProjectData {
   state?: string;
   neighborhood?: string;
   public_place?: string;
+  id: string;
 }
 
 export default function Projects() {
@@ -37,6 +38,7 @@ export default function Projects() {
               state: project.state || "Não informado",
               neighborhood: project.neighborhood || "Não informado",
               public_place: project.public_place || "Não informado",
+              id: project.id,
             }))
           );
         }

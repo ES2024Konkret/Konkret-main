@@ -8,6 +8,7 @@ from backend.api.dependencies import get_report_service, get_current_user
 import pandas as pd
 from fastapi.responses import StreamingResponse
 from fpdf import FPDF
+from datetime import datetime
 
 router = APIRouter(
     prefix="/report",
@@ -23,9 +24,13 @@ def add_report(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return report_service.create_report(report.work_id, report.photos, report.observations, report.activities)
+        print(f"Chamando create_report com: work_id={report.work_id}, photos={report.photos}, observations={report.observations}, activities={report.activities}")
+        created_report = report_service.create_report(report.work_id, report.photos, report.observations, report.activities)
+        print(f"Relatório criado: {created_report}")
+        return created_report
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}") 
+        print(f"Erro ao criar relatório: {e}")
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 
 @router.get("", response_model=List[ReportPublic])
 def getall_reports(
@@ -208,7 +213,26 @@ def get_csv(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-    
+class EngineeringReportPDF(FPDF):
+    def header(self):
+        # Logo (assumindo que existe na pasta assets)
+        # self.image("assets/logo.png", 10, 8, 33)
+        
+        # Fonte Arial bold 15
+        self.set_font('Arial', 'B', 15)
+        # Título
+        self.cell(0, 10, 'Relatório de Engenharia Civil', 0, 1, 'C')
+        # Line break
+        self.ln(20)
+
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-15)
+        # Arial italic 8
+        self.set_font('Arial', 'I', 8)
+        # Page number
+        self.cell(0, 10, f'Página {self.page_no()}/{{nb}}', 0, 0, 'C')
+
 @router.get("/{id}/pdf")
 def get_pdf(
     id: str,
@@ -218,37 +242,69 @@ def get_pdf(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        
         report = report_service.get(id)
         weather = report_service.get_climate(id)
 
-        
         data = [{
             "ID": report.id,
             "Observações": ", ".join(report.observations),
             "Atividades": ", ".join(report.activities),
             "Clima": weather
         }]
-        
-      
+
         pdf = FPDF()
-        pdf.set_auto_page_break(auto=True, margin=15)
+        weather_str = str(weather) if weather else "Não disponível"
+
+        # Criar PDF
+        pdf = EngineeringReportPDF()
+        pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", size=12)
-
-       
-        pdf.set_font("Arial", style="B", size=16)
-        pdf.cell(200, 10, txt=f"Relatório do Trabalho ID: {id}", ln=True, align="C")
-        pdf.ln(10)  # Espaço entre título e conteúdo
-
         
-        pdf.set_font("Arial", size=12)
-        for col in data[0].keys():
-            pdf.cell(0, 10, txt=f"{col}: {data[0][col]}", ln=True)
+        # Informações do Relatório
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, f'Relatório Nº: {id}', 0, 1)
+        pdf.cell(0, 10, f'Data: {datetime.now().strftime("%d/%m/%Y")}', 0, 1)
+        pdf.cell(0, 10, f'Responsável: {user_logged.name}', 0, 1)
+        pdf.ln(10)
 
-       
-        pdf_output = pdf.output(dest='S').encode('latin1')  # 'S' gera o PDF como bytes
+        # Seção do Clima
+        pdf.set_fill_color(240, 240, 240)
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, 'Condições Climáticas', 0, 1, 'L', 1)
+        pdf.set_font('Arial', '', 11)
+        pdf.multi_cell(0, 10, weather_str)
+        pdf.ln(5)
 
+        # Seção de Atividades
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, 'Atividades Realizadas', 0, 1, 'L', 1)
+        pdf.set_font('Arial', '', 11)
+        if hasattr(report, 'activities') and report.activities:
+            for activity in report.activities:
+                pdf.cell(10, 10, '-', 0, 0)
+                pdf.multi_cell(0, 10, str(activity))
+        else:
+            pdf.multi_cell(0, 10, "Nenhuma atividade registrada")
+        pdf.ln(5)
+
+        # Seção de Observações
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, 'Observações', 0, 1, 'L', 1)
+        pdf.set_font('Arial', '', 11)
+        if hasattr(report, 'observations') and report.observations:
+            for observation in report.observations:
+                pdf.cell(10, 10, '-', 0, 0)
+                pdf.multi_cell(0, 10, str(observation))
+        else:
+            pdf.multi_cell(0, 10, "Nenhuma observação registrada")
+        
+        # Área para Assinatura
+        pdf.ln(20)
+        pdf.line(30, pdf.get_y(), 180, pdf.get_y())
+        pdf.set_font('Arial', 'I', 10)
+        pdf.cell(0, 10, f'Assinatura do Responsável: {user_logged.name}', 0, 1, 'C')
+
+        pdf_output = bytes(pdf.output(dest='S'))
         return Response(
             content=pdf_output,
             media_type="application/pdf",

@@ -321,7 +321,7 @@ export interface ReportPublic {
   /** Photos */
   photos: any[] | null;
   /** Observations */
-  observations: any[] | null;
+  observations: string;
   /** Activities */
   activities: any[] | null;
   /**
@@ -343,7 +343,7 @@ export interface ReportSchema {
   /** Photos */
   photos: any[] | null;
   /** Observations */
-  observations: any[] | null;
+  observations: string;
   /** Activities */
   activities: any[] | null;
 }
@@ -417,8 +417,8 @@ export interface WorkPublic {
   start_date?: string | null;
   /** End Date */
   end_date?: string | null;
-  /** Proprietary Id */
-  proprietary_id: string;
+  /** User Id */
+  user_id: string;
   /** Rentequipment */
   rentequipment?: RentEquipmentSchemaPublic[] | null;
   /** Jobs */
@@ -450,9 +450,9 @@ export interface WorkSchema {
   /** Number Addres */
   number_addres?: number | null;
   /** Start Date */
-  start_date?: Date | null;
+  start_date?: string | null;
   /** End Date */
-  end_date?: Date | null;
+  end_date?: string | null;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
