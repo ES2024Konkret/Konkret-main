@@ -1,115 +1,208 @@
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, View, Text, StyleSheet } from "react-native";
-import { useState, useEffect } from 'react';
+import React from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, FlatList, Image, TextInput, TouchableOpacity } from "react-native";
+import { projects_styles } from "@/src/styles/dashboard_styles";
+import { router, useRouter, useLocalSearchParams} from "expo-router";
+import apiClient from "@/src/api/ApiClient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { new_project_styles } from "@/src/styles/dashboard_styles";
+import { useState } from "react";
+import { launchImageLibrary } from "react-native-image-picker";
+import { report } from "@/src/styles/dashboard_styles";
+import {LocaleConfig, Calendar} from "react-native-calendars"
 
-export default function ProjectResume() {
-    const router = useRouter();
-    const { projectId } = useLocalSearchParams();
 
-    // Estado para armazenar a data e mês atuais
-    const [currentDate, setCurrentDate] = useState('');
+export default function Relatorio() {
+  const today = new Date();
+  const [manhã, setManhã] = useState("");
+  const [tarde, setTarde] = useState("");
+  const [noite, setNoite] = useState("");
+  const [anotações, setAnotações] = useState("");
+  const [photos, setPhotos] = useState([]);
+  const router = useRouter();
+  const { projectId } = useLocalSearchParams();
 
-    useEffect(() => {
-        // Função para obter a data e mês atuais
-        const getCurrentDate = () => {
-            const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
-            const date = new Date().toLocaleDateString('pt-BR', options);
-            setCurrentDate(date);
-        };
+  LocaleConfig.locales['br'] = {
+  monthNames: [
+    'Janeiro','Fevereiro','Março',
+    'Abril','Maio','Junho',
+    'Julho','Agosto','Setembro',
+    'Outubro','Novembro','Dezembro',
+  ],
+  monthNamesShort: [
+    'Jan','Fev','Mar',
+    'Abr','Mai','Jun',
+    'Jul','Ago','Set',
+    'Out','Nov','Dez',
+  ],
+  dayNames: [
+    'Domingo','Segunda','Terça',
+    'Quarta','Quinta','Sexta',
+    'Sábado',
+  ],
+  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+  today: 'Hoje',
+};
+    LocaleConfig.defaultLocale = 'br';
+    const months = [
+    'Janeiro','Fevereiro','Março',
+    'Abril','Maio','Junho',
+    'Julho','Agosto','Setembro',
+    'Outubro','Novembro','Dezembro',
+  ],
+    month_index = today.getMonth();
+    const [currentMonth, setCurrentMonth] = useState(months[month_index]);
+    const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    
+    //const today = new Date();
+    //setCurrentMonth(today.getMonth()+1);
+    //setCurrentYear(today.getFullYear());
+  
+ const handleAddPhoto = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        includeBase64: false,
+      });
 
-        // Atualiza a data uma vez ao montar o componente
-        getCurrentDate();
-    }, []);
+      if (!result.didCancel) {
+        setPhotos([...photos, { uri: result.assets[0].uri }]);
+      }
+    } catch (error) {
+      console.error('Error adding photo:', error);
+    }
+  };
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Link href={"/dashboard/projects"} style={styles.backLink}>
-                    <Text style={styles.backLinkText}>←</Text>
-                </Link>
-                <Text style={styles.monthYear}>{currentDate}</Text>
-            </View>
-            <View style={styles.buttonsContainer}>
-                <Pressable 
-                    style={[styles.button, styles.funcionarioButton, styles.buttonMargin]}
-                    onPress={() => router.push(`/project/${projectId}/view_employees`)}
-                >
-                    <Text style={styles.buttonText}>+ Funcionário</Text>
-                </Pressable>
-                <Pressable 
-                    style={[styles.button, styles.materiaisButton, styles.buttonMargin]}
-                >
-                    <Text style={styles.buttonText}>+ Materiais</Text>
-                </Pressable>
-                <Pressable 
-                    style={[styles.button, styles.equipamentoButton, styles.buttonMargin]}
-                >
-                    <Text style={styles.buttonText}>+ Equipamento</Text>
-                </Pressable>
-            </View>
+  return (
+    <ScrollView contentContainerStyle={report.container}>
+      <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>{currentMonth}</Text>
+          <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>{currentYear}</Text>
         </View>
-    );
-}
+        
+        <Calendar 
+            locale={'br'}
+            style={report.calendario} 
+            theme={{
+                textMonthFontSize: 18,
+                dayTextColor: "009ccc",
+            }
+            }
+            onMonthChange={(month) => {
+                const {month: monthNumber, year} = month;
+                const monthNames = [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ];
+                setCurrentMonth(`${monthNames[monthNumber-1]}`);
+                setCurrentYear(`${year}`);
+            }
+            }
+            onDayPress={day => {
+                console.log('selected day', day);
+            }}
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        backgroundColor: "#fff",
-        alignItems: "center",
-    },
-    header: {
-        width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: "#000",
-    },
-    monthYear: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#0028FF",
-        alignItems: 'center',
-    },
-    buttonsContainer: {
-        width: '100%',
-        marginBottom: 24,
-    },
-    button: {
-        width: '100%',
-        paddingVertical: 16,
-        paddingHorizontal: 24,
-        borderRadius: 8,
-        marginBottom: 16,
-        alignItems: 'center',
-    },
-    buttonMargin: {
-        marginBottom: 16,
-    },
-    funcionarioButton: {
-        backgroundColor: "#0028FF",
-    },
-    materiaisButton: {
-        backgroundColor: "#FFC107",
-    },
-    equipamentoButton: {
-        backgroundColor: "#00ACC1",
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    backLink: {
-        marginTop: 24,
-    },
-    backLinkText: {
-        color: "#0028FF",
-        textDecorationLine: 'underline',
-        fontSize: 16,
-    },
-});
+            />
+
+        <View style={{ flex: 3, justifyContent: "center" }}>
+        <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
+          <View style={[report.button, {
+            backgroundColor: '#001bcc',
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+    
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Funcionário</Text>
+           
+          </View>
+          </Pressable>
+
+          <View style={[report.button, {
+            backgroundColor: '#fdb834',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
+          </View>
+
+          <View style={[report.button, {
+            backgroundColor: '#009ccc',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            elevation: 4,
+          }]}>
+            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Equipamento</Text>
+          </View>
+
+        </View>
+
+      </View>
+
+      <View style={[report.section, report.whiteBackground]}>
+        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Fotos</Text>
+
+        <ScrollView
+          contentContainerStyle={[report.photoList, { marginTop: 15 }]}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          <TouchableOpacity style={report.addButton} onPress={handleAddPhoto}>
+            <Text style={report.addText}>+</Text>
+          </TouchableOpacity>
+          {photos.map((photo, index) => (
+            <View key={index} style={report.photoContainer}>
+              <Image source={{ uri: photo.uri }} style={report.photo} />
+            </View>
+          ))}
+        </ScrollView>
+        <TextInput
+          style={[new_project_styles.input, { height: 200 }, { textAlignVertical: 'top', textAlign: 'left' }, { marginTop: 40 }]}
+          placeholder="Anotações gerais:"
+          multiline={true}
+          value={anotações}
+          onChangeText={setAnotações}
+        />
+        <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left', fontSize: 18 }, { marginTop: 30 }]}>Tempo</Text>
+        <TextInput
+          style={[new_project_styles.input, { marginTop: 30 }]}
+          placeholder="Manhã:"
+          value={manhã}
+          onChangeText={setManhã}
+        />
+        <TextInput
+          style={new_project_styles.input}
+          placeholder="Tarde:"
+          value={tarde}
+          onChangeText={setTarde}
+        />
+        <TextInput
+          style={new_project_styles.input}
+          placeholder="Noite:"
+          value={noite}
+          onChangeText={setNoite}
+        />
+      </View>
+
+      <Pressable onPress={() => router.push("/dashboard/projects")}>
+        <View style={[report.button, {
+          backgroundColor: '#fdb834',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+          elevation: 4,
+        }]}>
+          <Text style={[report.label, { color: '#000000', textAlign: 'center', fontSize: 18 }]}>Gerar Relatório</Text>
+        </View>
+      </Pressable>
+    </ScrollView>
+  );
+};

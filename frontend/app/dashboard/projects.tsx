@@ -49,12 +49,17 @@ export default function Projects() {
     getProjects();
   }, []);
 
+  const handleProjectPress = (projectId: string) => {
+    router.push(`/project/${projectId}/resume`);  
+  };
+
+
   // Renderizar cada projeto em um quadrado
   const renderProject = ({ item }: { item: ProjectData }) => {
     return (
       <Pressable
         style={styles.projectBox}
-        onPress={() => router.push("/dashboard/project/relatorio")} // Navegação com o router
+        onPress={() => handleProjectPress(item.id)} // Navegação com o router
       >
         <Text style={styles.projectName}>Nome: {item.name}</Text>
         <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
