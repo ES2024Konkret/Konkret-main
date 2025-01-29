@@ -24,9 +24,13 @@ def add_report(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return report_service.create_report(report.work_id, report.photos, report.observations, report.activities)
+        print(f"Chamando create_report com: work_id={report.work_id}, photos={report.photos}, observations={report.observations}, activities={report.activities}")
+        created_report = report_service.create_report(report.work_id, report.photos, report.observations, report.activities)
+        print(f"Relatório criado: {created_report}")
+        return created_report
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}") 
+        print(f"Erro ao criar relatório: {e}")
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 
 @router.get("", response_model=List[ReportPublic])
 def getall_reports(

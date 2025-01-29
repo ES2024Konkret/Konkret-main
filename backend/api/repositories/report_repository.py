@@ -5,17 +5,34 @@ from sqlalchemy.orm.attributes import flag_modified
 from backend.api.utils import get_coordinates
 from backend.api.utils import get_weather
 from fastapi import HTTPException
+from datetime import datetime
+from backend.api.core.schemas import ReportPublic
 
 class ReportRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, work_id: str, photos: list, observations: str, activities: list):
+    def create(self, work_id: str, photos: list, observations: str, activities: list) -> ReportPublic:
+    # Adicionando conversão explícita para string
+        if isinstance(observations, list):
+            observations = ''.join(observations)
+    
+        print(f"Criando relatório com: work_id={work_id}, photos={photos}, observations={observations}, activities={activities}")
         new_report = Report(work_id=work_id, photos=photos, observations=observations, activities=activities)
         self.db.add(new_report)
         self.db.commit()
         self.db.refresh(new_report)
-        return new_report
+        print(f"Relatório criado no banco de dados: {new_report}")
+    
+        return ReportPublic(
+        id=new_report.id,
+        work_id=new_report.work_id,
+        photos=new_report.photos,
+        observations=new_report.observations,
+        activities=new_report.activities,
+        created_at=new_report.created_at or datetime.now(),
+        updated_at=new_report.updated_at or datetime.now()
+    )
     
     def all(self):
         report = self.db.query(Report).all()
