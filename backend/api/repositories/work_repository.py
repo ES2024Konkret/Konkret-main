@@ -9,7 +9,7 @@ class WorkRepository:
 
     def create(self, proprietary_id: str, name: str, zip_code: str, state: str, public_place: str, neighborhood: str = None, number_addres: int = None, start_date: Date = None, end_date: Date = None ):
         new_work = Work(
-        proprietary_id=proprietary_id,
+        user_id=proprietary_id,
         name=name,
         zip_code=zip_code,
         state=state,

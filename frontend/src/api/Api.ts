@@ -39,10 +39,16 @@ export interface EmployeePublic {
   id: string;
   /** Role */
   role: string | null;
-  /** Salary */
-  salary: number | null;
-  /** Work Id */
-  work_id?: string | null;
+  /**
+   * Contract Start
+   * @format date-time
+   */
+  contract_start: string;
+  /**
+   * Contract End
+   * @format date-time
+   */
+  contract_end: string;
 }
 
 /** EmployeeSchema */
@@ -50,21 +56,143 @@ export interface EmployeeSchema {
   /** Name */
   name: string | null;
   /** Rg */
-  rg: number;
+  rg: string;
   /** Cpf */
-  cpf: number;
+  cpf: string;
   /** Role */
   role: string | null;
-  /** Salary */
-  salary: number;
-  /** Work Id */
-  work_id?: string | null;
+  /**
+   * Contract Start
+   * @format date-time
+   */
+  contract_start: string;
+  /**
+   * Contract End
+   * @format date-time
+   */
+  contract_end: string;
+}
+
+/** EquipmentPublic */
+export interface EquipmentPublic {
+  /** Id */
+  id: string;
+  /** Brand */
+  brand: string | null;
+  /** Type */
+  type: string;
+  /** Description */
+  description: string | null;
+  /** Quantity */
+  quantity: number;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** EquipmentSchema */
+export interface EquipmentSchema {
+  /** Brand */
+  brand: string | null;
+  /** Type */
+  type: string;
+  /** Description */
+  description: string | null;
+  /** Quantity */
+  quantity: number;
 }
 
 /** HTTPValidationError */
 export interface HTTPValidationError {
   /** Detail */
   detail?: ValidationError[];
+}
+
+/** JobSchema */
+export interface JobSchema {
+  /** Id */
+  id: string;
+  /** Work Id */
+  work_id?: string | null;
+  /** Employee Id */
+  employee_id?: string | null;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** JobSchemaPublic */
+export interface JobSchemaPublic {
+  /** Work Id */
+  work_id?: string | null;
+  /** Employee Id */
+  employee_id?: string | null;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** MaterialPublic */
+export interface MaterialPublic {
+  /** Id */
+  id: string;
+  /** Type */
+  type: string | null;
+  /** Cust */
+  cust: number | null;
+  /** Quantity */
+  quantity: number | null;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** MaterialSchema */
+export interface MaterialSchema {
+  /** Type */
+  type: string;
+  /** Cust */
+  cust: number;
+  /** Quantity */
+  quantity: number;
+}
+
+/** MaterialUpdateSchema */
+export interface MaterialUpdateSchema {
+  /** Type */
+  type: string | null;
+  /** Cust */
+  cust: number | null;
+  /** Quantity */
+  quantity: number | null;
 }
 
 /** ObservationPublic */
@@ -121,6 +249,69 @@ export interface ProprietarySchema {
   cpf: string;
 }
 
+/** RentEquipmentSchema */
+export interface RentEquipmentSchema {
+  /** Work Id */
+  work_id: string;
+  /** Equipment Id */
+  equipment_id: string;
+  /** Comments */
+  comments: string;
+  /** Start Time */
+  start_time: string | null;
+  /**
+   * End Time
+   * @format date-time
+   */
+  end_time: string;
+}
+
+/** RentEquipmentSchemaPublic */
+export interface RentEquipmentSchemaPublic {
+  /** Id */
+  id: string;
+  /** Work Id */
+  work_id: string;
+  /** Equipment Id */
+  equipment_id: string;
+  /** Comments */
+  comments: string;
+  /** Start Time */
+  start_time: string | null;
+  /**
+   * End Time
+   * @format date-time
+   */
+  end_time: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
+/** RentEquipmentUpdateSchema */
+export interface RentEquipmentUpdateSchema {
+  /** Work Id */
+  work_id: string | null;
+  /** Equipment Id */
+  equipment_id: string | null;
+  /** Comments */
+  comments: string;
+  /** Start Time */
+  start_time: string | null;
+  /**
+   * End Time
+   * @format date-time
+   */
+  end_time: string;
+}
+
 /** ReportPublic */
 export interface ReportPublic {
   /** Id */
@@ -130,7 +321,7 @@ export interface ReportPublic {
   /** Photos */
   photos: any[] | null;
   /** Observations */
-  observations: any[] | null;
+  observations: string;
   /** Activities */
   activities: any[] | null;
   /**
@@ -152,7 +343,7 @@ export interface ReportSchema {
   /** Photos */
   photos: any[] | null;
   /** Observations */
-  observations: any[] | null;
+  observations: string;
   /** Activities */
   activities: any[] | null;
 }
@@ -169,6 +360,8 @@ export interface UserPublic {
   cnpj: string | null;
   /** Email */
   email: string;
+  /** Phone */
+  phone: string;
 }
 
 /** UserSchema */
@@ -177,6 +370,8 @@ export interface UserSchema {
   name: string;
   /** Email */
   email: string;
+  /** Phone */
+  phone: string;
   /** Password */
   password: string;
   user_type: UserType;
@@ -206,10 +401,28 @@ export interface ValidationError {
 export interface WorkPublic {
   /** Id */
   id: string;
-  /** Address */
-  address: string;
-  /** Proprietary Id */
-  proprietary_id: string;
+  /** Name */
+  name: string;
+  /** Zip Code */
+  zip_code: string;
+  /** State */
+  state: string;
+  /** Neighborhood */
+  neighborhood?: string | null;
+  /** Public Place */
+  public_place: string;
+  /** Number Addres */
+  number_addres?: number | null;
+  /** Start Date */
+  start_date?: string | null;
+  /** End Date */
+  end_date?: string | null;
+  /** User Id */
+  user_id: string;
+  /** Rentequipment */
+  rentequipment?: RentEquipmentSchemaPublic[] | null;
+  /** Jobs */
+  jobs?: JobSchemaPublic[] | null;
   /**
    * Created At
    * @format date-time
@@ -224,10 +437,22 @@ export interface WorkPublic {
 
 /** WorkSchema */
 export interface WorkSchema {
-  /** Proprietary Id */
-  proprietary_id: string;
-  /** Address */
-  address: string;
+  /** Name */
+  name: string;
+  /** Zip Code */
+  zip_code: string;
+  /** State */
+  state: string;
+  /** Neighborhood */
+  neighborhood?: string | null;
+  /** Public Place */
+  public_place: string;
+  /** Number Addres */
+  number_addres?: number | null;
+  /** Start Date */
+  start_date?: string | null;
+  /** End Date */
+  end_date?: string | null;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -841,6 +1066,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags report
+     * @name GetMaterialsReportIdMaterialsGet
+     * @summary Get Materials
+     * @request GET:/report/{id}/materials
+     */
+    getMaterialsReportIdMaterialsGet: (id: string, params: RequestParams = {}) =>
+      this.request<any, HTTPValidationError>({
+        path: `/report/${id}/materials`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
   };
   proprietary = {
     /**
@@ -1112,6 +1353,332 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/work/${id}/workers`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetEquipmentsWorkIdEquipmentsGet
+     * @summary Get Equipments
+     * @request GET:/work/{id}/equipments
+     */
+    getEquipmentsWorkIdEquipmentsGet: (id: string, params: RequestParams = {}) =>
+      this.request<EquipmentPublic[], HTTPValidationError>({
+        path: `/work/${id}/equipments`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetEmployeesWorkIdEmployeesGet
+     * @summary Get Employees
+     * @request GET:/work/{id}/employees
+     */
+    getEmployeesWorkIdEmployeesGet: (id: string, params: RequestParams = {}) =>
+      this.request<EmployeePublic[], HTTPValidationError>({
+        path: `/work/${id}/employees`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  equipment = {
+    /**
+     * No description
+     *
+     * @tags equipment
+     * @name GetallEquipmentsEquipmentGet
+     * @summary Getall Equipments
+     * @request GET:/equipment
+     */
+    getallEquipmentsEquipmentGet: (params: RequestParams = {}) =>
+      this.request<EquipmentPublic[], any>({
+        path: `/equipment`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags equipment
+     * @name AddEquipmentEquipmentPost
+     * @summary Add Equipment
+     * @request POST:/equipment
+     */
+    addEquipmentEquipmentPost: (data: EquipmentSchema, params: RequestParams = {}) =>
+      this.request<EquipmentPublic, HTTPValidationError>({
+        path: `/equipment`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags equipment
+     * @name DeleteEquipmentEquipmentIdDelete
+     * @summary Delete Equipment
+     * @request DELETE:/equipment/{id}
+     */
+    deleteEquipmentEquipmentIdDelete: (id: string, params: RequestParams = {}) =>
+      this.request<EquipmentPublic, HTTPValidationError>({
+        path: `/equipment/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags equipment
+     * @name UpdateEquipmentEquipmentIdPut
+     * @summary Update Equipment
+     * @request PUT:/equipment/{id}
+     */
+    updateEquipmentEquipmentIdPut: (id: string, data: EquipmentSchema, params: RequestParams = {}) =>
+      this.request<EquipmentPublic, HTTPValidationError>({
+        path: `/equipment/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags equipment
+     * @name GetEquipmentEquipmentIdGet
+     * @summary Getequipment
+     * @request GET:/equipment/{id}
+     */
+    getEquipmentEquipmentIdGet: (id: string, params: RequestParams = {}) =>
+      this.request<EquipmentPublic, HTTPValidationError>({
+        path: `/equipment/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  rentequipment = {
+    /**
+     * No description
+     *
+     * @tags rentequipment
+     * @name GetallRentEquipmentsRentequipmentGet
+     * @summary Getall Rent Equipments
+     * @request GET:/rentequipment
+     */
+    getallRentEquipmentsRentequipmentGet: (params: RequestParams = {}) =>
+      this.request<RentEquipmentSchemaPublic[], any>({
+        path: `/rentequipment`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags rentequipment
+     * @name CreateRentEquipmentRentequipmentPost
+     * @summary Create Rent Equipment
+     * @request POST:/rentequipment
+     */
+    createRentEquipmentRentequipmentPost: (data: RentEquipmentSchema, params: RequestParams = {}) =>
+      this.request<RentEquipmentSchemaPublic, HTTPValidationError>({
+        path: `/rentequipment`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags rentequipment
+     * @name UpdateRentequipmentRentequipmentIdUpdatePut
+     * @summary Update Rentequipment
+     * @request PUT:/rentequipment/{id}/update
+     */
+    updateRentequipmentRentequipmentIdUpdatePut: (
+      id: string,
+      data: RentEquipmentUpdateSchema,
+      params: RequestParams = {},
+    ) =>
+      this.request<RentEquipmentSchemaPublic, HTTPValidationError>({
+        path: `/rentequipment/${id}/update`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  jobs = {
+    /**
+     * No description
+     *
+     * @tags job
+     * @name GetallJobsJobsGet
+     * @summary Getall Jobs
+     * @request GET:/jobs
+     * @secure
+     */
+    getallJobsJobsGet: (params: RequestParams = {}) =>
+      this.request<JobSchema[], any>({
+        path: `/jobs`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags job
+     * @name AddJobJobsPost
+     * @summary Add Job
+     * @request POST:/jobs
+     * @secure
+     */
+    addJobJobsPost: (data: JobSchemaPublic, params: RequestParams = {}) =>
+      this.request<JobSchemaPublic, HTTPValidationError>({
+        path: `/jobs`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags job
+     * @name GetJobJobsIdGet
+     * @summary Get Job
+     * @request GET:/jobs/{id}
+     * @secure
+     */
+    getJobJobsIdGet: (id: string, params: RequestParams = {}) =>
+      this.request<JobSchema, HTTPValidationError>({
+        path: `/jobs/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags job
+     * @name DeleteJobJobsIdDelete
+     * @summary Delete Job
+     * @request DELETE:/jobs/{id}
+     * @secure
+     */
+    deleteJobJobsIdDelete: (id: string, params: RequestParams = {}) =>
+      this.request<JobSchemaPublic, HTTPValidationError>({
+        path: `/jobs/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  material = {
+    /**
+     * No description
+     *
+     * @tags material
+     * @name AddMaterialMaterialPost
+     * @summary Add Material
+     * @request POST:/material
+     */
+    addMaterialMaterialPost: (
+      query: {
+        /** Report Id */
+        report_id: string;
+      },
+      data: MaterialSchema,
+      params: RequestParams = {},
+    ) =>
+      this.request<MaterialPublic, HTTPValidationError>({
+        path: `/material`,
+        method: "POST",
+        query: query,
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags material
+     * @name DeleteMaterialMaterialIdDelete
+     * @summary Delete Material
+     * @request DELETE:/material/{id}
+     */
+    deleteMaterialMaterialIdDelete: (id: string, params: RequestParams = {}) =>
+      this.request<MaterialPublic, HTTPValidationError>({
+        path: `/material/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags material
+     * @name UpdateMaterialMaterialIdPut
+     * @summary Update Material
+     * @request PUT:/material/{id}
+     */
+    updateMaterialMaterialIdPut: (id: string, data: MaterialUpdateSchema, params: RequestParams = {}) =>
+      this.request<MaterialUpdateSchema, HTTPValidationError>({
+        path: `/material/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags material
+     * @name GetMaterialMaterialIdGet
+     * @summary Getmaterial
+     * @request GET:/material/{id}
+     */
+    getMaterialMaterialIdGet: (id: string, params: RequestParams = {}) =>
+      this.request<MaterialPublic, HTTPValidationError>({
+        path: `/material/${id}`,
+        method: "GET",
         format: "json",
         ...params,
       }),

@@ -19,7 +19,7 @@ def add_work(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return work_service.create_work(work.proprietary_id, work.name, work.zip_code, work.state, work.public_place, work.neighborhood, work.number_addres, work.start_date, work.end_date)
+        return work_service.create_work(user_logged.id, work.name, work.zip_code, work.state, work.public_place, work.neighborhood, work.number_addres, work.start_date, work.end_date)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

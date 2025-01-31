@@ -17,10 +17,10 @@ def add_user(
     user_service: Annotated[UserService, Depends(get_user_service)]
 ):
     password_error = is_valid_password(user.password)
-    phone_error = validate_phone_number(user.phone)
+    # phone_error = validate_phone_number(user.phone)
 
-    if not phone_error:
-        raise HTTPException(status_code=400, detail="Telefone inválido")
+    # if not phone_error:
+    #     raise HTTPException(status_code=400, detail="Telefone inválido")
     
     if password_error:
         raise HTTPException(status_code=400, detail=password_error)
@@ -90,7 +90,7 @@ def get_user(
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
-        return user_service.get(id)
+        return user_service.get(user_logged.id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     

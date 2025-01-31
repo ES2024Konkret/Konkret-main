@@ -1,1 +1,0 @@
-CREATE DATABASE konkret_db;

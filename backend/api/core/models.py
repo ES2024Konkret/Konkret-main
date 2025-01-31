@@ -25,6 +25,7 @@ class User(Base):
     user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    works = relationship("Work", back_populates="user")
 
 class User_association(Base):
     __tablename__ = "usersassociation"
@@ -41,10 +42,9 @@ class User_association(Base):
 class Proprietary(Base):
     __tablename__ = "proprietaries"
 
-    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
     name = mapped_column(String, nullable=False)
     cpf = mapped_column(String, nullable=False, unique=True)
-    works = relationship("Work", back_populates="proprietary")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -54,8 +54,8 @@ class Employee(Base):
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     name = mapped_column(String, nullable=True)
-    rg = mapped_column(Integer, nullable=True, unique=True)
-    cpf = mapped_column(Integer, nullable=False, unique=True)
+    rg = mapped_column(String, nullable=True, unique=True)
+    cpf = mapped_column(String, nullable=False, unique=True)
     role = mapped_column(String, nullable=True)
     contract_start = mapped_column(DateTime(timezone=True), nullable=False) 
     contract_end = mapped_column(DateTime(timezone=True), nullable=False)
@@ -81,7 +81,7 @@ class Report(Base):
 
     id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
     photos = mapped_column(ARRAY(String), nullable=True)
-    observations = mapped_column(ARRAY(String), nullable=True)
+    observations = mapped_column(String, nullable=True)
     activities = mapped_column(ARRAY(String), nullable=True)
     work_id = mapped_column(ForeignKey("works.id"), nullable=True)
     work = relationship("Work", back_populates="reports")
@@ -92,21 +92,20 @@ class Report(Base):
 class Work(Base):
     __tablename__ = 'works'
 
-    id: Mapped[String] = mapped_column(String, primary_key=True, index=True,default=lambda: str(uuid4()))
+    id: Mapped[String] = mapped_column(String, primary_key=True, index=True, default=lambda: str(uuid4()))
     name = mapped_column(String, nullable=False)
     zip_code = mapped_column(String, nullable=False)
     state = mapped_column(String, nullable=False)
     neighborhood = mapped_column(String, nullable=True)
-    public_place = mapped_column(String, nullable=False)  
+    public_place = mapped_column(String, nullable=False)
     number_addres = mapped_column(Integer, nullable=True)
     start_date = mapped_column(Date, nullable=True)
     end_date = mapped_column(Date, nullable=True)
     reports = relationship("Report", back_populates="work")
-    proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=False)
-    proprietary = relationship("Proprietary", back_populates="works")
+    user_id = mapped_column(ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="works")
     rentequipment = relationship("RentEquipment", back_populates="work")
     jobs = relationship("Job", back_populates="works")
-    users = relationship("User_association", back_populates="work")
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

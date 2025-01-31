@@ -1,9 +1,13 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "expo": "^52.0.17",
     "swagger-typescript-api": "^13.0.23"
   },
   "devDependencies": {
     "axios": "^1.7.9"
+=======
+    "react-native-calendars": "^1.1308.1"
+>>>>>>> mergeConflitos2
   }
 }

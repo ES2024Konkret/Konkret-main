@@ -1,7 +1,7 @@
 import { Api } from "./Api";
 
 const apiClient = new Api({
-  baseURL: "http://localhost:8000",
+  baseURL: "http://localhost:8001",
   withCredentials: true,
 });
 

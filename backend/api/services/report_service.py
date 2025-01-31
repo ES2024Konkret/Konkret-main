@@ -5,7 +5,7 @@ class ReportService:
     def __init__(self, db: Session):
         self.report_repository = ReportRepository(db)
 
-    def create_report(self, work_id: str, photos: list, observations: list, activities: list):
+    def create_report(self, work_id: str, photos: list, observations: str, activities: list):
         return self.report_repository.create(work_id, photos, observations, activities)
 
     def all(self):

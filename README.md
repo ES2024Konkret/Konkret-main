@@ -38,7 +38,7 @@ uv run alembic upgrade head
 
 1. rode a api com o seguinte comando
 ```bash
-uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload
+uv run uvicorn backend.api.main:app --host 0.0.0.0 --reload --port 8001
 ```
 
 2. Para acessar o frontend, acesse a pasta frontend
@@ -53,7 +53,7 @@ npm install
 
 4. Inicie o expo com o seguinte comando
 ```bash
-npm start
+npm install
 ```
 
 ## Extras
