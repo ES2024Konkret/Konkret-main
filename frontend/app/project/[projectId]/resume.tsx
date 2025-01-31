@@ -104,10 +104,9 @@ export default function Relatorio() {
       const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
       const token = await AsyncStorage.getItem("authToken");
       const photoUrls = photos.map(photo => photo.uri);
-      const observationsList = observations.split(' ');  // Converte a string para lista de strings
 
       const reportData = {
-        work_id,
+        work_id: projectId,
         photos: photoUrls,
         observations,
         activities: activities
@@ -137,6 +136,7 @@ export default function Relatorio() {
       return null;
     }
   }
+
 
   return (
     <ScrollView contentContainerStyle={report.container}>
