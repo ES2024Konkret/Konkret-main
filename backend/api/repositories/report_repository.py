@@ -13,9 +13,6 @@ class ReportRepository:
         self.db = db
 
     def create(self, work_id: str, photos: list, observations: str, activities: list) -> ReportPublic:
-    # Adicionando conversão explícita para string
-        if isinstance(observations, list):
-            observations = ''.join(observations)
     
         print(f"Criando relatório com: work_id={work_id}, photos={photos}, observations={observations}, activities={activities}")
         new_report = Report(work_id=work_id, photos=photos, observations=observations, activities=activities)

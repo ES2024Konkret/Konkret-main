@@ -13,7 +13,6 @@ interface ProjectData {
   state?: string;
   neighborhood?: string;
   public_place?: string;
-  id: string;
 }
 
 export default function Projects() {
@@ -38,7 +37,6 @@ export default function Projects() {
               state: project.state || "Não informado",
               neighborhood: project.neighborhood || "Não informado",
               public_place: project.public_place || "Não informado",
-              id: project.id,
             }))
           );
         }

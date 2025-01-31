@@ -8,7 +8,7 @@ import { new_project_styles } from "@/src/styles/dashboard_styles";
 import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
-import {LocaleConfig, Calendar} from "react-native-calendars"
+import { LocaleConfig, Calendar } from "react-native-calendars"
 
 export default function Relatorio() {
   const today = new Date();
@@ -25,42 +25,42 @@ export default function Relatorio() {
   const { projectId } = useLocalSearchParams();
 
   LocaleConfig.locales['br'] = {
-  monthNames: [
-    'Janeiro','Fevereiro','Março',
-    'Abril','Maio','Junho',
-    'Julho','Agosto','Setembro',
-    'Outubro','Novembro','Dezembro',
-  ],
-  monthNamesShort: [
-    'Jan','Fev','Mar',
-    'Abr','Mai','Jun',
-    'Jul','Ago','Set',
-    'Out','Nov','Dez',
-  ],
-  dayNames: [
-    'Domingo','Segunda','Terça',
-    'Quarta','Quinta','Sexta',
-    'Sábado',
-  ],
-  dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-  today: 'Hoje',
-};
-    LocaleConfig.defaultLocale = 'br';
-    months = [
-    'Janeiro','Fevereiro','Março',
-    'Abril','Maio','Junho',
-    'Julho','Agosto','Setembro',
-    'Outubro','Novembro','Dezembro',
+    monthNames: [
+      'Janeiro', 'Fevereiro', 'Março',
+      'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro',
+      'Outubro', 'Novembro', 'Dezembro',
+    ],
+    monthNamesShort: [
+      'Jan', 'Fev', 'Mar',
+      'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set',
+      'Out', 'Nov', 'Dez',
+    ],
+    dayNames: [
+      'Domingo', 'Segunda', 'Terça',
+      'Quarta', 'Quinta', 'Sexta',
+      'Sábado',
+    ],
+    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    today: 'Hoje',
+  };
+  LocaleConfig.defaultLocale = 'br';
+  months = [
+    'Janeiro', 'Fevereiro', 'Março',
+    'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro',
+    'Outubro', 'Novembro', 'Dezembro',
   ],
     month_index = today.getMonth();
-    const [currentMonth, setCurrentMonth] = useState(months[month_index]);
-    const [currentYear, setCurrentYear] = useState(today.getFullYear());
-    
-    //const today = new Date();
-    //setCurrentMonth(today.getMonth()+1);
-    //setCurrentYear(today.getFullYear());
-  
- const handleAddPhoto = async () => {
+  const [currentMonth, setCurrentMonth] = useState(months[month_index]);
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
+  //const today = new Date();
+  //setCurrentMonth(today.getMonth()+1);
+  //setCurrentYear(today.getFullYear());
+
+  const handleAddPhoto = async () => {
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
@@ -80,16 +80,16 @@ export default function Relatorio() {
       Alert.alert('Erro', 'ID do trabalho não encontrado');
       return;
     }
-  
+
     if (!observations.trim()) {
       Alert.alert('Aviso', 'Por favor, adicione observações ao relatório');
       return;
     }
-  
+
     setIsLoading(true);
     const reportId = await newReport(work_id, photos, observations, manhã, tarde, noite);
     setIsLoading(false);
-    
+
     if (reportId) {
       Alert.alert('Sucesso', 'Relatório gerado com sucesso!');
       setReportId(reportId); // Armazena o reportId
@@ -99,44 +99,44 @@ export default function Relatorio() {
     }
   };
 
-  async function newReport(work_id:string, photos:Array<string>, observations:string, manhã:string, tarde:string, noite:string) {
+  async function newReport(work_id: string, photos: Array<string>, observations: string, manhã: string, tarde: string, noite: string) {
     try {
-        const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
-        const token = await AsyncStorage.getItem("authToken");
-        const photoUrls = photos.map(photo => photo.uri);
-        const observationsList = observations.split(' ');  // Converte a string para lista de strings
-    
-        const reportData = {
-            work_id: work_id,
-            photos: photoUrls,
-            observations: observationsList,
-            activities: activities
-        };
-    
-        const response = await apiClient.report.addReportReportPost(
-            reportData, // enviando dados no corpo da requisição
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-    
-        if (response && response.status === 200) {
-            return response.data.id; // Retorna o reportId do novo relatório criado
-        } else {
-            return null;
+      const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
+      const token = await AsyncStorage.getItem("authToken");
+      const photoUrls = photos.map(photo => photo.uri);
+      const observationsList = observations.split(' ');  // Converte a string para lista de strings
+
+      const reportData = {
+        work_id: work_id,
+        photos: photoUrls,
+        observations: observationsList,
+        activities: activities
+      };
+
+      const response = await apiClient.report.addReportReportPost(
+        reportData, // enviando dados no corpo da requisição
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         }
-    } catch (error) {
-        console.error('Erro ao enviar relatório:', error);
-        Alert.alert(
-            'Erro',
-            'Houve um erro ao gerar o relatório. Por favor, tente novamente.'
-        );
+      );
+
+      if (response && response.status === 200) {
+        return response.data.id; // Retorna o reportId do novo relatório criado
+      } else {
         return null;
+      }
+    } catch (error) {
+      console.error('Erro ao enviar relatório:', error);
+      Alert.alert(
+        'Erro',
+        'Houve um erro ao gerar o relatório. Por favor, tente novamente.'
+      );
+      return null;
     }
-}
+  }
 
   const handleDownloadPDF = async () => {
     if (!reportId) {
@@ -181,45 +181,45 @@ export default function Relatorio() {
           <Text style={[projects_styles.header, { color: '#001bcc', textAlign: 'left' }]}>{currentMonth}</Text>
           <Text style={[projects_styles.subHeader, { color: '#001bcc', textAlign: 'left' }]}>{currentYear}</Text>
         </View>
-        
-        <Calendar 
-            locale={'br'}
-            style={report.calendario} 
-            theme={{
-                textMonthFontSize: 18,
-                dayTextColor: "009ccc",
-            }
-            }
-            onMonthChange={(month) => {
-                const {month: monthNumber, year} = month;
-                const monthNames = [
-                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-                ];
-                setCurrentMonth(`${monthNames[monthNumber-1]}`);
-                setCurrentYear(`${year}`);
-            }
-            }
-            onDayPress={day => {
-                console.log('selected day', day);
-            }}
 
-            />
+        <Calendar
+          locale={'br'}
+          style={report.calendario}
+          theme={{
+            textMonthFontSize: 18,
+            dayTextColor: "009ccc",
+          }
+          }
+          onMonthChange={(month) => {
+            const { month: monthNumber, year } = month;
+            const monthNames = [
+              'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+              'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            setCurrentMonth(`${monthNames[monthNumber - 1]}`);
+            setCurrentYear(`${year}`);
+          }
+          }
+          onDayPress={day => {
+            console.log('selected day', day);
+          }}
+
+        />
 
         <View style={{ flex: 3, justifyContent: "center" }}>
-        <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
-          <View style={[report.button, {
-            backgroundColor: '#001bcc',
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 4,
-            elevation: 4,
-          }]}>
-    
-            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Funcionário</Text>
-           
-          </View>
+          <Pressable onPress={() => router.push(`/project/${projectId}/view_employees`)}>
+            <View style={[report.button, {
+              backgroundColor: '#001bcc',
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+              elevation: 4,
+            }]}>
+
+              <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Funcionário</Text>
+
+            </View>
           </Pressable>
 
           <View style={[report.button, {
@@ -285,6 +285,15 @@ export default function Relatorio() {
           value={tarde}
           onChangeText={setTarde}
         />
-        <TextInput style={new_project_styles.input} placeholder="Noite:" value={noite} onChangeText={setNoite} /> 
-        </View> 
-        <Pressable onPress={() => { console.log("Botão pressionado!"); newReport(work_id, photos, observations, manhã, tarde, noite); }} disabled={isLoading} style={({ pressed }) => [ report.button, { backgroundColor: isLoading ? '#cccccc' : pressed ? '#e5a730' : '#fdb834', opacity: isLoading ? 0.7 : 1 } ]} > <Text style={[report.label, { color: '#000000', textAlign: 'center', fontSize: 18 }]}> {isLoading ? 'Gerando Relatório...' : 'Gerar Relatório'} </Text> </Pressable> </ScrollView> ); };
+        <TextInput style={new_project_styles.input} placeholder="Noite:" value={noite} onChangeText={setNoite} />
+      </View>
+      <Pressable onPress={() => {
+        console.log("Botão pressionado!");
+        newReport(work_id, photos, observations, manhã, tarde, noite);
+      }} disabled={isLoading} style={({ pressed }) => [report.button, { backgroundColor: isLoading ? '#cccccc' : pressed ? '#e5a730' : '#fdb834', opacity: isLoading ? 0.7 : 1 }]} >
+        <Text style={[report.label, { color: '#000000', textAlign: 'center', fontSize: 18 }]}>
+          {isLoading ? 'Gerando Relatório...' : 'Gerar Relatório'}
+        </Text>
+      </Pressable>
+    </ScrollView>);
+};

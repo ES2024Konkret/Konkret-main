@@ -62,14 +62,14 @@ class LoginSchema(BaseModel):
 class ReportSchema(BaseModel):
     work_id: str
     photos: Optional[List[str]] = []
-    observations: Optional[List[str]] = []
+    observations: Optional[str] = None  
     activities: Optional[List[str]] = []
 
 class ReportPublic(BaseModel):
     id: str
     work_id: str
     photos: Optional[List[str]] = []
-    observations: Optional[List[str]] = []
+    observations: Optional[str] = None  
     activities: Optional[List[str]] = []
     created_at: datetime
     updated_at: datetime
