@@ -9,6 +9,8 @@ import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
 import { LocaleConfig, Calendar } from "react-native-calendars"
+import * as FileSystem from 'expo-file-system';
+import { Platform } from 'react-native';
 
 export default function Relatorio() {
   const today = new Date();
@@ -104,16 +106,16 @@ export default function Relatorio() {
       const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
       const token = await AsyncStorage.getItem("authToken");
       const photoUrls = photos.map(photo => photo.uri);
-
+  
       const reportData = {
         work_id: projectId,
         photos: photoUrls,
         observations,
         activities: activities
       };
-
+  
       const response = await apiClient.report.addReportReportPost(
-        reportData, // enviando dados no corpo da requisição
+        reportData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -121,9 +123,84 @@ export default function Relatorio() {
           }
         }
       );
-
+  
       if (response && response.status === 200) {
-        return response.data.id; // Retorna o reportId do novo relatório criado
+        const reportId = response.data.id;
+  
+        try {
+          // Download CSV usando o mesmo padrão do apiClient
+          const csvResponse = await apiClient.report.getCsvReportIdCsvGet(
+            reportId,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              responseType: 'blob', // Importante para receber o arquivo
+            }
+          );
+  
+          if (Platform.OS === 'web') {
+            // Abordagem para web
+            const blob = new Blob([csvResponse.data], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `report_${reportId}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+  
+            Alert.alert(
+              'Sucesso',
+              'Relatório gerado e CSV baixado com sucesso!',
+              [{ text: 'OK' }]
+            );
+          } else {
+            // Abordagem para dispositivos móveis
+            const downloadDir = FileSystem.documentDirectory + 'downloads/';
+            const dirInfo = await FileSystem.getInfoAsync(downloadDir);
+            if (!dirInfo.exists) {
+              await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
+            }
+  
+            const filename = `report_${reportId}_${new Date().getTime()}.csv`;
+            const fileUri = downloadDir + filename;
+  
+            // Converter o blob para um formato que o FileSystem possa salvar
+            const reader = new FileReader();
+            reader.onload = async () => {
+              try {
+                await FileSystem.writeAsStringAsync(fileUri, reader.result, {
+                  encoding: FileSystem.EncodingType.UTF8,
+                });
+  
+                Alert.alert(
+                  'Sucesso',
+                  'Relatório gerado e CSV baixado com sucesso!\nArquivo salvo em: ' + fileUri,
+                  [{ text: 'OK' }]
+                );
+              } catch (error) {
+                console.error('Erro ao salvar arquivo:', error);
+                Alert.alert(
+                  'Erro',
+                  'Ocorreu um erro ao salvar o arquivo CSV.',
+                  [{ text: 'OK' }]
+                );
+              }
+            };
+            reader.readAsText(csvResponse.data);
+          }
+        } catch (csvError) {
+          console.error('Erro ao baixar CSV:', csvError);
+          Alert.alert(
+            'Aviso',
+            'Relatório gerado com sucesso, mas não foi possível baixar o CSV.',
+            [{ text: 'OK' }]
+          );
+        }
+  
+        return reportId;
       } else {
         return null;
       }
@@ -136,7 +213,6 @@ export default function Relatorio() {
       return null;
     }
   }
-
 
   return (
     <ScrollView contentContainerStyle={report.container}>
