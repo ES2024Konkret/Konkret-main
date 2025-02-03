@@ -13,31 +13,30 @@ import ArrowSVG from "@/assets/svg/chevron-left.svg"
 
 interface EquipmentData {
     id: string;
-    name: string;
-    da: string;
+    type: string;
+    brand: string;
 }
 
 export default function ViewEquipments() {
     const router = useRouter();
     const { projectId } = useLocalSearchParams();
 
-    const [employees, setEmployees] = useState<EmployeeData[]>([]);
+    const [equipments, setEquipments] = useState<EquipmentData[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     async function getEmployees() {
         const token = await AsyncStorage.getItem("authToken");
         if (token) {
-            apiClient.work
-                .getEmployeesWorkIdEmployeesGet(String(projectId), {
+            apiClient.work.getEquipmentsWorkIdEquipmentsGet(String(projectId), {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {
                     if (response && response.status === 200) {
-                        const fetchedEmployee = response.data;
-                        setEmployees(fetchedEmployee.map((employee: any) => ({
-                            id: employee.id,
-                            name: employee.name,
-                            role: employee.role
+                        const fetchedEquipment = response.data;
+                        setEquipments(fetchedEquipment.map((equipment: any) => ({
+                            id: equipment.id,
+                            type: equipment.type,
+                            brand: equipment.brand
                         })));
                     }
                 })
@@ -49,8 +48,8 @@ export default function ViewEquipments() {
         getEmployees();
     }, []);
 
-    const filteredEmployees = employees.filter((employee) =>
-        employee.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredEmployees = equipments.filter((equipment) =>
+        equipment.type.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -89,17 +88,16 @@ export default function ViewEquipments() {
                         alignItems: "center",
                         minHeight: '100%'
                     }}>
-                        {filteredEmployees.map((employee) => (
-                            <View key={employee.id} style={employee_styles.employeeBox}>
+                        {filteredEmployees.map((equipment) => (
+                            <View key={equipment.id} style={employee_styles.employeeBox}>
                                 <View style={{
                                     flexDirection: 'row',
                                     alignItems: "center",
                                     gap: 15,
                                 }}>
-                                    <View style={[employee_styles.roundImage, { backgroundColor: 'grey' }]}></View>
                                     <View>
-                                        <Text style={employee_styles.employeeName}>{employee.name}</Text>
-                                        <Text style={employee_styles.employeeRole}>{employee.role}</Text>
+                                        <Text style={employee_styles.employeeName}>{equipment.type}</Text>
+                                        <Text style={employee_styles.employeeRole}>{equipment.brand}</Text>
                                     </View>
                                 </View>
                                 <EditSVG />
