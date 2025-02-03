@@ -12,7 +12,7 @@ from fpdf import FPDF
 from datetime import datetime
 from io import StringIO
 import csv
-
+import io
 router = APIRouter(
     prefix="/report",
     tags=["report"]
@@ -296,31 +296,24 @@ class EngineeringReportPDF(FPDF):
 
 @router.get("/{id}/pdf")
 def get_pdf(
-    id: str,
+    id: str, 
     report_service: Annotated[ReportService, Depends(get_report_service)],
     user_logged: User = Depends(get_current_user)
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+    
     try:
         report = report_service.get(id)
+        if not report:
+            raise HTTPException(status_code=404, detail="Relatório não encontrado.")
         weather = report_service.get_climate(id)
-
-        data = [{
-            "ID": report.id,
-            "Observações": ", ".join(report.observations),
-            "Atividades": ", ".join(report.activities),
-            "Clima": weather
-        }]
-
-        pdf = FPDF()
         weather_str = str(weather) if weather else "Não disponível"
 
-        # Criar PDF
         pdf = EngineeringReportPDF()
         pdf.alias_nb_pages()
         pdf.add_page()
-        
+
         # Informações do Relatório
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, f'Relatório Nº: {id}', 0, 1)
@@ -332,49 +325,50 @@ def get_pdf(
         pdf.set_fill_color(240, 240, 240)
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Condições Climáticas', 0, 1, 'L', 1)
-        pdf.set_font('Arial', '', 11)
-        pdf.multi_cell(0, 10, weather_str)
+        pdf.set_font('Arial', '', 10)  # Reduza o tamanho da fonte
+        pdf.multi_cell(180, 10, weather_str)  # Ajuste a largura
         pdf.ln(5)
 
         # Seção de Atividades
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Atividades Realizadas', 0, 1, 'L', 1)
-        pdf.set_font('Arial', '', 11)
+        pdf.set_font('Arial', '', 10)  # Reduza o tamanho da fonte
         if hasattr(report, 'activities') and report.activities:
             for activity in report.activities:
                 pdf.cell(10, 10, '-', 0, 0)
-                pdf.multi_cell(0, 10, str(activity))
+                pdf.multi_cell(180, 10, str(activity))  # Ajuste a largura
         else:
-            pdf.multi_cell(0, 10, "Nenhuma atividade registrada")
+            pdf.multi_cell(180, 10, "Nenhuma atividade registrada")  # Ajuste a largura
         pdf.ln(5)
 
         # Seção de Observações
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Observações', 0, 1, 'L', 1)
-        pdf.set_font('Arial', '', 11)
+        pdf.set_font('Arial', '', 10)  # Reduza o tamanho da fonte
         if hasattr(report, 'observations') and report.observations:
-            for observation in report.observations:
-                pdf.cell(10, 10, '-', 0, 0)
-                pdf.multi_cell(0, 10, str(observation))
+            pdf.multi_cell(180, 10, report.observations)  # Observations are now single string
         else:
-            pdf.multi_cell(0, 10, "Nenhuma observação registrada")
-        
+            pdf.multi_cell(180, 10, "Nenhuma observação registrada")  # Ajuste a largura
+
         # Área para Assinatura
         pdf.ln(20)
         pdf.line(30, pdf.get_y(), 180, pdf.get_y())
         pdf.set_font('Arial', 'I', 10)
         pdf.cell(0, 10, f'Assinatura do Responsável: {user_logged.name}', 0, 1, 'C')
 
-        pdf_output = bytes(pdf.output(dest='S'))
+        # Gerar PDF
+        pdf_output = io.BytesIO()
+        pdf.output(pdf_output)
+        pdf_output.seek(0)  # Resetar o ponteiro do buffer
         return Response(
-            content=pdf_output,
-            media_type="application/pdf",
+            content=pdf_output.getvalue(), 
+            media_type="application/pdf", 
             headers={"Content-Disposition": f"attachment; filename=report_{id}.pdf"}
         )
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erro ao gerar o PDF: {str(e)}")
-
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
 @router.get("/{id}/materials")
 def get_materials(
     id: str,
