@@ -199,6 +199,76 @@ export default function Relatorio() {
             [{ text: 'OK' }]
           );
         }
+        try {
+          // Download PDF
+          const pdfResponse = await apiClient.report.getPdfReportIdPdfGet(
+            reportId,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              responseType: 'blob'
+            }
+          );
+  
+          if (Platform.OS === 'web') {
+            const blob = new Blob([pdfResponse.data], { type: 'text/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('b');
+            link.href = url;
+            link.setAttribute('download', `report_${reportId}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+  
+            Alert.alert(
+              'Sucesso',
+              'Relatório gerado e PDF baixado com sucesso!',
+              [{ text: 'OK' }]
+            );
+          } else {
+            const downloadDir = FileSystem.documentDirectory + 'downloads/';
+            const dirInfo = await FileSystem.getInfoAsync(downloadDir);
+            if (!dirInfo.exists) {
+              await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
+            }
+  
+            const filename = `report_${reportId}_${new Date().getTime()}.pdf`;
+            const fileUri = downloadDir + filename;
+  
+            const reader = new FileReader();
+            reader.onload = async () => {
+              try {
+                await FileSystem.writeAsStringAsync(fileUri, reader.result, {
+                  encoding: FileSystem.EncodingType.UTF8,
+                });
+  
+                Alert.alert(
+                  'Sucesso',
+                  'Relatório gerado e PDF baixado com sucesso!\nArquivo salvo em: ' + fileUri,
+                  [{ text: 'OK' }]
+                );
+              } catch (error) {
+                console.error('Erro ao salvar arquivo:', error);
+                Alert.alert(
+                  'Erro',
+                  'Ocorreu um erro ao salvar o arquivo PDF.',
+                  [{ text: 'OK' }]
+                );
+              }
+            };
+            reader.readAsText(pdfResponse.data);
+          }
+        } catch (pdfError) {
+          console.error('Erro ao baixar PDF:', pdfError);
+          Alert.alert(
+            'Aviso',
+            'Relatório gerado com sucesso, mas não foi possível baixar o PDF.',
+            [{ text: 'OK' }]
+          );
+        }
+
   
         return reportId;
       } else {
