@@ -10,26 +10,13 @@ import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 export default function NewEmployee() {
     const router = useRouter();
     const { projectId } = useLocalSearchParams();
-
-
-    // brand: Annotated[str, Query()] | None
-    // type: Annotated[str, Query()]
-    // description: Annotated[str, Query()] | None
-    // quantity: Annotated[int, Query()]
-    // class RentEquipmentSchema(BaseModel):
-    // work_id: Annotated[str, Query()]
-    // equipment_id: Annotated[str, Query()]
-    // comments: Annotated[str, Query()]
-    // start_time: Annotated[datetime, Query()] | None
-    // end_time: Annotated[datetime, Query()]
-
-    // Estados para armazenar os valores dos inputs
     const [brand, setBrand] = useState("");
     const [type, setType] = useState("");
     const [description, setDescription] = useState("");
     const [quantity_string, setQuantity] = useState("");
     const [contractStart, setContractStart] = useState("");
     const [contractEnd, setContractEnd] = useState("");
+    const [equipmentId, setEquipmentId] = useState("");
 
     const stringToDateString = (dateString: string) => {
         const [day, month, year] = dateString.split("/").map(Number);
@@ -39,10 +26,12 @@ export default function NewEmployee() {
     };
 
     // Função para criar um novo funcionário
-    async function createEquipment(brand: string, type: string, description: string, quantity_string: string, ) {  // Add Data
+    async function createEquipment(brand: string, type: string, description: string, quantity_string: string, workk_id: string, equipment_id: string, comments: string, start_time: string, end_time: string){
         const token = await AsyncStorage.getItem("authToken");
         let quantity = Number(quantity_string)
-        apiClient.equipment.addEquipmentEquipmentPost({
+        let work_id = String(projectId)
+        apiClient.equipment.
+        addEquipmentEquipmentPost({
                 brand,
                 type,
                 quantity,
@@ -57,17 +46,41 @@ export default function NewEmployee() {
                 })
             .then((response) => {
                 if (response && response.status === 200) {
-                    router.push(`/project/${projectId}/equipamentos/add`);
-                }
+                    //router.push(`/project/${projectId}/equipamentos/add`);
+                    setEquipmentId(response.data.id);
+                    equipment_id = equipmentId;
+                    apiClient.rentequipment.
+                    createRentEquipmentRentequipmentPost({  
+                        work_id, 
+                        equipment_id, 
+                        comments, 
+                        start_time, 
+                        end_time
+                        },
+                            {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                    .then((response) => {
+                        if (response && response.status === 200) {
+                            router.push(`/project/${projectId}/equipamentos/add`);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+                            }
             })
             .catch((error) => {
                 console.error(error);
             });
+        
     } 
 
     // Função para enviar os dados
     const handleSubmit = () => {
-        if (!brand|| !type || !description || !quantity_string) { //add data
+        if (!brand|| !type || !quantity_string || !contractStart ||!contractEnd) { //add data
             console.log("Por favor, preencha todos os campos!");
             return;
         }
@@ -76,7 +89,7 @@ export default function NewEmployee() {
         const start_date = stringToDateString(contractStart);
         const end_date = stringToDateString(contractEnd);
 
-        createEquipment(brand, type, description, quantity_string); //add data
+        createEquipment(brand, type, description, quantity_string, String(projectId),"","", start_date, end_date); //add data
     };
 
     return (
@@ -156,7 +169,7 @@ export default function NewEmployee() {
 
                                 <Pressable style={[styles.formButton, { marginTop: 50 }]} onPress={() => handleSubmit()}>
 
-                                    <Text style={styles.textButton}>Criar Funcionário</Text>
+                                    <Text style={styles.textButton}>Criar Equipamento</Text>
                                 </Pressable>
 
                                 <View style={{
