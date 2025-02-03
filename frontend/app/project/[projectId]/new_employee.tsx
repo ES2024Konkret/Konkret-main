@@ -67,22 +67,18 @@ export default function NewEmployee() {
     };
 
     return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={require('@/assets/images/defaultBackground.png')}
-                resizeMode='cover'
-                style={styles.background}>
-                <Link href="/dashboard/new_project" style={styles.subButton}>
-                    <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
-                </Link>
-                <View style={[styles.loginBox, { width: '100%', height: '100%' }]}>
+            
+                <View style={[{ width: '100%', height: '100%' }]}>
                     <View style={[styles.contentContainer, {
                         justifyContent: "flex-start",
                         alignItems: 'center',
                         width: '100%'
                     }]}>
+                        <Link href= {`/project/${projectId}/add_employees`} style={[styles.subButton, { alignSelf: 'flex-start' }]}>
+                            <ArrowSVG width={51} height={51} fill="#00000"></ArrowSVG>
+                        </Link>
 
-                        <Text style={[styles.formTitle, { marginTop: 50 }]}>Criar Trabalhador</Text>
+                        <Text style={[styles.textTitle, { alignSelf:'flex-start', marginLeft: 20}]}>Adicionar Funcionário</Text>
 
                         <View style={{
                             width: '90%',
@@ -154,7 +150,5 @@ export default function NewEmployee() {
                     </View>
 
                 </View>
-            </ImageBackground>
-        </View>
     );
 }

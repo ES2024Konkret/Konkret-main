@@ -131,7 +131,7 @@ export default function ViewEquipments() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}></ImageBackground>
-            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employees`)}>
+            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/equipamentos/view`)}>
                 <ArrowSVG width={51} height={51} fill="#fff" />
             </Pressable>
             <View style={[styles.employeeContainer]}>

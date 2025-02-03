@@ -4,7 +4,7 @@ import apiClient from "@/src/api/ApiClient";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
-import { styles } from "@/src/styles/login_styles"
+import { styles } from "@/src/styles/login_styles" 
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 
 export default function NewEmployee() {
@@ -93,22 +93,18 @@ export default function NewEmployee() {
     };
 
     return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={require('@/assets/images/defaultBackground.png')}
-                resizeMode='cover'
-                style={styles.background}>
-                <Link href="/dashboard/new_project" style={styles.subButton}>
-                    <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
-                </Link>
-                <View style={[styles.loginBox, { width: '100%', height: '100%' }]}>
+                
+                <View style={[{ width: '100%', height: '100%' }]}>
                     <View style={[styles.contentContainer, {
                         justifyContent: "flex-start",
                         alignItems: 'center',
                         width: '100%'
                     }]}>
+                        <Link href= {`/project/${projectId}/equipamentos/add`} style={[styles.subButton, { alignSelf: 'flex-start' }]}>
+                            <ArrowSVG width={51} height={51} fill="#00000"></ArrowSVG>
+                        </Link>
 
-                        <Text style={[styles.formTitle, { marginTop: 50 }]}>Adicionar Equipamento</Text>
+                        <Text style={[styles.textTitle, { alignSelf:'flex-start', marginLeft: 20}]}>Adicionar Equipamento</Text>
 
                         <View style={{
                             width: '90%',
@@ -183,7 +179,5 @@ export default function NewEmployee() {
                     </View>
 
                 </View>
-            </ImageBackground>
-        </View>
     );
 }
