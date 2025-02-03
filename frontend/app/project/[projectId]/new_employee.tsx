@@ -72,9 +72,9 @@ export default function NewEmployee() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}>
-                <Link href="/dashboard/new_project" style={styles.subButton}>
-                    <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
-                </Link>
+                <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/add_employees`)}>
+                    <ArrowSVG width={51} height={51} fill="#fff" />
+                </Pressable>
                 <View style={[styles.loginBox, { width: '100%', height: '100%' }]}>
                     <View style={[styles.contentContainer, {
                         justifyContent: "flex-start",
