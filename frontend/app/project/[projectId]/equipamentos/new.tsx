@@ -17,7 +17,7 @@ export default function NewEmployee() {
     const [contractStart, setContractStart] = useState("");
     const [contractEnd, setContractEnd] = useState("");
     const [equipmentId, setEquipmentId] = useState("");
-
+    
     const stringToDateString = (dateString: string) => {
         const [day, month, year] = dateString.split("/").map(Number);
         const date = new Date(year, month - 1, day);
@@ -26,55 +26,23 @@ export default function NewEmployee() {
     };
 
     // Função para criar um novo funcionário
-    async function createEquipment(brand: string, type: string, description: string, quantity_string: string, workk_id: string, equipment_id: string, comments: string, start_time: string, end_time: string){
+    async function createEquipment(brand: string, type: string, description: string, quantity_string: string, work_id: string, equipment_id: string, comments: string, start_time: string, end_time: string){
         const token = await AsyncStorage.getItem("authToken");
-        let quantity = Number(quantity_string)
-        let work_id = String(projectId)
-        apiClient.equipment.
-        addEquipmentEquipmentPost({
-                brand,
-                type,
-                quantity,
-                description,
-                //contract_start,
-                // contract_end
-            },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-            .then((response) => {
-                if (response && response.status === 200) {
-                    //router.push(`/project/${projectId}/equipamentos/add`);
-                    setEquipmentId(response.data.id);
-                    equipment_id = equipmentId;
-                    apiClient.rentequipment.
-                    createRentEquipmentRentequipmentPost({  
-                        work_id, 
-                        equipment_id, 
-                        comments, 
-                        start_time, 
-                        end_time
-                        },
-                            {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        })
-                    .then((response) => {
-                        if (response && response.status === 200) {
-                            router.push(`/project/${projectId}/equipamentos/add`);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-                            }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        let quantity = Number(quantity_string);
+        const resposta = await apiClient.equipment.addEquipmentEquipmentPost(
+                  { brand, type, quantity, description },
+                  { headers: { Authorization: `Bearer ${token}` } });    
+        if (resposta && resposta.status === 200) {
+            // Atualiza o state e recupera o equipmentId atualizado
+            setEquipmentId(resposta.data.id);
+            const equipment_id = resposta.data.id;  // Usando o ID diretamente da resposta
+            const rentResposta = await apiClient.rentequipment.createRentEquipmentRentequipmentPost(
+                    { work_id, equipment_id, comments, start_time, end_time },
+                    { headers: { Authorization: `Bearer ${token}` }});
+            if (rentResposta && rentResposta.status === 200) {
+                router.push(`/project/${projectId}/equipamentos/add`);
+            }         
+            }
         
     } 
 
