@@ -56,9 +56,9 @@ export interface EmployeeSchema {
   /** Name */
   name: string | null;
   /** Rg */
-  rg: string;
+  rg: string | null;
   /** Cpf */
-  cpf: string;
+  cpf: string | null;
   /** Role */
   role: string | null;
   /**
@@ -417,8 +417,8 @@ export interface WorkPublic {
   start_date?: string | null;
   /** End Date */
   end_date?: string | null;
-  /** Proprietary Id */
-  proprietary_id: string;
+  /** User Id */
+  user_id: string;
   /** Rentequipment */
   rentequipment?: RentEquipmentSchemaPublic[] | null;
   /** Jobs */
@@ -450,9 +450,9 @@ export interface WorkSchema {
   /** Number Addres */
   number_addres?: number | null;
   /** Start Date */
-  start_date?: Date | null;
+  start_date?: string | null;
   /** End Date */
-  end_date?: Date | null;
+  end_date?: string | null;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -1611,22 +1611,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags material
+     * @name GetallMaterialsMaterialGet
+     * @summary Getall Materials
+     * @request GET:/material
+     */
+    getallMaterialsMaterialGet: (params: RequestParams = {}) =>
+      this.request<MaterialPublic[], any>({
+        path: `/material`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags material
      * @name AddMaterialMaterialPost
      * @summary Add Material
      * @request POST:/material
      */
-    addMaterialMaterialPost: (
-      query: {
-        /** Report Id */
-        report_id: string;
-      },
-      data: MaterialSchema,
-      params: RequestParams = {},
-    ) =>
+    addMaterialMaterialPost: (data: MaterialSchema, params: RequestParams = {}) =>
       this.request<MaterialPublic, HTTPValidationError>({
         path: `/material`,
         method: "POST",
-        query: query,
         body: data,
         type: ContentType.Json,
         format: "json",

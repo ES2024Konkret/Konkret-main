@@ -23,11 +23,10 @@ def getall_materials(
 @router.post("", response_model=MaterialPublic)
 def add_material(
     material: MaterialSchema,
-    report_id: str,
     material_service: Annotated[MaterialService, Depends(get_material_service)]
 ):
     try:
-        return material_service.create_material(material.cust, material.quantity, material.type, report_id) 
+        return material_service.create_material(material.cust, material.quantity, material.type) 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
 
