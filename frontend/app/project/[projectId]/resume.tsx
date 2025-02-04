@@ -122,17 +122,19 @@ export default function Relatorio() {
 
                         </View>
                     </Pressable>
+                    <Pressable onPress={() => router.push(`/project/${projectId}/view_materials`)}>
 
-                    <View style={[report.button, {
-                        backgroundColor: '#fdb834',
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                        elevation: 4,
-                    }]}>
-                        <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
-                    </View>
+                        <View style={[report.button, {
+                            backgroundColor: '#fdb834',
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 4,
+                            elevation: 4,
+                        }]}>
+                            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
+                        </View>
+                    </Pressable>
 
                     <View style={[report.button, {
                         backgroundColor: '#009ccc',
