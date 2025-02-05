@@ -4,11 +4,14 @@ from backend.api.core.models import User
 from backend.api.core.schemas import (PhotoPublic, PhotoSchema, ReportPublic, ReportSchema, ObservationPublic, 
                                   ObservationSchema, ActivityPublic, ActivitySchema, ClimatePublic, ClimateSchema)
 from backend.api.services.report_service import ReportService
-from backend.api.dependencies import get_report_service, get_current_user
+from backend.api.services.work_service import WorkService
+from backend.api.dependencies import get_report_service, get_current_user, get_work_service
 import pandas as pd
 from fastapi.responses import StreamingResponse
 from fpdf import FPDF
 from datetime import datetime
+from io import StringIO
+import csv
 
 router = APIRouter(
     prefix="/report",
@@ -188,30 +191,88 @@ def getall_csv(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
+
+
 @router.get("/{id}/csv")
 def get_csv(
     id: str,
     report_service: Annotated[ReportService, Depends(get_report_service)],
+    work_service: Annotated[WorkService, Depends(get_work_service)],
     user_logged: User = Depends(get_current_user)
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+
     try:
         report = report_service.get(id)
+        if not report:
+            raise HTTPException(status_code=404, detail="Relatório não encontrado.")
+        
         weather = report_service.get_climate(id)
-        data = [{
-            "ID": report.id,
-            "Observações": report.observations,
-            "Atividades": report.activities,
-            "Clima": weather
-        }]
-        df = pd.DataFrame(data)
+        employees = work_service.get_employees(report.work_id)
+        equipment = work_service.get_equipments(report.work_id)
+        material = report_service.get_materials(id)
+
+        print(f"Employees: {employees}")  # Verificando se a lista de funcionários está correta
+
+        data = [
+            ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
+            ["ID DO RELATÓRIO", "", "", "", "", "", ""],  
+            [report.id, "", "", "", "", "", ""],  
+            ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
+            ["NOME DO USUÁRIO:", "", "LOCALIZAÇÃO", "", "DATA DE EMISSÃO", "", "CLIMA"],
+            [user_logged.name, "", getattr(report, "location", "NÃO informado"), "", report.created_at.strftime("%d/%m/%Y"), "", weather],
+            ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
+            ["Observações", "", "", "", "", "", ""],  
+            [report.observations, "", "", "", "", "", ""],  
+            ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
+            ["ATIVIDADES REALIZADAS", "", "", "", "", "", ""],  
+            [report.activities, "", "", "", "", "", ""],  
+            ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
+            ["FOTOS", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", ""],
+        ]
+
+        # Adicionando funcionários
+        data.append(["Funcionários", "Nome", "ID", "Função", "Início do Contrato", "Fim do Contrato"])
+        for emp in employees:
+            data.append([
+                    "",  # Coluna vazia para manter alinhamento
+                    emp.name,  # Trocar emp["name"] por emp.name
+                    emp.id,  # Trocar emp["id"] por emp.id
+                    emp.role,  # Trocar emp["role"] por emp.role
+                    emp.contract_start.strftime("%d/%m/%Y"),  # Formatando data
+                    emp.contract_end.strftime("%d/%m/%Y")  # Formatando data
+                ])
+
+        # Adicionando materiais
+        data.append(["", "", "", "", "", "", ""])
+        data.append(["Materiais", "", "", "", "", "", ""])
+        for mat in material:
+            data.append(["", mat, "", "", "", "", ""])
+
+        # Adicionando equipamentos
+        data.append(["", "", "", "", "", "", ""])
+        data.append(["Equipamentos", "", "", "", "", "", ""])
+        for equip in equipment:
+            data.append(["", equip, "", "", "", "", ""])
+
+        # Criando CSV em memória
+        output = StringIO()
+        writer = csv.writer(output, delimiter=";", quoting=csv.QUOTE_MINIMAL)
+        writer.writerows(data)
+
+        output.seek(0)
+
         return StreamingResponse(
-            df.to_csv(index=False), 
-            media_type="text/csv", 
-            headers={"Content-Disposition": "attachment; filename=report.csv"})
+            output,
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename=report_{id}.csv"}
+        )
+
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+        print(f"Erro ao gerar CSV: {str(e)}")  # Log do erro
+        raise HTTPException(status_code=400, detail=f"Erro ao gerar CSV: {str(e)}")
     
 class EngineeringReportPDF(FPDF):
     def header(self):
