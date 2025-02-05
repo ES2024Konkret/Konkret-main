@@ -81,6 +81,7 @@ export const styles = StyleSheet.create({
         elevation: 4,
     },
     textButton: {
+        fontFamily: 'Inter',
         color: 'white',
         fontSize: 16,
         fontWeight: 500,

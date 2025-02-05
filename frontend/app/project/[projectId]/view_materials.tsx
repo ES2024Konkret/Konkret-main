@@ -88,7 +88,7 @@ export default function ViewMaterials() {
                             paddingRight: 15,
                             paddingTop: 5,
                             paddingBottom: 5
-                        }]} onPress={() => { router.push(`/project/${projectId}/new_employee`) }}>
+                        }]} onPress={() => { router.push(`/project/${projectId}/new_material`) }}>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: "center",
