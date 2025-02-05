@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Dimensions } from "react-native";
 
 export const styles = StyleSheet.create({
     container: {
@@ -234,5 +235,145 @@ export const arquivated_projects_styles = StyleSheet.create({
     fontSize: 16,
     color: "#0B5ED7",
     marginBottom: 20,
+  },
+});
+const { width } = Dimensions.get("window");
+
+export const report = StyleSheet.create({
+
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#f9f9f9",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#333",
+  },
+  button: {
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#555",
+    marginBottom: 5,
+  },
+  value: {
+    fontSize: 16,
+    color: "#333",
+  },
+  status: {
+    color: "#007bff",
+    fontWeight: "bold",
+  },
+  descriptionBox: {
+    marginTop: 10,
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  button: {
+    marginTop: 30,
+    backgroundColor: "#007bff",
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  whiteBackground: {
+    borderRadius: 0,
+    shadowColor: 'transparent', 
+    elevation: 0, 
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginHorizontal: 8,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  textInputAnotações: {
+    height: 120, 
+    width: "90%", 
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 16,
+    textAlignVertical: "top", 
+  },
+  photoList: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  photo: {
+    width: width * 0.4, 
+    height: width * 0.2, 
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  addButton: {
+    width: width * 0.4, 
+    height: width * 0.2, 
+    borderRadius: 10,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+    borderColor: "#ddd",
+    borderWidth: 1,
+  },
+  addText: {
+    fontSize: 24,
+    color: "blue",
+    fontWeight: "bold",
+  },
+  calendario:{
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.11,
+    shadowRadius: 4,
+  },
+  calendarioHeader:{
+    borderBottomWidth: 0.5,
+    paddingBottom: 0, 
+    marginBottom: 14,
+  },
+  calendarioBody:{
+
   },
 });

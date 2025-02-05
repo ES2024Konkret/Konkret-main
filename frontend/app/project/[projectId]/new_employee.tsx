@@ -4,6 +4,7 @@ import apiClient from "@/src/api/ApiClient";
 import { useLocalSearchParams, useRouter, Link } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
+import { styles } from "@/src/styles/login_styles"
 
 export default function NewEmployee() {
     const router = useRouter();
@@ -66,111 +67,94 @@ export default function NewEmployee() {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
             <ImageBackground
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
-                style={styles.background}></ImageBackground>
-            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employees`)}>
-                <ArrowSVG width={51} height={51} fill="#fff" />
-            </Pressable>
-            <View style={[styles.employeeContainer]}>
-                <Text style={styles.title}>Adicionar</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nome"
-                    value={name}
-                    onChangeText={setName}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="RG"
-                    value={rg}
-                    onChangeText={setRg}
-                    keyboardType="numeric"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="CPF"
-                    value={cpf}
-                    onChangeText={setCpf}
-                    keyboardType="numeric"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Cargo"
-                    value={role}
-                    onChangeText={setRole}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Data de Início (dd/mm/aaaa)"
-                    value={contractStart}
-                    onChangeText={setContractStart}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Data de Término (dd/mm/aaaa)"
-                    value={contractEnd}
-                    onChangeText={setContractEnd}
-                />
+                style={styles.background}>
+                <Link href="/dashboard/new_project" style={styles.subButton}>
+                    <ArrowSVG width={51} height={51} fill="#fff"></ArrowSVG>
+                </Link>
+                <View style={[styles.loginBox, { width: '100%', height: '100%' }]}>
+                    <View style={[styles.contentContainer, {
+                        justifyContent: "flex-start",
+                        alignItems: 'center',
+                        width: '100%'
+                    }]}>
 
-                <Pressable style={styles.button} onPress={handleSubmit}>
-                    <Text style={styles.buttonText}>Adicionar</Text>
-                </Pressable>
+                        <Text style={[styles.formTitle, { marginTop: 50 }]}>Criar Trabalhador</Text>
+
+                        <View style={{
+                            width: '90%',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <View style={{
+                                width: '100%',
+                                alignItems: 'center',
+                                height: '120%',
+                                justifyContent: 'flex-end'
+                            }}>
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={name}
+                                    onChangeText={(text) => setName(text)}
+                                    placeholder="Nome"
+                                    autoCapitalize="words"
+                                />
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={rg}
+                                    onChangeText={(text) => setRg(text)}
+                                    placeholder="RG"
+                                    keyboardType="numeric"
+                                />
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={cpf}
+                                    onChangeText={(text) => setCpf(text)}
+                                    placeholder="CPF"
+                                    keyboardType="numeric"
+                                />
+
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={role}
+                                    onChangeText={(text) => setRole(text)}
+                                    placeholder="Role"
+                                    autoCapitalize="none"
+                                />
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={contractStart}
+                                    onChangeText={(text) => setContractStart(text)}
+                                    placeholder="Início do Contrato"
+                                    autoCapitalize="none"
+                                />
+                                <TextInput
+                                    style={styles.formInput}
+                                    value={contractEnd}
+                                    onChangeText={(text) => setContractEnd(text)}
+                                    placeholder="Fim do Contrato"
+                                    autoCapitalize="none"
+                                />
+                                <Pressable style={[styles.formButton, { marginTop: 50 }]} onPress={() => handleSubmit()}>
+
+                                    <Text style={styles.textButton}>Criar Funcionário</Text>
+                                </Pressable>
+
+                                <View style={{
+                                    width: '100%',
+                                    margin: 20,
+                                    alignItems: 'center'
+                                }}>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
                 </View>
-        </ScrollView>
+            </ImageBackground>
+        </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        padding: 16,
-        backgroundColor: "#fff",
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#0028FF",
-        marginBottom: 16,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#0028FF",
-        borderRadius: 8,
-        padding: 12,
-        marginBottom: 12,
-        fontSize: 16,
-    },
-    button: {
-        backgroundColor: "#0028FF",
-        borderRadius: 8,
-        padding: 16,
-        alignItems: "center",
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    subButton: {
-        padding: 10,
-    },
-    background: {
-        width: '100%',
-    },
-    employeeContainer: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
-        backgroundColor: 'white',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        alignItems: 'center',
-    },
-});

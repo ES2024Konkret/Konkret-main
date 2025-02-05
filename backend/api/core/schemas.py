@@ -1,4 +1,4 @@
-from fastapi import Query
+from fastapi import Query, Body
 from pydantic import BaseModel, ConfigDict
 from typing import Annotated, Optional, List
 from datetime import datetime
@@ -19,8 +19,8 @@ class ProprietaryPublic(BaseModel):
 
 class EmployeeSchema(BaseModel):
     name: Annotated[Optional[str], Query()]
-    rg: Annotated[str, Query()]
-    cpf: Annotated[str, Query()]
+    rg: Annotated[Optional[str], Query()]
+    cpf: Annotated[Optional[str], Query()]
     role: Annotated[Optional[str], Query()]
     contract_start: Annotated[datetime, Query()]
     contract_end: Annotated[datetime, Query()]
@@ -60,19 +60,20 @@ class LoginSchema(BaseModel):
     password: str
 
 class ReportSchema(BaseModel):
-    work_id: Annotated[str, Query()]
-    photos: Annotated[Optional[list], Query()]
-    observations: Annotated[Optional[list], Query()]
-    activities: Annotated[Optional[list], Query()]
+    work_id: str
+    photos: Optional[List[str]] = []
+    observations: Optional[str] = None  
+    activities: Optional[List[str]] = []
 
 class ReportPublic(BaseModel):
-    id: Annotated[str, Query()]
-    work_id: Annotated[str, Query()]
-    photos: Annotated[Optional[list], Query()]
-    observations: Annotated[Optional[list], Query()]
-    activities: Annotated[Optional[list], Query()]
-    created_at: Annotated[datetime,Query()]
-    updated_at: Annotated[datetime,Query()]
+    id: str
+    work_id: str
+    photos: Optional[List[str]] = []
+    observations: Optional[str] = None  
+    activities: Optional[List[str]] = []
+    created_at: datetime
+    updated_at: datetime
+
     class Config:
         orm_mode = True
         

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable , TouchableOpacity} from "react-native";
 import { projects_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";  // Importando o useRouter
+import { usePathname, useRouter } from "expo-router";
 
 interface ProjectData {
   id: string;
@@ -17,7 +17,7 @@ interface ProjectData {
 
 export default function Projects() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
-  const router = useRouter();  // Hook do expo-router para navegação
+  const router = useRouter(); // Hook usado aqui no nível do componente
 
   // Função para buscar os projetos
   async function getProjects() {
@@ -49,22 +49,27 @@ export default function Projects() {
     getProjects();
   }, []);
 
-  // Função para navegar para a página de gerenciamento de funcionários com o id do projeto
   const handleProjectPress = (projectId: string) => {
     router.push(`/project/${projectId}/resume`);  
   };
 
-  // Renderizar cada projeto
-  const renderProject = ({ item }: { item: ProjectData }) => (
-    <TouchableOpacity onPress={() => handleProjectPress(item.id)} style={styles.projectBox}>
-      <Text style={styles.projectName}>Nome: {item.name}</Text>
-      <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
-      <Text style={styles.projectInfo}>CEP: {item.zip_code}</Text>
-      <Text style={styles.projectInfo}>Estado: {item.state}</Text>
-      <Text style={styles.projectInfo}>Bairro: {item.neighborhood}</Text>
-      <Text style={styles.projectInfo}>Logradouro: {item.public_place}</Text>
-    </TouchableOpacity>
-  );
+
+  // Renderizar cada projeto em um quadrado
+  const renderProject = ({ item }: { item: ProjectData }) => {
+    return (
+      <Pressable
+        style={styles.projectBox}
+        onPress={() => handleProjectPress(item.id)} // Navegação com o router
+      >
+        <Text style={styles.projectName}>Nome: {item.name}</Text>
+        <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
+        <Text style={styles.projectInfo}>CEP: {item.zip_code}</Text>
+        <Text style={styles.projectInfo}>Estado: {item.state}</Text>
+        <Text style={styles.projectInfo}>Bairro: {item.neighborhood}</Text>
+        <Text style={styles.projectInfo}>Logradouro: {item.public_place}</Text>
+      </Pressable>
+    );
+  };
 
   return (
     <View style={projects_styles.container}>
@@ -80,7 +85,7 @@ export default function Projects() {
   );
 }
 
-// Estilos
+// Estilos adicionais
 const styles = StyleSheet.create({
   listContainer: {
     paddingVertical: 10,

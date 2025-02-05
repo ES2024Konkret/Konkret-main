@@ -9,8 +9,6 @@ import { useState } from "react";
 import { launchImageLibrary } from "react-native-image-picker";
 import { report } from "@/src/styles/dashboard_styles";
 import { LocaleConfig, Calendar } from "react-native-calendars"
-import * as FileSystem from 'expo-file-system';
-import { Platform } from 'react-native';
 
 export default function Relatorio() {
   const today = new Date();
@@ -106,16 +104,17 @@ export default function Relatorio() {
       const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
       const token = await AsyncStorage.getItem("authToken");
       const photoUrls = photos.map(photo => photo.uri);
-  
+      const observationsList = observations.split(' ');  // Converte a string para lista de strings
+
       const reportData = {
-        work_id: projectId,
+        work_id: work_id,
         photos: photoUrls,
-        observations,
+        observations: observationsList,
         activities: activities
       };
-  
+
       const response = await apiClient.report.addReportReportPost(
-        reportData,
+        reportData, // enviando dados no corpo da requisição
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -123,154 +122,9 @@ export default function Relatorio() {
           }
         }
       );
-  
-      if (response && response.status === 200) {
-        const reportId = response.data.id;
-  
-        try {
-          // Download CSV usando o mesmo padrão do apiClient
-          const csvResponse = await apiClient.report.getCsvReportIdCsvGet(
-            reportId,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              responseType: 'blob', // Importante para receber o arquivo
-            }
-          );
-  
-          if (Platform.OS === 'web') {
-            // Abordagem para web
-            const blob = new Blob([csvResponse.data], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `report_${reportId}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-  
-            Alert.alert(
-              'Sucesso',
-              'Relatório gerado e CSV baixado com sucesso!',
-              [{ text: 'OK' }]
-            );
-          } else {
-            // Abordagem para dispositivos móveis
-            const downloadDir = FileSystem.documentDirectory + 'downloads/';
-            const dirInfo = await FileSystem.getInfoAsync(downloadDir);
-            if (!dirInfo.exists) {
-              await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
-            }
-  
-            const filename = `report_${reportId}_${new Date().getTime()}.csv`;
-            const fileUri = downloadDir + filename;
-  
-            // Converter o blob para um formato que o FileSystem possa salvar
-            const reader = new FileReader();
-            reader.onload = async () => {
-              try {
-                await FileSystem.writeAsStringAsync(fileUri, reader.result, {
-                  encoding: FileSystem.EncodingType.UTF8,
-                });
-  
-                Alert.alert(
-                  'Sucesso',
-                  'Relatório gerado e CSV baixado com sucesso!\nArquivo salvo em: ' + fileUri,
-                  [{ text: 'OK' }]
-                );
-              } catch (error) {
-                console.error('Erro ao salvar arquivo:', error);
-                Alert.alert(
-                  'Erro',
-                  'Ocorreu um erro ao salvar o arquivo CSV.',
-                  [{ text: 'OK' }]
-                );
-              }
-            };
-            reader.readAsText(csvResponse.data);
-          }
-        } catch (csvError) {
-          console.error('Erro ao baixar CSV:', csvError);
-          Alert.alert(
-            'Aviso',
-            'Relatório gerado com sucesso, mas não foi possível baixar o CSV.',
-            [{ text: 'OK' }]
-          );
-        }
-        try {
-          // Download PDF
-          const pdfResponse = await apiClient.report.getPdfReportIdPdfGet(
-            reportId,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              responseType: 'blob'
-            }
-          );
-  
-          if (Platform.OS === 'web') {
-            const blob = new Blob([pdfResponse.data], { type: 'text/pdf' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('b');
-            link.href = url;
-            link.setAttribute('download', `report_${reportId}.pdf`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-  
-            Alert.alert(
-              'Sucesso',
-              'Relatório gerado e PDF baixado com sucesso!',
-              [{ text: 'OK' }]
-            );
-          } else {
-            const downloadDir = FileSystem.documentDirectory + 'downloads/';
-            const dirInfo = await FileSystem.getInfoAsync(downloadDir);
-            if (!dirInfo.exists) {
-              await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
-            }
-  
-            const filename = `report_${reportId}_${new Date().getTime()}.pdf`;
-            const fileUri = downloadDir + filename;
-  
-            const reader = new FileReader();
-            reader.onload = async () => {
-              try {
-                await FileSystem.writeAsStringAsync(fileUri, reader.result, {
-                  encoding: FileSystem.EncodingType.UTF8,
-                });
-  
-                Alert.alert(
-                  'Sucesso',
-                  'Relatório gerado e PDF baixado com sucesso!\nArquivo salvo em: ' + fileUri,
-                  [{ text: 'OK' }]
-                );
-              } catch (error) {
-                console.error('Erro ao salvar arquivo:', error);
-                Alert.alert(
-                  'Erro',
-                  'Ocorreu um erro ao salvar o arquivo PDF.',
-                  [{ text: 'OK' }]
-                );
-              }
-            };
-            reader.readAsText(pdfResponse.data);
-          }
-        } catch (pdfError) {
-          console.error('Erro ao baixar PDF:', pdfError);
-          Alert.alert(
-            'Aviso',
-            'Relatório gerado com sucesso, mas não foi possível baixar o PDF.',
-            [{ text: 'OK' }]
-          );
-        }
 
-  
-        return reportId;
+      if (response && response.status === 200) {
+        return response.data.id; // Retorna o reportId do novo relatório criado
       } else {
         return null;
       }
@@ -283,6 +137,42 @@ export default function Relatorio() {
       return null;
     }
   }
+
+  const handleDownloadPDF = async () => {
+    if (!reportId) {
+      Alert.alert('Erro', 'Relatório não encontrado.');
+      return;
+    }
+
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+
+      const response = await fetch(`http://localhost:8000/report/${reportId}/pdf`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `report_${reportId}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        Alert.alert('Sucesso', 'PDF baixado com sucesso!');
+      } else {
+        Alert.alert('Erro', 'Falha ao baixar o PDF.');
+      }
+    } catch (error) {
+      console.error('Erro ao baixar PDF:', error);
+      Alert.alert('Erro', 'Houve um erro ao baixar o PDF. Por favor, tente novamente.');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={report.container}>
