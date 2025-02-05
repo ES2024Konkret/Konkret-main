@@ -53,7 +53,7 @@ npm install
 
 4. Inicie o expo com o seguinte comando
 ```bash
-npm install
+npm start
 ```
 
 ## Extras
