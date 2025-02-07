@@ -7,18 +7,12 @@ class MaterialRepository:
         self.db = db
     def all(self):
         return self.db.query(Material).all()
-    def create_material(self, cust: float, quantity: int, type: str, report_id: str):
-        report = self.db.query(Report).filter(Report.id == report_id).first()
-        if report:
-            new_material = Material(cust=cust, quantity=quantity, type=type, report_id=report_id)
-            report.materials.append(new_material)
-            self.db.add(new_material)
-            self.db.add(report)
-            self.db.commit()
-            self.db.refresh(new_material)
-            return new_material
-        else:
-            raise HTTPException(status_code=404, detail="Diario nao encontrado")
+    def create_material(self, cust: float, quantity: int, type: str):
+        new_material = Material(cust=cust, quantity=quantity, type=type)
+        self.db.add(new_material)
+        self.db.commit()
+        self.db.refresh(new_material)
+        return new_material
     def delete_material(self, id: str):
         material = self.db.query(Material).filter(Material.id == id).first()
         if material:

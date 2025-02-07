@@ -22,10 +22,6 @@ export const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         backgroundColor: 'white',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
         alignItems: 'center',
     },
     textTitle: {
@@ -109,5 +105,44 @@ export const employee_styles = StyleSheet.create({
         overflow: 'hidden',
         alignItems: "center",
         justifyContent: "center"
+    },
+})
+
+export const material_styles = StyleSheet.create({
+    inputContainer: {
+        width: '90%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#2E2E2E',
+        borderRadius: 12,
+        padding: 12,
+    },
+    inputDescription: {
+        color: '#2e2e2e',
+        fontFamily: 'Inter',
+        fontSize: 12,
+        fontWeight: '600',
+        letterSpacing: 1.02
+    },
+    formButton: {
+        width: '90%',
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        backgroundColor: "#001BCC",
+        shadowColor: "rgba(0, 0, 0, 0.1)", 
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 4, 
+        elevation: 4,
+    },
+    textButton: {
+        color: 'white',
+        fontFamily: 'Inter',
+        fontSize: 16,
+        fontWeight: 500,
+        letterSpacing: 1.44,
     },
 })

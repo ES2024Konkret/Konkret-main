@@ -106,14 +106,14 @@ export default function Relatorio() {
       const activities = [manhã, tarde, noite].filter(activity => activity.trim() !== '');
       const token = await AsyncStorage.getItem("authToken");
       const photoUrls = photos.map(photo => photo.uri);
-  
+
       const reportData = {
         work_id: projectId,
         photos: photoUrls,
         observations,
         activities: activities
       };
-  
+
       const response = await apiClient.report.addReportReportPost(
         reportData,
         {
@@ -123,10 +123,10 @@ export default function Relatorio() {
           }
         }
       );
-  
+
       if (response && response.status === 200) {
         const reportId = response.data.id;
-  
+
         try {
           // Download CSV usando o mesmo padrão do apiClient
           const csvResponse = await apiClient.report.getCsvReportIdCsvGet(
@@ -138,7 +138,7 @@ export default function Relatorio() {
               responseType: 'blob', // Importante para receber o arquivo
             }
           );
-  
+
           if (Platform.OS === 'web') {
             // Abordagem para web
             const blob = new Blob([csvResponse.data], { type: 'text/csv' });
@@ -150,7 +150,7 @@ export default function Relatorio() {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
-  
+
             Alert.alert(
               'Sucesso',
               'Relatório gerado e CSV baixado com sucesso!',
@@ -163,10 +163,10 @@ export default function Relatorio() {
             if (!dirInfo.exists) {
               await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
             }
-  
+
             const filename = `report_${reportId}_${new Date().getTime()}.csv`;
             const fileUri = downloadDir + filename;
-  
+
             // Converter o blob para um formato que o FileSystem possa salvar
             const reader = new FileReader();
             reader.onload = async () => {
@@ -174,7 +174,7 @@ export default function Relatorio() {
                 await FileSystem.writeAsStringAsync(fileUri, reader.result, {
                   encoding: FileSystem.EncodingType.UTF8,
                 });
-  
+
                 Alert.alert(
                   'Sucesso',
                   'Relatório gerado e CSV baixado com sucesso!\nArquivo salvo em: ' + fileUri,
@@ -210,7 +210,7 @@ export default function Relatorio() {
               responseType: 'blob'
             }
           );
-  
+
           if (Platform.OS === 'web') {
             const blob = new Blob([pdfResponse.data], { type: 'text/pdf' });
             const url = window.URL.createObjectURL(blob);
@@ -221,7 +221,7 @@ export default function Relatorio() {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
-  
+
             Alert.alert(
               'Sucesso',
               'Relatório gerado e PDF baixado com sucesso!',
@@ -233,17 +233,17 @@ export default function Relatorio() {
             if (!dirInfo.exists) {
               await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
             }
-  
+
             const filename = `report_${reportId}_${new Date().getTime()}.pdf`;
             const fileUri = downloadDir + filename;
-  
+
             const reader = new FileReader();
             reader.onload = async () => {
               try {
                 await FileSystem.writeAsStringAsync(fileUri, reader.result, {
                   encoding: FileSystem.EncodingType.UTF8,
                 });
-  
+
                 Alert.alert(
                   'Sucesso',
                   'Relatório gerado e PDF baixado com sucesso!\nArquivo salvo em: ' + fileUri,
@@ -269,7 +269,7 @@ export default function Relatorio() {
           );
         }
 
-  
+
         return reportId;
       } else {
         return null;
@@ -332,16 +332,19 @@ export default function Relatorio() {
             </View>
           </Pressable>
 
-          <View style={[report.button, {
-            backgroundColor: '#fdb834',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 4,
-            elevation: 4,
-          }]}>
-            <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
-          </View>
+          <Pressable onPress={() => router.push(`/project/${projectId}/view_materials`)}>
+
+            <View style={[report.button, {
+              backgroundColor: '#fdb834',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 4,
+              elevation: 4,
+            }]}>
+              <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Materiais</Text>
+            </View>
+          </Pressable>
 
           <View style={[report.button, {
             backgroundColor: '#009ccc',
