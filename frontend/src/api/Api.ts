@@ -56,9 +56,9 @@ export interface EmployeeSchema {
   /** Name */
   name: string | null;
   /** Rg */
-  rg: string;
+  rg: string | null;
   /** Cpf */
-  cpf: string;
+  cpf: string | null;
   /** Role */
   role: string | null;
   /**
@@ -318,12 +318,18 @@ export interface ReportPublic {
   id: string;
   /** Work Id */
   work_id: string;
-  /** Photos */
-  photos: any[] | null;
+  /**
+   * Photos
+   * @default []
+   */
+  photos?: string[] | null;
   /** Observations */
-  observations: string;
-  /** Activities */
-  activities: any[] | null;
+  observations?: string | null;
+  /**
+   * Activities
+   * @default []
+   */
+  activities?: string[] | null;
   /**
    * Created At
    * @format date-time
@@ -340,12 +346,18 @@ export interface ReportPublic {
 export interface ReportSchema {
   /** Work Id */
   work_id: string;
-  /** Photos */
-  photos: any[] | null;
+  /**
+   * Photos
+   * @default []
+   */
+  photos?: string[] | null;
   /** Observations */
-  observations: string;
-  /** Activities */
-  activities: any[] | null;
+  observations?: string | null;
+  /**
+   * Activities
+   * @default []
+   */
+  activities?: string[] | null;
 }
 
 /** UserPublic */
@@ -1679,6 +1691,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<MaterialPublic, HTTPValidationError>({
         path: `/material/${id}`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  reportsNotifications = {
+    /**
+     * No description
+     *
+     * @name GetNotificationsReportsNotificationsGet
+     * @summary Get Notifications
+     * @request GET:/reports_notifications
+     * @secure
+     */
+    getNotificationsReportsNotificationsGet: (params: RequestParams = {}) =>
+      this.request<string[], any>({
+        path: `/reports_notifications`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

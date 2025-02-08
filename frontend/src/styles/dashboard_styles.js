@@ -236,6 +236,14 @@ export const arquivated_projects_styles = StyleSheet.create({
     color: "#0B5ED7",
     marginBottom: 20,
   },
+  notificationItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  notificationList: {
+    width: '100%',
+  },
 });
 const { width } = Dimensions.get("window");
 

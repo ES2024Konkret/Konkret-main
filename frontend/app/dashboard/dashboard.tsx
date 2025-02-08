@@ -11,8 +11,8 @@ export default function Dashboard() {
       <Pressable onPress={() => router.push("/dashboard/projects")}>
         <Image source={require("../../assets/images/home_icon.png")} style={styles.icon} />
       </Pressable>
-      <Pressable onPress={() => router.push("/dashboard/arquivated_projects")}>
-        <Image source={require("../../assets/images/pasta_icon.png")} style={styles.icon} />
+      <Pressable onPress={() => router.push("/dashboard/notifications")}>
+        <Image source={require("../../assets/images/bell_icon.png")} style={styles.icon} />
       </Pressable>
       <Pressable onPress={() => router.push("/dashboard/new_project")}>
         <Image source={require("../../assets/images/add_icon.png")} style={styles.icon} />
