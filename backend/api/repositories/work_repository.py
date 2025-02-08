@@ -2,6 +2,7 @@ from backend.api.core.models import Work, RentEquipment, Job
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import Date
 from fastapi import HTTPException
+from datetime import datetime
 
 class WorkRepository:
     def __init__(self, db: Session):
@@ -76,3 +77,16 @@ class WorkRepository:
             for job in work.jobs:
                 employees_list.append(job.employees)
         return employees_list
+    
+    def retrieve_notifications(self, user_id: str):
+        notifications_list = []
+        today = datetime.now().date()
+        works = self.db.query(Work).filter(Work.user_id == user_id).all()
+        for work in works:
+            if work.end_date and work.end_date < today:
+                notifications_list.append(f"A obra {work.name} já passou da data de término.")
+            employees = self.get_employees(work.id)
+            for employee in employees:
+                if employee.contract_end and employee.contract_end.date() < today:
+                    notifications_list.append(f"O funcionário {employee.name} da obra {work.name} teve seu contrato encerrado em {employee.contract_end.date()}.")
+        return notifications_list

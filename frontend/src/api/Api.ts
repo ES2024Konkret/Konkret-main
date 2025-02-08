@@ -1779,4 +1779,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
+  reportsNotifications = {
+    /**
+     * No description
+     *
+     * @name GetNotificationsReportsNotificationsGet
+     * @summary Get Notifications
+     * @request GET:/reports_notifications
+     * @secure
+     */
+    getNotificationsReportsNotificationsGet: (params: RequestParams = {}) =>
+      this.request<string[], any>({
+        path: `/reports_notifications`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
 }

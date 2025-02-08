@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from backend.api.routers import (
-    report, user, employee, 
+    notification, report, user, employee, 
                                  proprietary, work, equipment, rent_equipment, job, material)
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,5 +29,6 @@ app.include_router(equipment.router)
 app.include_router(rent_equipment.router)
 app.include_router(job.router)
 app.include_router(material.router)
+app.include_router(notification.router)
 
 
