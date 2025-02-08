@@ -6,8 +6,8 @@ class WorkService:
     def __init__(self, db: Session):
         self.work_repository = WorkRepository(db)
 
-    def create_work(self, proprietary_id: str, name: str, zip_code: str, state: str, public_place: str, neighborhood: str = None, number_addres: int = None, start_date: Date = None, end_date: Date = None ):
-        return self.work_repository.create(proprietary_id, name, zip_code, state, public_place, neighborhood, number_addres, start_date, end_date)
+    def create_work(self, engineer_id: str, proprietary_id: str, name: str, zip_code: str, state: str, public_place: str, neighborhood: str = None, number_addres: int = None, start_date: Date = None, end_date: Date = None ):
+        return self.work_repository.create(engineer_id, proprietary_id, name, zip_code, state, public_place, neighborhood, number_addres, start_date, end_date)
 
     def all(self):
         return self.work_repository.all()

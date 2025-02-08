@@ -1,4 +1,4 @@
-from backend.api.core.models import User, Work, UserType
+from backend.api.core.models import User, Work, UserType, ResponsabilityType
 from sqlalchemy.orm import Session
 import bcrypt
 from passlib.context import CryptContext
@@ -91,3 +91,7 @@ class UserRepository:
         if user:
             return user
         return None
+    
+    def list_proprietarios(self):
+        return self.db.query(User).all()
+

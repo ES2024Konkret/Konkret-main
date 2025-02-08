@@ -22,3 +22,6 @@ class UserService:
 
     def find_by_email(self, email_or_cpf: str):
         return self.user_repository.find_by_email(email_or_cpf)
+    
+    def list_proprietarios(self):
+        return self.user_repository.all()

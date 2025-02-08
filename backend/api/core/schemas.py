@@ -32,7 +32,7 @@ class EmployeePublic(BaseModel):
     contract_start: Annotated[datetime, Query()]
     contract_end: Annotated[datetime, Query()]
 
-class ResponsabilityType(Enum):
+class ResponsabilityType(str, Enum):
     Proprietario = "Proprietario"
     Engenheiro = "Engenheiro"
 
@@ -58,6 +58,8 @@ class UserPublic(BaseModel):
     cnpj: Annotated[str, Query()] | None
     email: Annotated[str, Query()]
     phone: Annotated[str, Query()]
+    responsability_type: Annotated[ResponsabilityType, Query()]
+
 
 
 class LoginSchema(BaseModel):
@@ -117,6 +119,8 @@ class WorkSchema(BaseModel):
     number_addres: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
+    proprietary_id: str
+
 
 class WorkPublic(BaseModel):
     id: Annotated[str, Query()]

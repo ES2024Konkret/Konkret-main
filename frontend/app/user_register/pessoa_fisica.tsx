@@ -117,10 +117,10 @@ export default function NewUser() {
                                 />
 
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
-                                    <Pressable style={[styles.formButton, {width: 100, marginHorizontal: 50, backgroundColor: "#fdb834"}]}  onPress={() => setResponsabilityType(ResponsabilityType.Proprietario)}>
+                                    <Pressable style={[styles.formButton, {width: 100, marginHorizontal: 50, backgroundColor: "#fdb834", opacity: responsability_type === ResponsabilityType.Proprietario ? 1 : 0.7}]}  onPress={() => setResponsabilityType(ResponsabilityType.Proprietario)}>
                                         <Text style={styles.textButton}>Proprietario</Text>
                                     </Pressable>
-                                    <Pressable style={[styles.formButton, { width: 100, marginHorizontal: 60, backgroundColor: "#009ccc" }]} onPress={() => setResponsabilityType(ResponsabilityType.Engenheiro)}>
+                                    <Pressable style={[styles.formButton, { width: 100, marginHorizontal: 60, backgroundColor: "#009ccc", opacity: responsability_type === ResponsabilityType.Engenheiro ? 1 : 0.7 }]} onPress={() => setResponsabilityType(ResponsabilityType.Engenheiro)}>
                                         <Text style={styles.textButton}>Engenheiro</Text>
                                     </Pressable>
                                 </View> 
