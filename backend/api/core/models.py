@@ -7,9 +7,14 @@ from enum import Enum as PyEnum
 
 Base = declarative_base()
 
+class ResponsabilityType(PyEnum):
+    Proprietario = "Proprietario"
+    Engenheiro = "Engenheiro"
+
 class UserType(PyEnum):
     PF = "PF"
     PJ = "PJ"
+    
 
 class User(Base):
     __tablename__ = "users"
@@ -22,9 +27,11 @@ class User(Base):
     phone = mapped_column(String, nullable=False, unique=True)
     password = mapped_column(String, nullable=False)
     user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
+    responsability_type = mapped_column(Enum(ResponsabilityType, name="responsability_type_enum"), nullable=False)  
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     works = relationship("Work", back_populates="user")
+
 
 class Proprietary(Base):
     __tablename__ = "proprietaries"

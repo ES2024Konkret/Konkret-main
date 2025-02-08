@@ -5,11 +5,11 @@ class UserService:
     def __init__(self, db: Session):
         self.user_repository = UserRepository(db)
 
-    def create_user(self, name, email, phone, password, user_type, cpf, cnpj):
-        return self.user_repository.create(name, email, phone, password, user_type, cpf, cnpj)
+    def create_user(self, name, email, phone, password, user_type, responsability_type, cpf, cnpj):
+        return self.user_repository.create(name, email, phone, password, user_type, responsability_type, cpf, cnpj)
 
-    def update(self, id, name, email, phone, password, user_type, cpf, cnpj):
-        return self.user_repository.update(id, name, email, phone, password, user_type, cpf, cnpj)
+    def update(self, id, name, email, phone, password, user_type, responsability_type, cpf, cnpj):
+        return self.user_repository.update(id, name, email, phone, password, user_type, responsability_type, cpf, cnpj)
 
     def all(self):
         return self.user_repository.all()

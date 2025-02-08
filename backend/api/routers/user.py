@@ -32,10 +32,12 @@ def add_user(
         raise HTTPException(status_code=400, detail="CNPJ inválido.")
 
     try:
-        return user_service.create_user(user.name, user.email, user.phone, user.password, user.user_type, user.cpf, user.cnpj)        
+        return user_service.create_user(user.name, user.email, user.phone, user.password, user.user_type, user.responsability_type, user.cpf, user.cnpj)        
 
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+    
 
 @router.put("/{id}/update", response_model=UserPublic)
 def update_user(

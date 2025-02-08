@@ -32,6 +32,10 @@ class EmployeePublic(BaseModel):
     contract_start: Annotated[datetime, Query()]
     contract_end: Annotated[datetime, Query()]
 
+class ResponsabilityType(Enum):
+    Proprietario = "Proprietario"
+    Engenheiro = "Engenheiro"
+
 class UserType(Enum):
     PF = "PF"
     PJ = "PJ"
@@ -42,6 +46,7 @@ class UserSchema(BaseModel):
     phone: Annotated[str, Query()]
     password: Annotated[str, Query()]
     user_type: Annotated[UserType, Query()]
+    responsability_type: Annotated[ResponsabilityType, Query()]
     cpf: Annotated[Optional[str], Query()] | None
     cnpj: Annotated[Optional[str], Query()] | None
     model_config = ConfigDict(arbitrary_types_allowed=True)
