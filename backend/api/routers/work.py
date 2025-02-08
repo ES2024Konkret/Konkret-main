@@ -53,18 +53,22 @@ def getall_works(
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
-@router.get("/{id}/owner_projects", response_model=WorkPublic)
-def get_work_owner(
-    id: str,
+@router.get("/proprietary/{owner_id}/works", response_model=list[WorkPublic])
+def get_works_by_owner_id(
+    owner_id: str,
     work_service: Annotated[WorkService, Depends(get_work_service)],
-    user_logged: User = Depends(get_current_user)    
+    user_logged: User = Depends(get_current_user)
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+
     try:
-        return work_service.get_work_owner(id)
+        works = work_service.get_works_by_owner_id(owner_id)
+        if not works:
+            raise HTTPException(status_code=404, detail="Nenhuma obra encontrada para este proprietário.")
+        return works
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
 @router.get("/{id}", response_model=WorkPublic)
 def get_work(

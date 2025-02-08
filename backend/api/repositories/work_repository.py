@@ -62,15 +62,9 @@ class WorkRepository:
         work = self.db.query(Work).options(joinedload(Work.rentequipment).joinedload(RentEquipment.equipments)).all()
         return work
     
-    def get_work_owner(self, id: str):
-        owner_list = []
-        work = self.db.query(Work).filter(Work.id == id).first()
-        if work:
-            for owner_id in work.owner_id:
-                owner_list.append(owner_id)
-            return owner_list
-        return None
-    
+    def get_works_by_owner_id(self, owner_id: str):
+        works = self.db.query(Work).filter(Work.owner_id == owner_id).all()
+        return works
     
     def get(self, id: str):
         work = self.db.query(Work).filter(Work.id == id).first()

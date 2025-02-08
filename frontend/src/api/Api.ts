@@ -380,6 +380,7 @@ export interface UserPublic {
   email: string;
   /** Phone */
   phone: string;
+  responsability_type: ResponsabilityType;
 }
 
 /** UserSchema */
@@ -420,38 +421,32 @@ export interface ValidationError {
 export interface WorkPublic {
   /** Id */
   id: string;
+  /** Engineer Id */
+  engineer_id: string;
+  /** Owner Id */
+  owner_id: string;
   /** Name */
   name: string;
   /** Zip Code */
   zip_code: string;
   /** State */
   state: string;
-  /** Neighborhood */
-  neighborhood?: string | null;
   /** Public Place */
   public_place: string;
+  /** Neighborhood */
+  neighborhood: string;
   /** Number Addres */
-  number_addres?: number | null;
-  /** Start Date */
-  start_date?: string | null;
-  /** End Date */
-  end_date?: string | null;
-  /** User Id */
-  user_id: string;
-  /** Rentequipment */
-  rentequipment?: RentEquipmentSchemaPublic[] | null;
-  /** Jobs */
-  jobs?: JobSchemaPublic[] | null;
+  number_addres: number;
   /**
-   * Created At
+   * Start Date
    * @format date-time
    */
-  created_at: string;
+  start_date: string;
   /**
-   * Updated At
+   * End Date
    * @format date-time
    */
-  updated_at: string;
+  end_date: string;
 }
 
 /** WorkSchema */
@@ -472,6 +467,8 @@ export interface WorkSchema {
   start_date?: string | null;
   /** End Date */
   end_date?: string | null;
+  /** Owner Id */
+  owner_id: string;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -720,6 +717,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.UrlEncoded,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name ListProprietariosUserIdListGet
+     * @summary List Proprietarios
+     * @request GET:/user/{id}/list
+     * @secure
+     */
+    listProprietariosUserIdListGet: (id: string, params: RequestParams = {}) =>
+      this.request<UserPublic[], any>({
+        path: `/user/${id}/list`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -1230,6 +1245,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags work
+     * @name GetWorksByOwnerIdWorkProprietaryOwnerIdWorksGet
+     * @summary Get Works By Owner Id
+     * @request GET:/work/proprietary/{owner_id}/works
+     * @secure
+     */
+    getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet: (ownerId: string, params: RequestParams = {}, p0: { headers: { Authorization: string; }; }) =>
+      this.request<WorkPublic[], HTTPValidationError>({
+        path: `/work/proprietary/${ownerId}/works`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

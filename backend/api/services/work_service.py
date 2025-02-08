@@ -12,8 +12,8 @@ class WorkService:
     def all(self):
         return self.work_repository.all()
 
-    def get_work_owner(self, id:str):
-        return self.work_repository.get_work_owner(id)
+    def get_works_by_owner_id(self, id:str):
+        return self.work_repository.get_works_by_owner_id(id)
 
     def get(self, id: str):
         return self.work_repository.get(id)
