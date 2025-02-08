@@ -1,6 +1,7 @@
 from backend.api.core.models import Work, RentEquipment, Job, User, ResponsabilityType
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import Date
+from datetime import date
 from fastapi import HTTPException
 
 class WorkRepository:
@@ -8,37 +9,40 @@ class WorkRepository:
         self.db = db
 
     def create(
-    self, 
-        current_user_id: str,  
-        proprietary_id: str,   
+        self, 
+        engineer_id: str,
+        owner_id: str,
         name: str, 
         zip_code: str, 
         state: str, 
         public_place: str, 
         neighborhood: str = None, 
         number_addres: int = None, 
-        start_date: Date = None, 
-        end_date: Date = None
-):
+        start_date: date = None, 
+        end_date: date = None
+    ):
+        # Verifica se o engenheiro existe
         engineer = self.db.query(User).filter(
-            User.id == current_user_id,
+            User.id == engineer_id,
             User.responsability_type == ResponsabilityType.Engenheiro
         ).first()
-    
+
         if not engineer:
             raise ValueError("Apenas engenheiros podem criar obras")
 
+        # Verifica se o proprietário existe
         owner = self.db.query(User).filter(
-            User.id == proprietary_id,
+            User.id == owner_id,
             User.responsability_type == ResponsabilityType.Proprietario
         ).first()
-    
+
         if not owner:
             raise ValueError("Proprietário não encontrado ou não tem permissão de proprietário")
 
+        # Cria a obra
         new_work = Work(
-            engineer_id=current_user_id,
-            owner_id=proprietary_id,     
+            engineer_id=engineer_id,
+            owner_id=owner_id,
             name=name,
             zip_code=zip_code,
             state=state,
@@ -48,7 +52,7 @@ class WorkRepository:
             start_date=start_date,
             end_date=end_date
         )
-        
+
         self.db.add(new_work)
         self.db.commit()
         self.db.refresh(new_work)
@@ -57,6 +61,16 @@ class WorkRepository:
     def all(self):
         work = self.db.query(Work).options(joinedload(Work.rentequipment).joinedload(RentEquipment.equipments)).all()
         return work
+    
+    def get_work_owner(self, id: str):
+        owner_list = []
+        work = self.db.query(Work).filter(Work.id == id).first()
+        if work:
+            for owner_id in work.owner_id:
+                owner_list.append(owner_id)
+            return owner_list
+        return None
+    
     
     def get(self, id: str):
         work = self.db.query(Work).filter(Work.id == id).first()

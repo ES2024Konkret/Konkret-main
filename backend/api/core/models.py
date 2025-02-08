@@ -104,9 +104,9 @@ class Work(Base):
     rentequipment = relationship("RentEquipment", back_populates="work")
     jobs = relationship("Job", back_populates="works")
 
-    user_id = mapped_column(ForeignKey("users.id"), nullable=False)
-    engineer_id = mapped_column(ForeignKey("users.id"), nullable=False)
-    owner_id = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    engineer_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    owner_id = mapped_column(ForeignKey("users.id"), nullable=True)
 
     user = relationship("User", foreign_keys=[user_id], back_populates="works")
     engineer = relationship("User", foreign_keys=[engineer_id], back_populates="works_as_engineer")

@@ -133,7 +133,7 @@ def login(
         'token_type': 'bearer'
     }
 
-@router.get("/{id}", response_model=List[UserPublic])
+@router.get("/{id}/list", response_model=List[UserPublic])
 def list_proprietarios(
     user_service: Annotated[UserService, Depends(get_user_service)],
     user_logged: User = Depends(get_current_user)
@@ -144,10 +144,10 @@ def list_proprietarios(
     print(f"All users: {users}")
     proprietarios = [
         user for user in users
-        if user.responsability_type == ResponsabilityType.Proprietario
+        if user.responsability_type.value == ResponsabilityType.Proprietario.value
     ]
     print(f"Proprietários: {proprietarios}")
     try:
-        return user_service.list_proprietarios()
+        return proprietarios
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")

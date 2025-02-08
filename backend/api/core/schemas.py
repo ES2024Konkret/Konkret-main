@@ -119,24 +119,21 @@ class WorkSchema(BaseModel):
     number_addres: Optional[int] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
-    proprietary_id: str
+    owner_id: str
 
 
 class WorkPublic(BaseModel):
-    id: Annotated[str, Query()]
-    name: Annotated[str, Query()]
-    zip_code: Annotated[str, Query()]
-    state: Annotated[str, Query()]
-    neighborhood: Annotated[Optional[str], Query()] = None
-    public_place: Annotated[str, Query()]
-    number_addres: Annotated[Optional[int], Query()] = None
-    start_date: Annotated[Optional[datetime], Query()] = None
-    end_date: Annotated[Optional[datetime], Query()] = None
-    user_id: Annotated[str, Query()]
-    rentequipment: Optional[List[RentEquipmentSchemaPublic]] = None
-    jobs: Optional[List[JobSchemaPublic]] = None
-    created_at: Annotated[datetime, Query()]
-    updated_at: Annotated[datetime, Query()]
+    id: str
+    engineer_id: str
+    owner_id: str
+    name: str
+    zip_code: str
+    state: str
+    public_place: str
+    neighborhood: str
+    number_addres: int 
+    start_date: datetime
+    end_date: datetime
     class Config:
         orm_mode = True
 

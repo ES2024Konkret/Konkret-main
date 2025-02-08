@@ -24,11 +24,11 @@ def add_work(
             status_code=403, 
             detail="Apenas engenheiros podem criar obras"
         )
-    
+
     try:
         return work_service.create_work(
             engineer_id=user_logged.id,
-            proprietary_id=work.proprietary_id,
+            owner_id=work.owner_id,
             name=work.name,
             zip_code=work.zip_code,
             state=work.state,
@@ -50,6 +50,19 @@ def getall_works(
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try:
         return work_service.all()
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/{id}/owner_projects", response_model=WorkPublic)
+def get_work_owner(
+    id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)],
+    user_logged: User = Depends(get_current_user)    
+):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+    try:
+        return work_service.get_work_owner(id)
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
     
