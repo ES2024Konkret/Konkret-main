@@ -112,7 +112,14 @@ export default function ViewMaterials() {
                                         <Text style={employee_styles.employeeRole}>Quantidade: {material.quantity}</Text>
                                     </View>
                                 </View>
-                                <EditSVG />
+                                <Pressable onPress={() => {
+                                    router.push({
+                                        pathname: './edit_material',
+                                        params: { materialId: material.id },
+                                    });
+                                }}>
+                                    <EditSVG />
+                                </Pressable>
                             </View>
                         ))}
                     </View>
