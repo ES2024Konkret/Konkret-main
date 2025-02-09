@@ -10,6 +10,7 @@ interface UserData {
   projects: string;
   reports: string;
   phone: string;
+  id: string
 }
 
 
@@ -20,7 +21,8 @@ export default function User() {
     email: "Carregando...",
     projects: "0",
     reports: "0",
-    phone: "no phone"
+    phone: "no phone",
+    id: "Carregando..."
   });
 
   async function getUser(id: string) {
@@ -36,7 +38,8 @@ export default function User() {
             email: user.email || "N/A",
             projects: "0",
             reports: "0",
-            phone: user.phone
+            phone: user.phone,
+            id: user.id
           });
         }
       })
@@ -82,6 +85,9 @@ export default function User() {
 
         <Text style={user_styles.label}>E-mail</Text>
         <Text style={user_styles.info}>{userData.email}</Text>
+
+        <Text style={user_styles.label}>ID</Text>
+        <Text style={user_styles.info}>{userData.id}</Text>
       </View>
 
       {/* Botões */}

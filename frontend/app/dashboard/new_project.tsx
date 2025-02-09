@@ -4,10 +4,8 @@ import { new_project_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DatePicker from 'react-native-date-picker';
 
 export default function NewProject() {
-  // Estados para armazenar os valores dos inputs
   const [nome, setNome] = useState("");
   const [cep, setCep] = useState("");
   const [estado, setEstado] = useState("");
@@ -15,11 +13,12 @@ export default function NewProject() {
   const [bairro, setBairro] = useState("");
   const [num, setNum] = useState("");
   const [dataInicio, setDataInicio] = useState("");
-  const [dataFim, setDataFim] = useState(""); // Corrigido o estado de fim
-  
+  const [dataFim, setDataFim] = useState("");
+  const [ownerId, setOwnerId] = useState(""); // Novo estado para o owner_id
+
   const stringToDate = (dateString: string): Date => {
     const [day, month, year] = dateString.split("/").map(Number);
-    return new Date(year, month - 1, day); // O mês começa do índice 0
+    return new Date(year, month - 1, day);
   };
 
   // Função para criar um novo projeto
@@ -31,25 +30,29 @@ export default function NewProject() {
     neighborhood: string,
     number_addres: number,
     start_date: Date,
-    end_date: Date
+    end_date: Date,
+    owner_id: string // Novo parâmetro para o owner_id
   ) {
-    const token = await AsyncStorage.getItem("authToken")
+    const token = await AsyncStorage.getItem("authToken");
     apiClient.work
-      .addWorkWorkPost({
-        name,
-        zip_code,
-        state,
-        neighborhood,
-        public_place,
-        number_addres,
-        start_date,
-        end_date,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+      .addWorkWorkPost(
+        {
+          name,
+          zip_code,
+          state,
+          neighborhood,
+          public_place,
+          number_addres,
+          start_date,
+          end_date,
+          owner_id, // Incluindo o owner_id no corpo da requisição
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
+      )
       .then((response) => {
         console.log(response);
         if (response && response.status === 200) {
@@ -63,7 +66,7 @@ export default function NewProject() {
 
   // Função para enviar os dados
   const handleSubmit = () => {
-    if (!nome || !cep || !estado || !rua || !bairro || !num || !dataInicio || !dataFim) {
+    if (!nome || !cep || !estado || !rua || !bairro || !num || !dataInicio || !dataFim || !ownerId) {
       console.log("Por favor, preencha todos os campos!");
       return;
     }
@@ -76,9 +79,10 @@ export default function NewProject() {
       estado,
       rua,
       bairro,
-      Number(num), // Convertendo o número
+      Number(num),
       start_date,
-      end_date
+      end_date,
+      ownerId // Passando o owner_id para a função
     );
   };
 
@@ -136,7 +140,13 @@ export default function NewProject() {
           placeholder="Núm:"
           value={num}
           onChangeText={setNum}
-          keyboardType="numeric" // Input numérico
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={new_project_styles.input}
+          placeholder="ID do Proprietário:"
+          value={ownerId}
+          onChangeText={setOwnerId}
         />
 
         {/* Botão de Adicionar */}
