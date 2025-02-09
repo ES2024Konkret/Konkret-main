@@ -22,30 +22,44 @@ export default function Projects() {
 
   // Função para buscar os projetos
   async function getProjects() {
-    const token = await AsyncStorage.getItem("authToken");
-    const ownerId = await AsyncStorage.getItem("ownerId");
-    apiClient.work
-      .getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet(ownerId, {headers: { Authorization: `Bearer ${token}` }})
-      .then((response) => {
-        if (response && response.status === 200) {
-          const fetchedProjects = response.data;
+    try {
+        const token = await AsyncStorage.getItem("authToken");
+        const ownerId = await AsyncStorage.getItem("ownerId");
+        console.log("OwnerId recuperado:", ownerId);
 
-          setProjects(
-            fetchedProjects.map((project: any) => ({
-              id: project.id,  // Certificando que o id está correto
-              name: project.name,
-              start_date: project.start_date,
-              zip_code: project.zip_code || "Não informado",
-              state: project.state || "Não informado",
-              neighborhood: project.neighborhood || "Não informado",
-              public_place: project.public_place || "Não informado",
-            }))
-          );
+
+        if (!token) {
+            throw new Error("Token não encontrado");
         }
-      })
-      .catch((error) => console.error("Erro ao buscar projetos:", error));
-  }
 
+        if (!ownerId) {
+            throw new Error("OwnerId não encontrado");
+        }
+
+        console.log("Owner ID:", ownerId);
+
+        const response = await apiClient.work.getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet(ownerId, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status === 200) {
+            const fetchedProjects = response.data;
+            setProjects(fetchedProjects.map((project) => ({
+                id: project.id,  // Certificando que o id está correto
+                name: project.name,
+                start_date: project.start_date,
+                zip_code: project.zip_code || "Não informado",
+                state: project.state || "Não informado",
+                neighborhood: project.neighborhood || "Não informado",
+                public_place: project.public_place || "Não informado",
+            })));
+        } else {
+            console.error(`Erro ao buscar projetos: Status ${response.status}`);
+        }
+    } catch (error) {
+        console.error("Erro ao buscar projetos:", error);
+    }
+}
   // UseEffect para carregar os projetos quando o componente for montado
   useEffect(() => {
     getProjects();

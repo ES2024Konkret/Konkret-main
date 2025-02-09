@@ -132,7 +132,7 @@ def login(
         'access_token': create_token(user.id),
         'token_type': 'bearer',
         'responsability_type': user.responsability_type.value,
-        'id_owner': user.id
+        'owner_id': user.id
     }
 
 @router.get("/{id}/list", response_model=List[UserPublic])

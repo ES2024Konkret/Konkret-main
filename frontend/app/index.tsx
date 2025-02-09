@@ -29,10 +29,13 @@ export default function RootLayout() {
           const token = data.access_token;
           const responsabilityType = data.responsability_type; 
           const ownerId = data.owner_id;
-          
+
           await saveToken("authToken", token);
           await saveToken("responsabilityType", responsabilityType);
           await saveToken("ownerId", ownerId);
+
+          console.log("OwnerId salvo:", ownerId);
+
 
           if (responsabilityType === "Engenheiro") {
             router.push("./dashboard/projects");
