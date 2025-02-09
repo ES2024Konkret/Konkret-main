@@ -133,22 +133,28 @@ class ReportRepository:
     
     def climate(self, id: str):
         report = self.db.query(Report).filter(Report.id == id).first()
-        work = WorkService(self.db).get(report.work_id)
+        
         if report:
-            loc = f"{work.public_place}, {work.state}"
-            coordinates = get_coordinates(loc)
-            if coordinates:
-                weather = get_weather(coordinates[0], coordinates[1])
-                return [{
-                    'Descrição': weather["weather"][0]["description"],
-                    'Temperatura': f'{weather["main"]["temp"]:.2f}ºC',
-                    'Pressão': f'{weather["main"]["pressure"]} hPa',
-                    'Umidade': f'{weather["main"]["humidity"]}%',
-                    'Velocidade do vento': f'{weather["wind"]["speed"]}m/s',
-                    'Visibilidade': f'{weather["visibility"]}m'
-                }]
+            work = WorkService(self.db).get(report.work_id)
+            if work:
+                loc = f"{work.public_place}, {work.state}"
+                coordinates = get_coordinates(loc)
+                if coordinates:
+                    weather = get_weather(coordinates[0], coordinates[1])
+                    return [{
+                        'Descrição': weather["weather"][0]["description"],
+                        'Temperatura': f'{weather["main"]["temp"]:.2f}ºC',
+                        'Pressão': f'{weather["main"]["pressure"]} hPa',
+                        'Umidade': f'{weather["main"]["humidity"]}%',
+                        'Velocidade do vento': f'{weather["wind"]["speed"]}m/s',
+                        'Visibilidade': f'{weather["visibility"]}m'
+                    }]
+                else:
+                    return coordinates
             else:
-                return "Endereço não encontrado"
+                return "Obra não encontrada"
+        else:
+            return "Relatório não encontrado"
         return None
     
     def delete(self, id: str):

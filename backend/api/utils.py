@@ -99,7 +99,7 @@ def create_token(subject: Union[str, Any]) ->  str:
 def get_coordinates(address: str):
     geolocator = Nominatim(user_agent="Konkret")
     loc = geolocator.geocode(address)
-    if loc is None:
+    if loc == None:
         return None
     return [loc.latitude, loc.longitude]
 
