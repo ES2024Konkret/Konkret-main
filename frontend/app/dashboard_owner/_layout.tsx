@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Slot } from "expo-router";
-import Dashboard from "./dashboard_owner";
+import Dashboard from "./dashboard";
 
 export default function Layout() {
   return (

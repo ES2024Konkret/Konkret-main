@@ -21,18 +21,31 @@ export default function RootLayout() {
   const router = useRouter();
 
   function login(email: string, password: string) {
-    apiClient.user.loginUserLoginPost({username: email, password }).then(async (response) => {
-      const data = response.data
-      if (response && response.status === 200) {
-        console.log('Login bem-sucedido, redirecionando...');
-        const token = data.access_token;
-        await saveToken("authToken", token);
-        router.push("/dashboard/projects")
-      }
+    apiClient.user.loginUserLoginPost({ username: email, password })
+      .then(async (response) => {
+        const data = response.data;
+        if (response && response.status === 200) {
+          console.log('Login bem-sucedido, redirecionando...');
+          const token = data.access_token;
+          const responsabilityType = data.responsability_type; 
+          const ownerId = data.owner_id;
+          
+          await saveToken("authToken", token);
+          await saveToken("responsabilityType", responsabilityType);
+          await saveToken("ownerId", ownerId);
 
-    }).catch((error) => {
-      console.error(error);
-    });
+          if (responsabilityType === "Engenheiro") {
+            router.push("./dashboard/projects");
+          } else if (responsabilityType === "Proprietario") {
+            router.push("./dashboard_owner/projects");
+          } else {
+            console.error("Tipo de responsabilidade desconhecido:", responsabilityType);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   return (

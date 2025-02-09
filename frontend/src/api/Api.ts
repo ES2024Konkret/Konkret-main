@@ -1258,7 +1258,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/work/proprietary/{owner_id}/works
      * @secure
      */
-    getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet: (ownerId: string, params: RequestParams = {}, p0: { headers: { Authorization: string; }; }) =>
+    getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet: (ownerId: string, params: RequestParams = {}) =>
       this.request<WorkPublic[], HTTPValidationError>({
         path: `/work/proprietary/${ownerId}/works`,
         method: "GET",

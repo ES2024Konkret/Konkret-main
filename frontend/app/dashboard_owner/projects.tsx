@@ -21,10 +21,11 @@ export default function Projects() {
 
 
   // Função para buscar os projetos
-  async function getProjects(ownerId: string) {
+  async function getProjects() {
     const token = await AsyncStorage.getItem("authToken");
+    const ownerId = await AsyncStorage.getItem("ownerId");
     apiClient.work
-      .getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet(ownerId, { headers: { Authorization: `Bearer ${token}` } })
+      .getWorksByOwnerIdWorkProprietaryOwnerIdWorksGet(ownerId, {headers: { Authorization: `Bearer ${token}` }})
       .then((response) => {
         if (response && response.status === 200) {
           const fetchedProjects = response.data;
@@ -47,8 +48,7 @@ export default function Projects() {
 
   // UseEffect para carregar os projetos quando o componente for montado
   useEffect(() => {
-    const ownerId = "string";
-    getProjects(ownerId);
+    getProjects();
   }, []);
 
   const handleProjectPress = (projectId: string) => {
