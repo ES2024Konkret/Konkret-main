@@ -10,7 +10,7 @@ import { useLocalSearchParams } from "expo-router";
 interface fetchedReports {
     id: string;
     observations: string;
-    activies: string[];
+    activities: string[];
     photos: string[];
     created_at: string;
 }
@@ -133,7 +133,7 @@ export default function Relatorio() {
                         <View style={styles.projectBox}>
                             <Text style={styles.projectName}>Observações: {item.observations}</Text>
                             <Text style={styles.projectInfo}>
-                                Atividades: {item.activies && Array.isArray(item.activies) ? item.activies.join(", ") : "Nenhuma atividade registrada"}
+                                Atividades: {item.activities && Array.isArray(item.activities) ? item.activities.join(", ") : "Nenhuma atividade registrada"}
                             </Text>
                             <Text style={styles.projectInfo}>
                                 Criado em: {new Date(item.created_at).toLocaleDateString()}

@@ -65,10 +65,12 @@ export default function Projects() {
     getProjects();
   }, []);
 
-  const handleProjectPress = (projectId: string) => {
-    router.push(`/project/${projectId}/resume`);  
+  const handleProjectPress = (project: ProjectData) => {
+    router.push({
+      pathname: `/project/${project.id}/resume_owner`,
+      params: project, // Passando todos os dados do projeto
+    });
   };
-
 
   // Renderizar cada projeto em um quadrado
   const renderProject = ({ item }: { item: ProjectData }) => {
