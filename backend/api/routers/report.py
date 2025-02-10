@@ -10,7 +10,8 @@ import pandas as pd
 from fastapi.responses import StreamingResponse
 from fpdf import FPDF
 from datetime import datetime
-from io import StringIO
+from io import StringIO as StringIO
+import io as io
 import csv
 
 router = APIRouter(
@@ -209,6 +210,8 @@ def get_csv(
             raise HTTPException(status_code=404, detail="Relatório não encontrado.")
         
         weather = report_service.get_climate(id)
+        work = work_service.get(report.work_id)
+        address = f'{work.state} - {work.public_place}, {work.neighborhood}, {work.number_addres}'
         employees = work_service.get_employees(report.work_id)
         equipment = work_service.get_equipments(report.work_id)
         material = report_service.get_materials(id)
@@ -221,13 +224,15 @@ def get_csv(
             [report.id, "", "", "", "", "", ""],  
             ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
             ["NOME DO USUÁRIO:", "", "LOCALIZAÇÃO", "", "DATA DE EMISSÃO", "", "CLIMA"],
-            [user_logged.name, "", getattr(report, "location", "NÃO informado"), "", report.created_at.strftime("%d/%m/%Y"), "", weather],
+            [user_logged.name, "", address, "", report.created_at.strftime("%d/%m/%Y"), "", weather],
             ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
             ["Observações", "", "", "", "", "", ""],  
             [report.observations, "", "", "", "", "", ""],  
             ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
             ["ATIVIDADES REALIZADAS", "", "", "", "", "", ""],  
-            [report.activities, "", "", "", "", "", ""],  
+            ["Manhã", report.activities[0], "", "", "", "", ""],  
+            ["Tarde", report.activities[1], "", "", "", "", ""],
+            ["Noite", report.activities[2], "", "", "", "", ""],
             ["", "", "", "", "", "", ""],  # Linha vazia para espaçamento
             ["FOTOS", "", "", "", "", "", ""],
             ["", "", "", "", "", "", ""],
@@ -333,7 +338,7 @@ def get_pdf(
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Condições Climáticas', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
-        pdf.multi_cell(0, 10, weather_str)
+        pdf.multi_cell(100, 10, weather_str)
         pdf.ln(5)
 
         # Seção de Atividades
@@ -341,23 +346,24 @@ def get_pdf(
         pdf.cell(0, 10, 'Atividades Realizadas', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
         if hasattr(report, 'activities') and report.activities:
-            for activity in report.activities:
-                pdf.cell(10, 10, '-', 0, 0)
-                pdf.multi_cell(0, 10, str(activity))
+            pdf.cell(10, 10, f'Manhã: {report.activities[0]}', 0, 0)
+            pdf.ln(5)
+            pdf.cell(10, 10, f'Tarde: {report.activities[1]}', 0, 0)
+            pdf.ln(5)
+            pdf.cell(10, 10, f'Noite: {report.activities[2]}', 0, 0)
         else:
-            pdf.multi_cell(0, 10, "Nenhuma atividade registrada")
-        pdf.ln(5)
+            pdf.cell(10, 10, "Nenhuma atividade registrada")
+        pdf.ln(10)
 
         # Seção de Observações
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Observações', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
         if hasattr(report, 'observations') and report.observations:
-            for observation in report.observations:
-                pdf.cell(10, 10, '-', 0, 0)
-                pdf.multi_cell(0, 10, str(observation))
+                pdf.cell(10, 10, str(report.observations), 0, 1, 'L')
         else:
-            pdf.multi_cell(0, 10, "Nenhuma observação registrada")
+            pdf.multi_cell(100, 10, "Nenhuma observação registrada")
+        pdf.ln(10)
         
         # Área para Assinatura
         pdf.ln(20)

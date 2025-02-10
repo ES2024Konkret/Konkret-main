@@ -35,3 +35,6 @@ class WorkService:
     
     def get_employees(self, id:str):
         return self.work_repository.get_employees(id)
+    
+    def fetch_notifications(self, user_id: str):
+        return self.work_repository.retrieve_notifications(user_id)
