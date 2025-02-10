@@ -7,9 +7,14 @@ from enum import Enum as PyEnum
 
 Base = declarative_base()
 
+class ResponsabilityType(PyEnum):
+    Proprietario = "Proprietario"
+    Engenheiro = "Engenheiro"
+
 class UserType(PyEnum):
     PF = "PF"
     PJ = "PJ"
+    
 
 class User(Base):
     __tablename__ = "users"
@@ -22,9 +27,14 @@ class User(Base):
     phone = mapped_column(String, nullable=False, unique=True)
     password = mapped_column(String, nullable=False)
     user_type = mapped_column(Enum(UserType, name="user_type_enum"), nullable=False)  
+    responsability_type = mapped_column(Enum(ResponsabilityType, name="responsability_type_enum"), nullable=False)  
+    proprietary_id = mapped_column(ForeignKey("proprietaries.id"), nullable=True)
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    works = relationship("Work", back_populates="user")
+    works_as_engineer = relationship("Work",back_populates="engineer",foreign_keys="[Work.engineer_id]")
+    works_as_owner = relationship("Work",back_populates="owner",foreign_keys="[Work.owner_id]")
+    works = relationship("Work", back_populates="user", foreign_keys="[Work.user_id]")
+
 
 class Proprietary(Base):
     __tablename__ = "proprietaries"
@@ -89,11 +99,19 @@ class Work(Base):
     number_addres = mapped_column(Integer, nullable=True)
     start_date = mapped_column(Date, nullable=True)
     end_date = mapped_column(Date, nullable=True)
+
     reports = relationship("Report", back_populates="work")
-    user_id = mapped_column(ForeignKey("users.id"), nullable=False)
-    user = relationship("User", back_populates="works")
     rentequipment = relationship("RentEquipment", back_populates="work")
     jobs = relationship("Job", back_populates="works")
+
+    user_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    engineer_id = mapped_column(ForeignKey("users.id"), nullable=True)
+    owner_id = mapped_column(ForeignKey("users.id"), nullable=True)
+
+    user = relationship("User", foreign_keys=[user_id], back_populates="works")
+    engineer = relationship("User", foreign_keys=[engineer_id], back_populates="works_as_engineer")
+    owner = relationship("User", foreign_keys=[owner_id], back_populates="works_as_owner")
+
     created_at = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

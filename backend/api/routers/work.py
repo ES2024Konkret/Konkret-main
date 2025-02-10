@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Query, Depends, HTTPException
 from typing import Annotated, List
 from backend.api.core.models import User
 from backend.api.services.work_service import WorkService
-from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic, EquipmentPublic
+from backend.api.core.schemas import WorkSchema, WorkPublic, EmployeePublic, ReportPublic, EquipmentPublic, ResponsabilityType
 from backend.api.dependencies import get_work_service, get_current_user
 
 router = APIRouter(
@@ -18,10 +18,28 @@ def add_work(
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+
+    if user_logged.responsability_type.value != ResponsabilityType.Engenheiro.value:
+        raise HTTPException(
+            status_code=403, 
+            detail="Apenas engenheiros podem criar obras"
+        )
+
     try:
-        return work_service.create_work(user_logged.id, work.name, work.zip_code, work.state, work.public_place, work.neighborhood, work.number_addres, work.start_date, work.end_date)
+        return work_service.create_work(
+            engineer_id=user_logged.id,
+            owner_id=work.owner_id,
+            name=work.name,
+            zip_code=work.zip_code,
+            state=work.state,
+            public_place=work.public_place,
+            neighborhood=work.neighborhood,
+            number_addres=work.number_addres,
+            start_date=work.start_date,
+            end_date=work.end_date
+        )
     except Exception as e:
-        raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
 @router.get("",response_model=List[WorkPublic])
 def getall_works(
@@ -34,6 +52,23 @@ def getall_works(
         return work_service.all()
     except Exception as e:
         raise HTTPException(status_code=400,detail=f"Deu erro: {str(e)}")
+    
+@router.get("/proprietary/{owner_id}/works", response_model=list[WorkPublic])
+def get_works_by_owner_id(
+    owner_id: str,
+    work_service: Annotated[WorkService, Depends(get_work_service)],
+    user_logged: User = Depends(get_current_user)
+):
+    if not user_logged:
+        raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+
+    try:
+        works = work_service.get_works_by_owner_id(owner_id)
+        if not works:
+            raise HTTPException(status_code=404, detail="Nenhuma obra encontrada para este proprietário.")
+        return works
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Deu erro: {str(e)}")
     
 @router.get("/{id}", response_model=WorkPublic)
 def get_work(

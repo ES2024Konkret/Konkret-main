@@ -4,8 +4,9 @@ import { Pressable, TextInput } from "react-native-gesture-handler";
 import { Text, View, ImageBackground } from "react-native";
 import React from "react";
 import apiClient from "@/src/api/ApiClient";
-import { UserType } from "@/src/api/Api";
+import { UserType, ResponsabilityType } from "@/src/api/Api";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
+import { red100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 export default function NewUser() {
     const [name, setName] = React.useState("");
@@ -13,18 +14,32 @@ export default function NewUser() {
     const [password, setPassword] = React.useState("");
     const [cpf, setCpf] = React.useState("");
     const [phone, setPhone] = React.useState("");
+    const [responsability_type, setResponsabilityType] = React.useState<ResponsabilityType>(ResponsabilityType.Engenheiro);
     const router = useRouter();
 
-    function createUser(name: string, email: string, password: string, cpf: string, phone: string) {
+    function createUser(name: string, email: string, password: string, cpf: string, phone: string, responsability_type: ResponsabilityType) {
+        console.log("Enviando requisição para API...");
+        console.log({
+            name,
+            email,
+            phone,
+            password,
+            cpf,
+            responsability_type,
+            user_type: UserType.PF,
+            cnpj: ""
+        });
         apiClient.user.addUserUserPost({
             name,
             email,
             phone,
             password,
             cpf,
+            responsability_type,
             user_type: UserType.PF,
             cnpj: ""
         }).then((response) => {
+            console.log("Resposta da API:", response);
             console.log(response);
             if (response && response.status === 200) {
                 router.push("/")
@@ -100,7 +115,16 @@ export default function NewUser() {
                                     autoCapitalize="none"
                                     secureTextEntry
                                 />
-                                <Pressable style={[styles.formButton, {marginTop: 50}]} onPress={() => createUser(name, email, password, cpf, phone)}>
+
+                                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
+                                    <Pressable style={[styles.formButton, {width: 100, marginHorizontal: 50, backgroundColor: "#fdb834", opacity: responsability_type === ResponsabilityType.Proprietario ? 1 : 0.7}]}  onPress={() => setResponsabilityType(ResponsabilityType.Proprietario)}>
+                                        <Text style={styles.textButton}>Proprietario</Text>
+                                    </Pressable>
+                                    <Pressable style={[styles.formButton, { width: 100, marginHorizontal: 60, backgroundColor: "#009ccc", opacity: responsability_type === ResponsabilityType.Engenheiro ? 1 : 0.7 }]} onPress={() => setResponsabilityType(ResponsabilityType.Engenheiro)}>
+                                        <Text style={styles.textButton}>Engenheiro</Text>
+                                    </Pressable>
+                                </View> 
+                                <Pressable style={[styles.formButton, {marginTop: 50}]} onPress={() => createUser(name, email, password, cpf, phone, responsability_type)}>
                                     <Text style={styles.textButton}>Criar conta</Text>
                                 </Pressable>
 
