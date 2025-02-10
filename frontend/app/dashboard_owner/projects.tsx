@@ -72,7 +72,6 @@ export default function Projects() {
     });
   };
 
-
   // Renderizar cada projeto em um quadrado
   const renderProject = ({ item }: { item: ProjectData }) => {
     return (
