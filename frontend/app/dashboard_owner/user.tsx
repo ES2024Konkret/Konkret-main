@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, Share, Alert } from "react-native";
 import { user_styles } from "@/src/styles/dashboard_styles";
 import apiClient from "@/src/api/ApiClient";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setStatusBarBackgroundColor } from "expo-status-bar";
 
 interface UserData {
   name: string;
@@ -10,10 +11,8 @@ interface UserData {
   projects: string;
   reports: string;
   phone: string;
-  id: string
+  id: string;
 }
-
-
 
 export default function User() {
   const [userData, setUserData] = useState<UserData>({
@@ -26,13 +25,12 @@ export default function User() {
   });
 
   async function getUser(id: string) {
-    const token = await AsyncStorage.getItem("authToken")
+    const token = await AsyncStorage.getItem("authToken");
     apiClient.user
-      .getUserUserIdGet(id, { headers: { Authorization: `Bearer ${token}`}})
+      .getUserUserIdGet(id, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         if (response && response.status === 200) {
           const user = response.data;
-          // Mapear os campos do user e adicionar valores padrão
           setUserData({
             name: user.name || "N/A",
             email: user.email || "N/A",
@@ -47,6 +45,26 @@ export default function User() {
         console.error("Erro ao buscar dados do usuário:", error);
       });
   }
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `ID do Usuário: ${userData.id}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('Compartilhado com o tipo de atividade:', result.activityType);
+        } else {
+          console.log('Compartilhado com sucesso');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Compartilhamento cancelado');
+      }
+    } catch (error) {
+      Alert.alert('Erro ao compartilhar', error.message);
+    }
+  };
 
   useEffect(() => {
     const userId = "123"; // Substitua pelo ID real do usuário logado
@@ -88,12 +106,18 @@ export default function User() {
 
         <Text style={user_styles.label}>ID</Text>
         <Text style={user_styles.info}>{userData.id}</Text>
+
+       
       </View>
 
       {/* Botões */}
       <View style={user_styles.buttonContainer}>
         <Pressable style={user_styles.editButton}>
           <Text style={user_styles.editButtonText}>Editar</Text>
+        </Pressable>
+         {/* Botão de Compartilhamento */}
+         <Pressable style={user_styles.saveButton} onPress={onShare}>
+          <Text style={user_styles.saveButtonText}>Compartilhar ID</Text>
         </Pressable>
         <Pressable style={user_styles.saveButton}>
           <Text style={user_styles.saveButtonText}>Salvar</Text>
