@@ -65,8 +65,11 @@ export default function Projects() {
     getProjects();
   }, []);
 
-  const handleProjectPress = (projectId: string) => {
-    router.push(`/project/${projectId}/resume`);  
+  const handleProjectPress = (project: ProjectData) => {
+    router.push({
+      pathname: `/project/${project.id}/resume_owner`,
+      params: project, // Passando todos os dados do projeto
+    });
   };
 
 
@@ -75,7 +78,7 @@ export default function Projects() {
     return (
       <Pressable
         style={styles.projectBox}
-        onPress={() => handleProjectPress(item.id)} // Navegação com o router
+        onPress={() => handleProjectPress(item)} // Navegação com o router
       >
         <Text style={styles.projectName}>Nome: {item.name}</Text>
         <Text style={styles.projectInfo}>Data de Início: {item.start_date}</Text>
