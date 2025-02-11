@@ -23,15 +23,16 @@ interface ReportData {
 
 async function downloadCSV(reportId: string) {
   const token = await AsyncStorage.getItem("authToken");
-    if (token) {
-      try {
-        // Download CSV usando o mesmo padrão do apiClient
-        const csvResponse = await apiClient.report.getCsvReportIdCsvGet(
-          reportId,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+  if (token) {
+    try {
+      // Download CSV usando o mesmo padrão do apiClient
+      
+      const csvResponse = await apiClient.report.getCsvReportIdCsvGet(
+        reportId,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           }
         ).then((csvResponse) => csvResponse.blob());
 
@@ -69,7 +70,7 @@ async function downloadCSV(reportId: string) {
               await FileSystem.writeAsStringAsync(fileUri, reader.result, {
                 encoding: FileSystem.EncodingType.UTF8,
               });
-
+              
               Alert.alert(
                 'Sucesso',
                 'Relatório gerado e CSV baixado com sucesso!\nArquivo salvo em: ' + fileUri,
@@ -96,140 +97,94 @@ async function downloadCSV(reportId: string) {
     }
 }
 
-async function downloadPDF(reportId: string) {
-  const token = await AsyncStorage.getItem("authToken");
-    if (token) {
-      try {
-        // Download PDF usando o mesmo padrão do apiClient
-        const pdfResponse = await apiClient.report.getPdfReportIdPdfGet(
-          reportId,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        ).then((pdfResponse) => pdfResponse.blob());
+async function downloadPDF() {
+  try {
+    const token = await AsyncStorage.getItem("authToken");
+    const response = await apiClient.reportsDownload.getReportPDF({
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob", // <- Isso é importante!
+    });
 
-        if (Platform.OS === 'web') {
-          // Abordagem para web
-          const url = window.URL.createObjectURL(pdfResponse);
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', `report_${reportId}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-
-          Alert.alert(
-            'Sucesso',
-            'Relatório gerado e PDF baixado com sucesso!',
-            [{ text: 'OK' }]
-          );
-        } else {
-          // Abordagem para dispositivos móveis
-          const downloadDir = FileSystem.documentDirectory + 'downloads/';
-          const dirInfo = await FileSystem.getInfoAsync(downloadDir);
-          if (!dirInfo.exists) {
-            await FileSystem.makeDirectoryAsync(downloadDir, { intermediates: true });
-          }
-
-          const filename = `report_${reportId}_${new Date().getTime()}.pdf`;
-          const fileUri = downloadDir + filename;
-
-          // Converter o blob para um formato que o FileSystem possa salvar
-          const reader = new FileReader();
-          reader.onload = async () => {
-            try {
-              await FileSystem.writeAsStringAsync(fileUri, reader.result, {
-                encoding: FileSystem.EncodingType.UTF8,
-              });
-
-              Alert.alert(
-                'Sucesso',
-                'Relatório gerado e PDF baixado com sucesso!\nArquivo salvo em: ' + fileUri,
-                [{ text: 'OK' }]
-              );
-            } catch (error) {
-              console.error('Erro ao salvar arquivo:', error);
-              Alert.alert(
-                'Erro',
-                'Ocorreu um erro ao salvar o arquivo PDF.',
-                [{ text: 'OK' }]
-              );
-            }
-          };
-        }
-      } catch (pdfError) {
-        console.error('Erro ao baixar PDF:', pdfError);
-        Alert.alert(
-          'Aviso',
-          'Relatório gerado com sucesso, mas não foi possível baixar o PDF.',
-          [{ text: 'OK' }]
-        );
-      }
+    if (!response || response.status !== 200) {
+      console.error("Erro ao baixar PDF: Status inesperado", response?.status);
+      return;
     }
+
+    // Confirma que response.data é um Blob
+    const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+
+    const url = URL.createObjectURL(pdfBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "relatorio.pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Erro ao baixar PDF:", error);
+  }
 }
 
 async function deleteReport(reportId: string) {
-    const token = await AsyncStorage.getItem("authToken");
-    if (token) {
-        apiClient.report.deleteReportReportIdDelete(reportId, {
-            headers: { Authorization: `Bearer ${token}` },
-        }).then((response) => {
-            if (response && response.status === 200) {
-                Alert.alert(
-                    'Sucesso',
-                    'Relatório deletado com sucesso!',
-                    [{ text: 'OK' }]
-                );
-                window.location.reload();
-            }
-        }).catch((error) => {
-            console.error('Erro ao deletar relatório:', error);
-            Alert.alert(
-                'Erro',
-                'Ocorreu um erro ao deletar o relatório.',
-                [{ text: 'OK' }]
-            );
-        })
-    }
+  const token = await AsyncStorage.getItem("authToken");
+  if (token) {
+    apiClient.report.deleteReportReportIdDelete(reportId, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((response) => {
+      if (response && response.status === 200) {
+        Alert.alert(
+          'Sucesso',
+          'Relatório deletado com sucesso!',
+          [{ text: 'OK' }]
+        );
+        window.location.reload();
+      }
+    }).catch((error) => {
+      console.error('Erro ao deletar relatório:', error);
+      Alert.alert(
+        'Erro',
+        'Ocorreu um erro ao deletar o relatório.',
+        [{ text: 'OK' }]
+      );
+    })
+  }
 }
 export default function Viewreports() {
-    const router = useRouter();
-    const { projectId } = useLocalSearchParams();
-
+  const router = useRouter();
+  const { projectId } = useLocalSearchParams();
+  
     const [reports, setReports] = useState<ReportData[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
-
+    
     async function getReports() {
-        const token = await AsyncStorage.getItem("authToken");
+      const token = await AsyncStorage.getItem("authToken");
         if (token) {
-            apiClient.work
-                .getReportsWorkIdReportsGet(String(projectId), {
-                    headers: { Authorization: `Bearer ${token}` },
+          apiClient.work
+          .getReportsWorkIdReportsGet(String(projectId), {
+            headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((response) => {
-                    if (response && response.status === 200) {
-                        const fetchedReport = response.data;
-                        setReports(fetchedReport.map((report: any) => ({
-                            id: report.id,
-                            photos: report.photos,
-                            observations: report.observations,
+                  if (response && response.status === 200) {
+                    const fetchedReport = response.data;
+                    setReports(fetchedReport.map((report: any) => ({
+                      id: report.id,
+                      photos: report.photos,
+                      observations: report.observations,
                             activities: report.activities,
                             created_at: report.created_at
-                        })));
+                          })));
+                        }
+                      })
+                      .catch((error) => console.error("Erro ao buscar relatórios:", error));
                     }
-                })
-                .catch((error) => console.error("Erro ao buscar relatórios:", error));
-        }
     }
-
+    
     useEffect(() => {
         getReports();
-    }, []);
-
-    const filteredReports = reports.filter((report) =>
+      }, []);
+      
+      const filteredReports = reports.filter((report) =>
         report.created_at.includes(searchQuery)
     );
 
@@ -249,7 +204,7 @@ export default function Viewreports() {
                         <Text style={styles.textSubtitle}>{new Date().toLocaleDateString("pt-BR")}</Text>
                     </View>
                     <Pressable style={styles.subButton} onPress={() => {
-                        router.push(`/project/${projectId}/new_report`)
+                      router.push(`/project/${projectId}/new_report`)
                     }}>
                         <UserSVG />
                     </Pressable>
@@ -261,20 +216,20 @@ export default function Viewreports() {
                         placeholder="Pesquisar Relatório"
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                    />
+                        />
                 </View>
                 <ScrollView style={{ width: '100%' }}>
                     <View style={{
-                        width: '100%',
-                        alignItems: "center",
-                        minHeight: '100%'
+                      width: '100%',
+                      alignItems: "center",
+                      minHeight: '100%'
                     }}>
                         {filteredReports.map((report) => (
-                            <View key={report.id} style={employee_styles.employeeBox}>
+                          <View key={report.id} style={employee_styles.employeeBox}>
                                 <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: "center",
-                                    gap: 15,
+                                  flexDirection: 'row',
+                                  alignItems: "center",
+                                  gap: 15,
                                 }}>
                                     <View>
                                         <Text style={employee_styles.employeeName}>{report.created_at}</Text>

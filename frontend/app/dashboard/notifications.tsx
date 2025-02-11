@@ -19,7 +19,7 @@ export default function Notifications() {
           const response = await apiClient.reportsNotifications.getNotificationsReportsNotificationsGet({
             headers: { Authorization: `Bearer ${token}` }
           });
-          
+
           if (response && response.status === 200) {
             if (Array.isArray(response.data)) {
               setNotifications(response.data);
@@ -27,12 +27,12 @@ export default function Notifications() {
               setNotifications([JSON.stringify(response.data)]);
             }
           } else {
-            console.error("Unexpected response status:", response?.status);
             setNotifications([`Erro: Status inesperado ${response?.status}`]);
           }
         } else {
           setNotifications(["Erro: Token de autenticação não encontrado."]);
         }
+        
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
         setNotifications([`Erro: ${(error as Error).message || 'Erro desconhecido'}`]);
