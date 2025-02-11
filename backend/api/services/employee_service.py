@@ -15,8 +15,8 @@ class EmployeeService:
     def get(self, id: str):
         return self.employee_repository.get(id)
     
-    def update(self, id: str, contract_end: Date = None, role: str = None, work_id: str = None):
-        return self.employee_repository.update(id, contract_end, role)
+    def update(self, id: str, name: str = None, role: str = None, contract_start: Date = None, contract_end: Date = None):
+        return self.employee_repository.update(id, name, role, contract_start, contract_end)
     
     def delete(self, id: str):
         return self.employee_repository.delete(id)

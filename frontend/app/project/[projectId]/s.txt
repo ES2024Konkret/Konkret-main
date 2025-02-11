@@ -15,8 +15,8 @@ export default function NewEmployee() {
     const [rg, setRg] = useState("");
     const [cpf, setCpf] = useState("");
     const [role, setRole] = useState("");
-    const [contract_star, setContract_start] = useState("");
-    const [contract_en, setContract_end] = useState("");
+    const [contract_start, setContract_start] = useState();
+    const [contract_end, setContract_end] = useState();
     useEffect(() => {
         if (employeeId) {
             getEmployeeByID();
@@ -24,9 +24,7 @@ export default function NewEmployee() {
     }, [employeeId]);
     
     const stringToDate = (dateString: string): Date => {
-        console.log(dateString);
-        const [year, month, day] = dateString.split("-").map(Number);
-        console.log(year, month, day);
+        const [day, month, year] = dateString.split("/").map(Number);
         return new Date(year, month - 1, day);
       };
     
@@ -40,30 +38,46 @@ export default function NewEmployee() {
                 const fetchedEmployee = response.data;
                 setName(fetchedEmployee.name!);
                 setRole(fetchedEmployee.role!);
-                setContract_start(fetchedEmployee.contract_start!.toString());
-                setContract_end(fetchedEmployee.contract_end!.toString());
+                setContract_start(fetchedEmployee.contract_start!);
+                setContract_end(fetchedEmployee.contract_end!);
             }
         }).catch(error => {
             console.error("Erro ao buscar employee:", error);
         });
     }
     
+    // Função para formatar o valor 
+    function formatCurrency(value: string) {
+        const numericValue = value.replace(/\D/g, "");
+        
+        if (!numericValue) return "";
+        
+        const formattedValue = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+            minimumFractionDigits: 2,
+        }).format(parseFloat(numericValue) / 100); // Para lidar com centavos corretamente
+        
+        return formattedValue;
+    }
+    
     async function editEmployee(name: string, rg: string, cpf: string, role: string, contract_start: Date, contract_end: Date) {
         const token = await AsyncStorage.getItem("authToken");
-        const response1 = await apiClient.employee.getEmployeeEmployeeIdGet(employeeId.toString(), {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        console.log(response1.data);
-        await apiClient.employee
-        .updateEmployeeEmployeeIdUpdatePut(employeeId.toString(), {name, role, contract_start, contract_end}, {
+        apiClient.employee
+        .updateEmployeeEmployeeIdUpdatePut(employeeId.toString(), {
+            name,
+            rg,
+            cpf,
+            role,
+            contract_start,
+            contract_end,
+        }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }).then((response) => {
             if (response && response.status === 200) {
-                router.push(`/project/${projectId}/add_employees`);
+                router.push(`/project/${projectId}/add_employee`);
             }
         }).catch((error) => {
             console.error(error);
@@ -71,14 +85,14 @@ export default function NewEmployee() {
     }
     
     const handleSubmit = () => {
-        if (!name || !role || !contract_star || !contract_en) {
+        if (!name || !role || !contract_start || !contract_end) {
             console.log("Por favor, preencha todos os campos!");
             return;
         }
-        const start_date = stringToDate(contract_star);
-        const end_date = stringToDate(contract_en);
+        const start_date = stringToDate(contract_start);
+        const end_date = stringToDate(contract_end);
         
-        editEmployee(name, rg, cpf, role, start_date, end_date);
+        editEmployee(name, rg, cpf, role, new Date(contract_start), new Date(contract_end));
     };
     
     return (
@@ -113,13 +127,13 @@ export default function NewEmployee() {
                         <TextInput
                             style={material_styles.inputContainer}
                             placeholder="Contract start"
-                            value={contract_star}
+                            value={contract_start}
                             onChangeText={(text) => setContract_start(text)}>
                         </TextInput>
                         <TextInput
                             style={material_styles.inputContainer}
                             placeholder="Contract end"
-                            value={contract_en}
+                            value={contract_end}
                             onChangeText={(text) => setContract_end(text)}>
                         </TextInput>
 
