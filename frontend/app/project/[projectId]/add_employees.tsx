@@ -10,6 +10,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
 import PlusSVG from "@/assets/svg/plus.svg"
 import { Checkbox } from "react-native-paper";
+import EditSVG from "@/assets/svg/material-edit.svg";
 
 interface EmployeeData {
     id: string;
@@ -177,6 +178,14 @@ export default function ViewEmployees() {
                                     alignItems: "center",
                                     gap: 15,
                                 }}>
+                                <Pressable onPress={() => {
+                                    router.push({
+                                    pathname: './edit_employee',
+                                    params: { employeeId: employee.id },
+                                    });
+                                }}>
+                                    <EditSVG />
+                                </Pressable>
                                     <View style={[employee_styles.roundImage, { backgroundColor: 'grey' }]}></View>
                                     <View>
                                         <Text style={employee_styles.employeeName}>{employee.name}</Text>
