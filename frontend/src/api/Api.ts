@@ -73,6 +73,24 @@ export interface EmployeeSchema {
   contract_end: string;
 }
 
+/** EmployeeUpdate */
+export interface EmployeeUpdate {
+  /** Name */
+  name: string | null;
+  /** Role */
+  role: string | null;
+  /**
+   * Contract Start
+   * @format date-time
+   */
+  contract_start: string;
+  /**
+   * Contract End
+   * @format date-time
+   */
+  contract_end: string;
+}
+
 /** EquipmentPublic */
 export interface EquipmentPublic {
   /** Id */
@@ -787,7 +805,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/employee/{id}/update
      * @secure
      */
-    updateEmployeeEmployeeIdUpdatePut: (id: string, data: EmployeeSchema, params: RequestParams = {}) =>
+    updateEmployeeEmployeeIdUpdatePut: (id: string, data: EmployeeUpdate, params: RequestParams = {}) =>
       this.request<EmployeePublic, HTTPValidationError>({
         path: `/employee/${id}/update`,
         method: "PUT",
