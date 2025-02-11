@@ -169,3 +169,6 @@ environment/
 .venv/
 myenv/
 app/alembic/versions/__pycache__
+
+backend/alembic/versions/
+frontend/yarn.lock
