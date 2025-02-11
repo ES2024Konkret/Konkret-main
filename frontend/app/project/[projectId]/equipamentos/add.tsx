@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/src/api/ApiClient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import ArrowSVG from "@/assets/svg/chevron-left.svg"
-import PlusSVG from "@/assets/svg/plus.svg"
+import ArrowSVG from "@/assets/svg/chevron-left.svg";
+import PlusSVG from "@/assets/svg/plus.svg";
 import { Checkbox } from "react-native-paper";
-
+import EditSVG from "@/assets/svg/material-edit.svg";
 interface EquipmentData {
     id: string;
     type: string;
@@ -178,6 +178,9 @@ export default function ViewEquipments() {
                                     alignItems: "center",
                                     gap: 15,
                                 }}>
+                                <Pressable onPress={()=>{router.push(`/project/${projectId}/equipamentos/${equipment.id}/edit`)}}>
+                                    <EditSVG/>
+                                </Pressable>
                                     <View>
                                         <Text style={employee_styles.employeeName}>{equipment.type}</Text>
                                         <Text style={employee_styles.employeeRole}>{
