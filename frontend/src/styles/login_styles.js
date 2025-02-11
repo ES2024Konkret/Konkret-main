@@ -74,6 +74,13 @@ export const styles = StyleSheet.create({
         color: '#001bcc',
         letterSpacing: 1.8,
     },
+    textSubtitle: {
+        fontFamily: 'Inter',
+        fontSize: 16,
+        fontWeight: 600,
+        color: '#001bcc',
+        letterSpacing: 1.44,
+    },
     formButton: {
         width: '100%',
         padding: 10,

@@ -100,7 +100,11 @@ export default function ViewEquipments() {
                                         <Text style={employee_styles.employeeRole}>{equipment.brand}</Text>
                                     </View>
                                 </View>
+                                <Pressable  style={styles.subButton} onPress={() =>
+                                    router.push(`/project/${projectId}/equipamentos/${equipment.id}/relatorio`)
+                                }>
                                 <EditSVG />
+                                </Pressable>
                             </View>
                         ))}
                     </View>
