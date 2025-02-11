@@ -87,7 +87,7 @@ export default function NewEmployee() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}>
-                <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employees`)}>
+                <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employee`)}>
                     <ArrowSVG width={51} height={51} fill="#fff" />
                 </Pressable>
                 <View style={styles.employeeContainer}>

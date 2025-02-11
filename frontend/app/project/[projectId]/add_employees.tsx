@@ -172,20 +172,17 @@ export default function ViewEmployees() {
                             </View>
                         </Pressable>
                         {filteredEmployees.map((employee) => (
-                            <View key={employee.id} style={employee_styles.employeeBox}>
+                            <Pressable onPress={() => router.push({
+                                pathname: './edit_employee',
+                                params: { employeeId: employee.id },
+                                })}  key={employee.id} style={employee_styles.employeeBox}>
                                 <View style={{
                                     flexDirection: 'row',
                                     alignItems: "center",
                                     gap: 15,
-                                }}>
-                                <Pressable onPress={() => {
-                                    router.push({
-                                    pathname: './edit_employee',
-                                    params: { employeeId: employee.id },
-                                    });
-                                }}>
-                                    <EditSVG />
-                                </Pressable>
+                                }
+                                }>
+                            
                                     <View style={[employee_styles.roundImage, { backgroundColor: 'grey' }]}></View>
                                     <View>
                                         <Text style={employee_styles.employeeName}>{employee.name}</Text>
@@ -200,7 +197,7 @@ export default function ViewEmployees() {
                                     color="blue"
                                     uncheckedColor="gray"
                                 />
-                            </View>
+                            </Pressable>
                         ))}
                     </View>
                 </ScrollView>

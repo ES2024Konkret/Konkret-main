@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter, Link } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArrowSVG from "@/assets/svg/chevron-left.svg"
 import { styles } from "@/src/styles/login_styles" 
+import { styles2 } from "@/src/styles/employee_styles" 
 import { Int32 } from "react-native/Libraries/Types/CodegenTypes";
 
 export default function NewEmployee() {
@@ -62,17 +63,28 @@ export default function NewEmployee() {
 
     return (
                 
-                <View style={[{ width: '100%', height: '100%' }]}>
-                    <View style={[styles.contentContainer, {
-                        justifyContent: "flex-start",
-                        alignItems: 'center',
-                        width: '100%'
-                    }]}>
-                        <Link href= {`/project/${projectId}/equipamentos/add`} style={[styles.subButton, { alignSelf: 'flex-start' }]}>
-                            <ArrowSVG width={51} height={51} fill="#00000"></ArrowSVG>
-                        </Link>
+        <View style={styles.container}>
+            <ImageBackground
+                source={require('@/assets/images/defaultBackground.png')}
+                resizeMode='cover'
+                style={styles.background}>
+                <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_equipament`)}>
+                    <ArrowSVG width={51} height={51} fill="#fff" />
+                </Pressable>
+                                <View style={[styles.loginBox, { width: '100%', height: '100%' }]}>
+                                    <View style={[styles.contentContainer, {
+                                        justifyContent: "flex-start",
+                                        alignItems: 'center',
+                                        width: '100%'
+                                    }]}>
 
-                        <Text style={[styles.textTitle, { alignSelf:'flex-start', marginLeft: 20}]}>Adicionar Equipamento</Text>
+                    {/* <View style={styles2.textIconContainer}>
+                        <View>
+                            <Text style={styles2.textTitle}>Receber</Text>
+                            <Text style={styles2.textSubtitle}>Material</Text>
+                        </View>
+                    </View>           */}
+
 
                         <View style={{
                             width: '90%',
@@ -141,11 +153,14 @@ export default function NewEmployee() {
                                     margin: 20,
                                     alignItems: 'center'
                                 }}>
+                                    </View>
                                 </View>
                             </View>
                         </View>
                     </View>
-
-                </View>
+                     </ImageBackground>
+                    </View>
+                    
+         
     );
 }
