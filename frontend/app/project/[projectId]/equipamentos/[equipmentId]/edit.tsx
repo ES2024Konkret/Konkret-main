@@ -68,7 +68,7 @@ export default function NewEquipment() {
                 }
             }).then((response) => {
                 if (response && response.status === 200) {
-                    router.push(`/project/${projectId}/add_equipment`);
+                    router.push(`/project/${projectId}/equipamentos/view`);
                 }
             }).catch((error) => {
                 console.error(error);
@@ -81,7 +81,7 @@ export default function NewEquipment() {
             return;
         }
         
-        //editEquipment(brand, type, description, quantity );
+        editEquipment(brand, type, description, quantity );
     };
 
     return (
