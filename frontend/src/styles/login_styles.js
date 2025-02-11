@@ -67,6 +67,13 @@ export const styles = StyleSheet.create({
         margin: 10,
         fontWeight: 400,
     },
+    textTitle: {
+        fontFamily: 'Inter',
+        fontSize: 20,
+        fontWeight: 600,
+        color: '#001bcc',
+        letterSpacing: 1.8,
+    },
     formButton: {
         width: '100%',
         padding: 10,

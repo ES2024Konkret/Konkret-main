@@ -138,6 +138,9 @@ export default function Relatorio() {
             </View>
           </Pressable>
 
+          <Pressable onPress={() => router.push(`/project/${projectId}/equipamentos/view`)}>
+
+          
           <View style={[report.button, {
             backgroundColor: '#009ccc',
             shadowColor: '#000',
@@ -148,6 +151,7 @@ export default function Relatorio() {
           }]}>
             <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Equipamento</Text>
           </View>
+          </Pressable>
 
           <Pressable onPress={() => router.push(`/project/${projectId}/view_reports`)}>
 
@@ -162,7 +166,6 @@ export default function Relatorio() {
               <Text style={[report.label, { color: '#FFFFFF', textAlign: 'center', fontSize: 18 }]}>+ Relatórios</Text>
             </View>
           </Pressable>
-
         </View>
 
       </View>
