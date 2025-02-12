@@ -122,10 +122,10 @@ class WorkRepository:
         works = self.db.query(Work).filter(Work.engineer_id == engineer_id).all() 
         print(works)
         for work in works:
-            if work.end_date and work.end_date < today:
+            if work.end_date and work.end_date <= today:
                 notifications_list.append(f"A obra {work.name} já passou da data de término.")
             employees = self.get_employees(work.id)
             for employee in employees:
-                if employee.contract_end and employee.contract_end.date() < today:
+                if employee.contract_end and employee.contract_end.date() <= today:
                     notifications_list.append(f"O funcionário {employee.name} da obra {work.name} teve seu contrato encerrado em {employee.contract_end.date()}.")
         return notifications_list

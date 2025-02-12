@@ -307,18 +307,13 @@ def get_pdf(
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
+    
     try:
         report = report_service.get(id)
+        if not report:
+            raise HTTPException(status_code=404, detail="Relatório não encontrado.")
+            
         weather = report_service.get_climate(id)
-
-        data = [{
-            "ID": report.id,
-            "Observações": ", ".join(report.observations),
-            "Atividades": ", ".join(report.activities),
-            "Clima": weather
-        }]
-
-        pdf = FPDF()
         weather_str = str(weather) if weather else "Não disponível"
 
         # Criar PDF
@@ -338,31 +333,35 @@ def get_pdf(
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Condições Climáticas', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
-        pdf.multi_cell(100, 10, weather_str)
+        pdf.multi_cell(0, 10, weather_str)
         pdf.ln(5)
 
         # Seção de Atividades
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Atividades Realizadas', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
+        
         if hasattr(report, 'activities') and report.activities:
-            pdf.cell(10, 10, f'Manhã: {report.activities[0]}', 0, 0)
-            pdf.ln(5)
-            pdf.cell(10, 10, f'Tarde: {report.activities[1]}', 0, 0)
-            pdf.ln(5)
-            pdf.cell(10, 10, f'Noite: {report.activities[2]}', 0, 0)
+            períodos = ['Manhã', 'Tarde', 'Noite']
+            for i, atividade in enumerate(report.activities):
+                if i < len(períodos):
+                    pdf.cell(0, 10, f'{períodos[i]}: {atividade}', 0, 1)
+                else:
+                    pdf.cell(0, 10, f'Atividade adicional: {atividade}', 0, 1)
         else:
-            pdf.cell(10, 10, "Nenhuma atividade registrada")
-        pdf.ln(10)
+            pdf.cell(0, 10, "Nenhuma atividade registrada", 0, 1)
+        pdf.ln(5)
 
         # Seção de Observações
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Observações', 0, 1, 'L', 1)
         pdf.set_font('Arial', '', 11)
+        
         if hasattr(report, 'observations') and report.observations:
-                pdf.cell(10, 10, str(report.observations), 0, 1, 'L')
+            for obs in report.observations:
+                pdf.multi_cell(0, 10, str(obs))
         else:
-            pdf.multi_cell(100, 10, "Nenhuma observação registrada")
+            pdf.multi_cell(0, 10, "Nenhuma observação registrada")
         pdf.ln(10)
         
         # Área para Assinatura
@@ -371,15 +370,25 @@ def get_pdf(
         pdf.set_font('Arial', 'I', 10)
         pdf.cell(0, 10, f'Assinatura do Responsável: {user_logged.name}', 0, 1, 'C')
 
-        pdf_output = bytes(pdf.output(dest='S'))
+        # Gerar PDF - CORREÇÃO AQUI
+        try:
+            pdf_output = pdf.output(dest='S').encode('latin-1')  # Removido o bytes() extra
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Erro ao gerar o PDF: {str(e)}")
+
         return Response(
             content=pdf_output,
             media_type="application/pdf",
-            headers={"Content-Disposition": f"attachment; filename=report_{id}.pdf"}
+            headers={
+                "Content-Disposition": f"attachment; filename=report_{id}.pdf",
+                "Content-Type": "application/pdf"
+            }
         )
 
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erro ao gerar o PDF: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro inesperado ao gerar o PDF: {str(e)}")
 
 @router.get("/{id}/materials")
 def get_materials(
