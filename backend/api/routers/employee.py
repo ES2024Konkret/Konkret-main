@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import Annotated, List
 from backend.api.core.models import User
 from backend.api.services.employee_service import EmployeeService
-from backend.api.core.schemas import EmployeeSchema, EmployeePublic
+from backend.api.core.schemas import EmployeeSchema, EmployeePublic, EmployeeUpdate
 from backend.api.dependencies import get_employee_service, get_current_user
 
 router = APIRouter(
@@ -26,14 +26,19 @@ def add_employee(
 @router.put("/{id}/update", response_model=EmployeePublic)
 def update_employee(
     id: str,
-    employee: EmployeeSchema,
+    employee: EmployeeUpdate,
     employee_service: Annotated[EmployeeService, Depends(get_employee_service)],
     user_logged: User = Depends(get_current_user)
 ):
     if not user_logged:
         raise HTTPException(status_code=404, detail="Usuário logado não encontrado.")
     try: 
-        updated_employee = employee_service.update(id, employee.contract_end, employee.role, employee.work_id)
+        try:
+
+            updated_employee = employee_service.update(id, employee.name, employee.role, employee.contract_start, employee.contract_end)
+            return updated_employee
+        except Exception as e:
+            raise HTTPException(status_code=402, detail=f"Deu erro {str(e)}")
         if isinstance(updated_employee, str):
             raise HTTPException(status_code=404)
         return updated_employee

@@ -25,6 +25,12 @@ class EmployeeSchema(BaseModel):
     contract_start: Annotated[datetime, Query()]
     contract_end: Annotated[datetime, Query()]
 
+class EmployeeUpdate(BaseModel):
+    name: Annotated[Optional[str], Query()]
+    role: Annotated[Optional[str], Query()]
+    contract_start: Annotated[datetime, Query()]
+    contract_end: Annotated[datetime, Query()]
+
 class EmployeePublic(BaseModel):
     name: Annotated[Optional[str], Query()]
     id: Annotated[str, Query()]

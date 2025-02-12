@@ -14,17 +14,22 @@ class EmployeeRepository:
         return new_employee
     
     #Colocando float = None e str = None, faz com que de pra atualizar só um dos dados
-    def update(self, id: str, contract_end: float = None, role: str = None):
+    def update(self, id: str, name: str= None, role: str = None, contract_start: Date = None, contract_end: Date = None):
         employee = self.db.query(Employee).filter(Employee.id == id).first()
         if employee:
-            if contract_end is not None:
-                employee.contract_end = contract_end
-            if role is not None:
+            if name:
+                employee.name = name
+            if role:
                 employee.role = role
+            if contract_start:
+                employee.contract_start = contract_start
+            if contract_end:
+                employee.contract_end = contract_end
+
             self.db.commit()
             self.db.refresh(employee)
-            return employee
-        return None
+        return employee
+        
     
     def all(self):
         return self.db.query(Employee).all()

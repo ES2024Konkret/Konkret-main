@@ -7,87 +7,87 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/src/api/ApiClient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import ArrowSVG from "@/assets/svg/chevron-left.svg"
-import PlusSVG from "@/assets/svg/plus.svg"
+import ArrowSVG from "@/assets/svg/chevron-left.svg";
+import PlusSVG from "@/assets/svg/plus.svg";
 import { Checkbox } from "react-native-paper";
 import EditSVG from "@/assets/svg/material-edit.svg";
-
-interface EmployeeData {
+interface EquipmentData {
     id: string;
-    name: string;
-    role: string;
-    contract_start: Date;
-    contract_end: Date;
+    type: string;
+    start_time: Date;
+    end_time: Date;
     checked: boolean;
 }
 
-export default function ViewEmployees() {
+export default function ViewEquipments() {
     const router = useRouter();
     const { projectId } = useLocalSearchParams();
 
-    const [employees, setEmployees] = useState<EmployeeData[]>([]);
+    const [equipments, setEquipments] = useState<EquipmentData[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     apiClient.jobs.deleteJobJobsIdDelete
 
-    async function getEmployees() {
+    async function getEquipments() {
         const token = await AsyncStorage.getItem("authToken");
         if (!token || !projectId) return;
     
         try {
-            const response = await apiClient.employee.getallEmployeesEmployeeGet({
+            const response = await apiClient.equipment.getallEquipmentsEquipmentGet({
                 headers: { Authorization: `Bearer ${token}` },
             });
     
             if (response.status !== 200) return;
     
-            const fetchedEmployees = response.data;
+            const fetchedEquipments = response.data;
     
-            const jobsResponse = await apiClient.jobs.getallJobsJobsGet({
+            const rentsResponse = await apiClient.rentequipment.getallRentEquipmentsRentequipmentGet({
                 headers: { Authorization: `Bearer ${token}` },
             });
     
-            if (jobsResponse.status !== 200) return;
+            if (rentsResponse.status !== 200) return;
     
-            const jobs = jobsResponse.data;
+            const rents = rentsResponse.data;
     
-            const projectJobs = jobs.filter((job: any) => job.work_id === projectId);
+            const projectRents = rents.filter((rent: any) => rent.work_id === projectId);
     
-            const employeesWithJob = new Set(projectJobs.map((job: any) => job.employee_id));
+            const equipmentsWithRents = new Set(projectRents.map((rent: any) => rent.equipment_id));
+            
     
-            setEmployees(
-                fetchedEmployees.map((employee: any) => ({
-                    id: employee.id,
-                    name: employee.name,
-                    role: employee.role,
-                    contract_start: new Date(employee.contract_start),
-                    contract_end: new Date(employee.contract_end),
-                    checked: employeesWithJob.has(employee.id), // Apenas se o funcionário estiver no Set do projectId
+            setEquipments(
+                fetchedEquipments.map((equipment: any) => ({
+                    id: equipment.id,
+                    type: equipment.type,
+                    start_time: new Date(
+                        projectRents.find((rent: any) => rent.equipment_id === equipment.id)?.start_time || 0),
+                    end_time: new Date(
+                        projectRents.find((rent: any) => rent.equipment_id === equipment.id)?.end_time || 0),
+                    checked: equipmentsWithRents.has(equipment.id), // Apenas se o funcionário estiver no Set do projectId
                 }))
             );
         } catch (error) {
-            console.error("Erro ao buscar funcionários ou jobs:", error);
+            console.error("Erro ao buscar equipamentos ou alugueis:", error);
         }
     }
 
     useEffect(() => {
-        getEmployees();
+        getEquipments();
     }, []);
 
     const handleCheckboxToggle = async (id: string) => {
-        setEmployees((prevEmployees) =>
-            prevEmployees.map((employee) =>
-                employee.id === id ? { ...employee, checked: !employee.checked } : employee
+        setEquipments((prevEquipments) =>
+            prevEquipments.map((equipments) =>
+                equipments.id === id ? { ...equipments, checked: !equipments.checked } : equipments
             )
         );
     
         const token = await AsyncStorage.getItem("authToken");
     
         try {
-            const employee = employees.find(emp => emp.id === id);
-            if (!employee) return;
+            const equipment = equipments.find(emp => emp.id === id);
+            if (!equipment) return;
     
-            if (!employee.checked) { // Se não estava marcado, significa que agora será adicionado
+            if (!equipment.checked) { // Se não estava marcado, significa que agora será adicionado
                 await apiClient.jobs.addJobJobsPost({
                     work_id: String(projectId),
                     employee_id: id,
@@ -121,8 +121,8 @@ export default function ViewEmployees() {
     };
     
 
-    const filteredEmployees = employees.filter((employee) =>
-        employee.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredEmployees = equipments.filter((equipment) =>
+        equipment.type.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -131,13 +131,13 @@ export default function ViewEmployees() {
                 source={require('@/assets/images/defaultBackground.png')}
                 resizeMode='cover'
                 style={styles.background}></ImageBackground>
-            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/view_employees`)}>
+            <Pressable style={styles.subButton} onPress={() => router.push(`/project/${projectId}/equipamentos/view`)}>
                 <ArrowSVG width={51} height={51} fill="#fff" />
             </Pressable>
             <View style={[styles.employeeContainer]}>
                 <View style={styles.textIconContainer}>
                     <View>
-                        <Text style={styles.textTitle}>Seus Funcionários</Text>
+                        <Text style={styles.textTitle}>Todos Equipamentos</Text>
                     </View>
                 </View>
                 <View style={styles.inputContainer}>
@@ -159,7 +159,7 @@ export default function ViewEmployees() {
                             paddingRight: 15,
                             paddingTop: 5,
                             paddingBottom: 5
-                        }]} onPress={() => {router.push(`/project/${projectId}/new_employee`)}}>
+                        }]} onPress={() => {router.push(`/project/${projectId}/equipamentos/new`)}}>
                             <View style={{
                                 flexDirection: 'row',
                                 alignItems: "center",
@@ -171,32 +171,26 @@ export default function ViewEmployees() {
                                 <Text style={[employee_styles.employeeName, { color: 'black' }]}>CADASTRAR NOVO</Text>
                             </View>
                         </Pressable>
-                        {filteredEmployees.map((employee) => (
-                            <View key={employee.id} style={employee_styles.employeeBox}>
+                        {filteredEmployees.map((equipment) => (
+                            <View key={equipment.id} style={employee_styles.employeeBox}>
                                 <View style={{
                                     flexDirection: 'row',
                                     alignItems: "center",
                                     gap: 15,
                                 }}>
-                                <Pressable onPress={() => {
-                                    router.push({
-                                    pathname: './edit_employee',
-                                    params: { employeeId: employee.id },
-                                    });
-                                }}>
-                                    <EditSVG />
+                                <Pressable onPress={()=>{router.push(`/project/${projectId}/equipamentos/${equipment.id}/edit`)}}>
+                                    <EditSVG/>
                                 </Pressable>
-                                    <View style={[employee_styles.roundImage, { backgroundColor: 'grey' }]}></View>
                                     <View>
-                                        <Text style={employee_styles.employeeName}>{employee.name}</Text>
+                                        <Text style={employee_styles.employeeName}>{equipment.type}</Text>
                                         <Text style={employee_styles.employeeRole}>{
-                                            employee.contract_start.toLocaleDateString('pt-BR')}-{employee.contract_end.toLocaleDateString('pt-BR')}
+                                            equipment.start_time.toLocaleDateString('pt-BR')}-{equipment.end_time.toLocaleDateString('pt-BR')}
                                         </Text>
                                     </View>
                                 </View>
                                 <Checkbox
-                                    status={employee.checked ? "checked" : "unchecked"}
-                                    onPress={() => handleCheckboxToggle(employee.id)}
+                                    status={equipment.checked ? "checked" : "unchecked"}
+                                    onPress={() => handleCheckboxToggle(equipment.id)}
                                     color="blue"
                                     uncheckedColor="gray"
                                 />
