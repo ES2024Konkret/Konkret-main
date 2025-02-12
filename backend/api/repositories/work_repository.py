@@ -116,10 +116,11 @@ class WorkRepository:
                 employees_list.append(job.employees)
         return employees_list
     
-    def retrieve_notifications(self, user_id: str):
+    def retrieve_notifications(self, engineer_id: str):
         notifications_list = []
         today = datetime.now().date()
-        works = self.db.query(Work).filter(Work.user_id == user_id).all()
+        works = self.db.query(Work).filter(Work.engineer_id == engineer_id).all() 
+        print(works)
         for work in works:
             if work.end_date and work.end_date < today:
                 notifications_list.append(f"A obra {work.name} já passou da data de término.")

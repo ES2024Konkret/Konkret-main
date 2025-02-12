@@ -385,3 +385,52 @@ export const report = StyleSheet.create({
 
   },
 });
+
+export const notification_styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  background: {
+    width: '100%',
+  },
+  notificationsContainer: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    backgroundColor: 'white',
+    alignItems: 'center',
+  },
+  textTitle: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: 400,
+    color: 'white',
+    letterSpacing: 1.8,
+    padding: 20
+  },
+  text: {
+    fontFamily: 'Inter',
+    fontSize: 12,
+    width: '100%',
+    fontWeight: 400,
+    letterSpacing: 1.08,
+    borderWidth: 0,
+    padding: 20
+  },
+  notificationBox: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+  },
+  header: {
+    backgroundColor: '#001bcc',
+    flexDirection: 'row',
+    alignContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderColor: '#009CCC'
+  }
+});
